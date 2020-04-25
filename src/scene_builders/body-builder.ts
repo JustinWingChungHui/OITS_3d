@@ -3,13 +3,15 @@ import SphericalBody from '../models/spherical_body';
 import Body from '../models/body';
 import Asteroid from '../models/asteroid';
 import Probe from '@/models/probe';
+import Store from '@/store';
+import Trajectory from '@/models/trajectory';
 
 export default class BodyBuilder {
 
     // Textures https://www.solarsystemscope.com/textures/
     // Codes http://www-pi.physics.uiowa.edu/docs/spice/NAIF_IDS.HTML
     private bodies: Array<Body> = [
-        new Probe('MAIN', 'Probe', 0, 0, 0, 1),
+        new Probe('MAIN', 'Probe', 0, 0, 10, 0.3),
         new SphericalBody('0', 'Sun', 0, 0, 0, 20, '/assets/backgrounds/sun.jpg'),
         new SphericalBody('1', 'Mercury Barycenter', 40, 0, 0, 1, '/assets/backgrounds/mercury.jpg'),
         new SphericalBody('2', 'Venus Barycenter', 80, 0, 0, 2, '/assets/backgrounds/venus.jpg'),
@@ -45,15 +47,24 @@ export default class BodyBuilder {
         }
     }
 
-    public async AddToScene(ids: Array<string>, scene: Three.Scene): Promise<Body[]> {
+    public async AddToScene(scene: Three.Scene): Promise<Body[]> {
 
         const bodies = new Array<Body>();
         const promises = [];
 
-        for (const id of ids) {
-            const body = this.bodiesById[id];
-            promises.push(body.load(scene));
-            bodies.push(body);
+        for (const id in Store.state.CsvByBodyId) {
+
+            if (!this.bodiesById[id]) {
+                window.console.error(`id ${id} not recognised!`)
+
+            } else {
+
+                const body = this.bodiesById[id];
+                promises.push(body.load(scene));
+
+                body.trajectory = new Trajectory(Store.state.CsvByBodyId[id]);
+                bodies.push(body);
+            }
         }
 
         await Promise.all(promises);

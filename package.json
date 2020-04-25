@@ -8,8 +8,10 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@types/request-promise-native": "^1.0.17",
     "@types/three": "^0.103.2",
     "core-js": "^3.6.4",
+    "request-promise-native": "^1.0.8",
     "three": "^0.115.0",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",

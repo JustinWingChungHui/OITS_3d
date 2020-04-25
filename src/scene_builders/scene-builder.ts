@@ -2,7 +2,6 @@ import * as Three from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import BodyBuilder from './body-builder';
 import IBody from '@/models/body';
-import Trajectory from '@/models/trajectory';
 
 // https://stemkoski.github.io/Three.js/
 
@@ -39,11 +38,10 @@ export default class SceneBuilder {
     }
 
     public async load(): Promise<void> {
-        new Three.TextureLoader().load('/models/backgrounds/space.jpg', (texture) => this.scene.background = texture);
 
-        // this.bodies = await new BodyBuilder().AddToScene(['Sun', '1','2','3','4','5','6','7','8', '9', '3788040'], this.scene);
-        this.bodies = await new BodyBuilder().AddToScene(['MAIN','3'], this.scene);
-        this.bodies[0].trajectory = Trajectory.create();
+        await this.loadBackground();
+
+        this.bodies = await new BodyBuilder().AddToScene(this.scene);
         this.renderer.gammaFactor = 5.2;
         this.renderer.render(this.scene, this.camera);
     }
@@ -56,5 +54,16 @@ export default class SceneBuilder {
         }
 
         this.renderer.render(this.scene, this.camera);
+    }
+
+    private async loadBackground(): Promise<void> {
+        const promise = await new Promise<void>((resolve) => {
+            new Three.TextureLoader().load('/models/backgrounds/space.jpg', (texture) => {
+                this.scene.background = texture;
+                resolve;
+            });
+        });
+
+        return promise;
     }
 }
