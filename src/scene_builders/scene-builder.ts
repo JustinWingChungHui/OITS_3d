@@ -38,10 +38,10 @@ export default class SceneBuilder {
     }
 
     public async load(): Promise<void> {
-
+        window.console.log(`SceneBuilder.load()`)
         await this.loadBackground();
-
-        this.bodies = await new BodyBuilder().AddToScene(this.scene);
+        const bodyBuilder = new BodyBuilder()
+        this.bodies = await bodyBuilder.AddToScene(this.scene);
         this.renderer.gammaFactor = 5.2;
         this.renderer.render(this.scene, this.camera);
     }
@@ -57,10 +57,13 @@ export default class SceneBuilder {
     }
 
     private async loadBackground(): Promise<void> {
+        window.console.log(`SceneBuilder.loadBackground()`)
+
         const promise = await new Promise<void>((resolve) => {
-            new Three.TextureLoader().load('/models/backgrounds/space.jpg', (texture) => {
+            new Three.TextureLoader().load('/assets/backgrounds/space.jpg', (texture) => {
+
                 this.scene.background = texture;
-                resolve;
+                resolve();
             });
         });
 

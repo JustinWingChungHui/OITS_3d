@@ -1,10 +1,10 @@
 import * as Three from 'three'
 import IBody from './body';
 import Trajectory from './trajectory';
+import Store from '@/store';
 
 export default class SphericalBody implements IBody{
     public id: string;
-    public description: string;
     public x: number;
     public y: number;
     public z: number;
@@ -16,14 +16,12 @@ export default class SphericalBody implements IBody{
     private sphere: Three.Mesh | null = null;
 
     constructor(id: string,
-                description: string,
                 x: number,
                 y: number,
                 z: number,
                 radius: number,
                 texture: string) {
         this.id = id;
-        this.description = description;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -37,16 +35,16 @@ export default class SphericalBody implements IBody{
 
             if (this.trajectory) {
                 const node = this.trajectory.getNextNode();
-                this.sphere.position.x = node.x;
-                this.sphere.position.y = node.y;
-                this.sphere.position.z = node.z;
+                this.sphere.position.x = node.vector.x;
+                this.sphere.position.y = node.vector.y;
+                this.sphere.position.z = node.vector.z;
             }
         }
     }
 
 
     public async load(scene: Three.Scene): Promise<void> {
-
+        window.console.log(`SphericalBody.load()`)
         await this.loadTexture();
 
         const sphereGeometry = new Three.SphereGeometry(this.radius, 32, 16 ); 
@@ -56,6 +54,11 @@ export default class SphericalBody implements IBody{
         this.sphere.position.set(this.x, this.y, this.z);
 
         scene.add(this.sphere);
+
+        if (this.id in Store.state.CsvByBodyId) {
+            this.trajectory = new Trajectory(Store.state.CsvByBodyId[this.id], "gray");
+            this.trajectory.load(scene);
+        }
     }
 
     private async loadTexture(): Promise<void> {

@@ -2,10 +2,11 @@ import * as Three from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import IBody from './body';
 import Trajectory from './trajectory';
+import Store from '@/store';
+
 
 export default class Probe implements IBody{
     public id: string;
-    public description: string;
     public x: number;
     public y: number;
     public z: number;
@@ -15,13 +16,11 @@ export default class Probe implements IBody{
     private gltfScene: Three.Group | null = null;
 
     constructor(id: string,
-                description: string,
                 x: number,
                 y: number,
                 z: number,
                 scale: number) {
         this.id = id;
-        this.description = description;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -30,11 +29,16 @@ export default class Probe implements IBody{
 
 
     public async load(scene: Three.Scene): Promise<void> {
-
+        window.console.log(`Probe.load()`)
         await this.LoadGLTF();
 
         if (this.gltfScene) {
             scene.add(this.gltfScene);
+
+            if (this.id in Store.state.CsvByBodyId) {
+                this.trajectory = new Trajectory(Store.state.CsvByBodyId[this.id], "green");
+                this.trajectory.load(scene);
+            }
         }
     }
 
@@ -43,6 +47,13 @@ export default class Probe implements IBody{
             this.gltfScene.rotation.x += 0.02;
             this.gltfScene.rotation.y += 0.02;
             this.gltfScene.rotation.z += 0.02;
+
+            if (this.trajectory) {
+                const node = this.trajectory.getNextNode();
+                this.gltfScene.position.x = node.vector.x;
+                this.gltfScene.position.y = node.vector.y;
+                this.gltfScene.position.z = node.vector.z;
+            }
         }
     }
 

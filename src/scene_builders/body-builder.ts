@@ -11,32 +11,32 @@ export default class BodyBuilder {
     // Textures https://www.solarsystemscope.com/textures/
     // Codes http://www-pi.physics.uiowa.edu/docs/spice/NAIF_IDS.HTML
     private bodies: Array<Body> = [
-        new Probe('MAIN', 'Probe', 0, 0, 10, 0.3),
-        new SphericalBody('0', 'Sun', 0, 0, 0, 20, '/assets/backgrounds/sun.jpg'),
-        new SphericalBody('1', 'Mercury Barycenter', 40, 0, 0, 1, '/assets/backgrounds/mercury.jpg'),
-        new SphericalBody('2', 'Venus Barycenter', 80, 0, 0, 2, '/assets/backgrounds/venus.jpg'),
-        new SphericalBody('3', 'Earth Barycenter', 0, 0, 0, 0.1, '/assets/backgrounds/earth.jpg'),
-        new SphericalBody('4', 'Mars Barycenter', 160, 0, 0, 3, '/assets/backgrounds/mars.jpg'),
-        new SphericalBody('5', 'Jupiter Barycenter', 200, 0, 0, 6, '/assets/backgrounds/jupiter.jpg'),
-        new SphericalBody('6', 'Saturn Barycenter', 240, 0, 0, 4, '/assets/backgrounds/saturn.jpg'),
-        new SphericalBody('7', 'Uranus Barycenter', 280, 0, 0, 4, '/assets/backgrounds/uranus.jpg'),
-        new SphericalBody('8', 'Neptune Barycenter', 320, 0, 0, 4, '/assets/backgrounds/neptune.jpg'),
-        new SphericalBody('9', 'Pluto Barycenter', 400, 0, 0, 4, '/assets/backgrounds/moon.jpg'),
-        new SphericalBody('199', 'Mercury', 0, 0, 0, 1, '/assets/backgrounds/mercury.jpg'),
-        new SphericalBody('299', 'Venus', 0, 0, 0, 2, '/assets/backgrounds/venus.jpg'),
-        new SphericalBody('301', 'Moon', 0, 0, 0, 0.2, '/assets/backgrounds/moon.jpg'),
-        new SphericalBody('399', 'Earth', 0, 0, 0, 20, '/assets/backgrounds/earth.jpg'),
-        new Asteroid('1000012', 'Churyumov-Gerasimenko', 0, 0, 40, 0.02),
-        new Asteroid('2000021', 'Lutetia', 0, 0, 40, 0.02,),
-        new Asteroid('2002867', 'Steins', 0, 0, 40, 0.02),
-        new Asteroid('3788040', 'Oumuamua', 0, 0, 40, 0.02),
-        new Asteroid('1000036', 'Halley', 0, 0, 40, 0.02),
-        new Asteroid('2101955', 'Bennu', 0, 0, 40, 0.02),
-        new Asteroid('2000004', 'Vesta', 0, 0, 40, 0.02),
-        new Asteroid('3825054', '3825054', 0, 0, 40, 0.02),
-        new Asteroid('2099942', '2099942', 0, 0, 40, 0.02),
-        new Asteroid('3830896', '3830896', 0, 0, 40, 0.02),
-        new Asteroid('2099942', '2099942', 0, 0, 40, 0.02),
+        new Probe('PROBE', 0, 0, 10, 0.05),
+        new SphericalBody('SUN', 0, 0, 0, 0.2, '/assets/backgrounds/sun.jpg'),
+        new SphericalBody('MERCURY BARYCENTER', 40, 0, 0, 0.01, '/assets/backgrounds/mercury.jpg'),
+        new SphericalBody('VENUS BARYCENTER', 80, 0, 0, 0.02, '/assets/backgrounds/venus.jpg'),
+        new SphericalBody('EARTH BARYCENTER', 0, 0, 0, 0.02, '/assets/backgrounds/earth.jpg'),
+        new SphericalBody('MARS BARYCENTER', 160, 0, 0, 0.03, '/assets/backgrounds/mars.jpg'),
+        new SphericalBody('JUPITER BARYCENTER', 200, 0, 0, 0.06, '/assets/backgrounds/jupiter.jpg'),
+        new SphericalBody('SATURN BARYCENTER', 240, 0, 0, 0.04, '/assets/backgrounds/saturn.jpg'),
+        new SphericalBody('URANUS BARYCENTER', 280, 0, 0, 0.04, '/assets/backgrounds/uranus.jpg'),
+        new SphericalBody('NEPTUNE BARYCENTER', 320, 0, 0, 0.04, '/assets/backgrounds/neptune.jpg'),
+        new SphericalBody('PLUTO BARYCENTER', 400, 0, 0, 0.04, '/assets/backgrounds/moon.jpg'),
+        new SphericalBody('MERCURY', 0, 0, 0, 0.01, '/assets/backgrounds/mercury.jpg'),
+        new SphericalBody('VENUS', 0, 0, 0, 0.02, '/assets/backgrounds/venus.jpg'),
+        new SphericalBody('MOON', 0, 0, 0, 0.01, '/assets/backgrounds/moon.jpg'),
+        new SphericalBody('EARTH', 0, 0, 0, 0.02, '/assets/backgrounds/earth.jpg'),
+        new Asteroid('CHURYUMOV-GERASIMENKO', 0, 0, 40, 0.02),
+        new Asteroid('LUTETIA', 0, 0, 40, 0.02,),
+        new Asteroid('STEINS', 0, 0, 40, 0.02),
+        new Asteroid('OUMUAMUA', 0, 0, 40, 0.02),
+        new Asteroid('HALLEY', 0, 0, 40, 0.02),
+        new Asteroid('BENNU', 0, 0, 40, 0.02),
+        new Asteroid('VESTA', 0, 0, 40, 0.02),
+        new Asteroid('3825054', 0, 0, 40, 0.02),
+        new Asteroid('2099942', 0, 0, 40, 0.02),
+        new Asteroid('3830896', 0, 0, 40, 0.02),
+        new Asteroid('2099942', 0, 0, 40, 0.02),
     ];
 
     private bodiesById: { [id: string]: Body } = {};
@@ -49,8 +49,14 @@ export default class BodyBuilder {
 
     public async AddToScene(scene: Three.Scene): Promise<Body[]> {
 
+        window.console.log(`BodyBuilder.AddToScene()`)
         const bodies = new Array<Body>();
         const promises = [];
+
+        // Add in the sun
+        const sun = this.bodiesById['SUN'];
+        promises.push(sun.load(scene));
+        bodies.push(sun);
 
         for (const id in Store.state.CsvByBodyId) {
 
@@ -62,7 +68,6 @@ export default class BodyBuilder {
                 const body = this.bodiesById[id];
                 promises.push(body.load(scene));
 
-                body.trajectory = new Trajectory(Store.state.CsvByBodyId[id]);
                 bodies.push(body);
             }
         }
