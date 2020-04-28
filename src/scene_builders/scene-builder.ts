@@ -29,7 +29,7 @@ export default class SceneBuilder {
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
         // Load Light
-        const ambientLight = new Three.AmbientLight(0xffffff, 0.8);
+        const ambientLight = new Three.AmbientLight(0xffffff, 1.8);
         this.scene.add(ambientLight);
                 
         // const directionalLight = new Three.DirectionalLight(0xffffff, 5);

@@ -4,14 +4,14 @@ import Body from '../models/body';
 import Asteroid from '../models/asteroid';
 import Probe from '@/models/probe';
 import Store from '@/store';
-import Trajectory from '@/models/trajectory';
+import Marker from '@/models/marker';
 
 export default class BodyBuilder {
 
     // Textures https://www.solarsystemscope.com/textures/
     // Codes http://www-pi.physics.uiowa.edu/docs/spice/NAIF_IDS.HTML
     private bodies: Array<Body> = [
-        new Probe('PROBE', 0, 0, 10, 0.05),
+        new Probe('PROBE', 0, 0, 10, 0.005),
         new SphericalBody('SUN', 0, 0, 0, 0.2, '/assets/backgrounds/sun.jpg'),
         new SphericalBody('MERCURY BARYCENTER', 40, 0, 0, 0.01, '/assets/backgrounds/mercury.jpg'),
         new SphericalBody('VENUS BARYCENTER', 80, 0, 0, 0.02, '/assets/backgrounds/venus.jpg'),
@@ -60,7 +60,12 @@ export default class BodyBuilder {
 
         for (const id in Store.state.CsvByBodyId) {
 
-            if (!this.bodiesById[id]) {
+            if (id.includes('INTERMEDIATE')) {
+                const marker = new Marker(id, 0, 0, 0, 0.02);
+                promises.push(marker.load(scene));
+                bodies.push(marker);
+
+            } else if (!this.bodiesById[id]) {
                 window.console.error(`id ${id} not recognised!`)
 
             } else {

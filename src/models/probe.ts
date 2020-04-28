@@ -65,7 +65,6 @@ export default class Probe implements IBody{
                 gltf.scene.position.x = this.x;
                 gltf.scene.position.y = this.y;
                 gltf.scene.position.z = this.z;
-                
                 this.gltfScene = gltf.scene;
                 resolve();
             });
