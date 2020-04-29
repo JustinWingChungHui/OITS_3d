@@ -41,14 +41,14 @@ export default class Asteroid implements IBody{
         }
     }
 
-    public animate() {
+    public animate(t: number) {
         if (this.gltfScene) {
             this.gltfScene.rotation.x += 0.02;
             this.gltfScene.rotation.y += 0.02;
             this.gltfScene.rotation.z += 0.02;
 
             if (this.trajectory) {
-                const node = this.trajectory.getNextNode();
+                const node = this.trajectory.getNextNode(t);
                 this.gltfScene.position.x = node.vector.x;
                 this.gltfScene.position.y = node.vector.y;
                 this.gltfScene.position.z = node.vector.z;

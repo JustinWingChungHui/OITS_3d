@@ -7,5 +7,5 @@ export default interface Body {
     trajectory: Trajectory | null;
 
     load(scene: Three.Scene): Promise<void>;
-    animate(): void;
+    animate(t: number): void;
 }

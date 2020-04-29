@@ -57,6 +57,25 @@ export default class Probe implements IBody{
         }
     }
 
+    public animateAndGetTime(): number {
+        if (this.gltfScene) {
+            this.gltfScene.rotation.x += 0.02;
+            this.gltfScene.rotation.y += 0.02;
+            this.gltfScene.rotation.z += 0.02;
+
+            if (this.trajectory) {
+                const node = this.trajectory.getNextNode();
+                this.gltfScene.position.x = node.vector.x;
+                this.gltfScene.position.y = node.vector.y;
+                this.gltfScene.position.z = node.vector.z;
+
+                return node.t;
+            }
+        }
+
+        return 0;
+    }
+
     private async LoadGLTF(): Promise<void> {
         const promise = await new Promise<void>((resolve) => {
 

@@ -17,10 +17,10 @@ export default class BodyBuilder {
         new SphericalBody('VENUS BARYCENTER', 80, 0, 0, 0.02, '/assets/backgrounds/venus.jpg'),
         new SphericalBody('EARTH BARYCENTER', 0, 0, 0, 0.02, '/assets/backgrounds/earth.jpg'),
         new SphericalBody('MARS BARYCENTER', 160, 0, 0, 0.03, '/assets/backgrounds/mars.jpg'),
-        new SphericalBody('JUPITER BARYCENTER', 200, 0, 0, 0.06, '/assets/backgrounds/jupiter.jpg'),
-        new SphericalBody('SATURN BARYCENTER', 240, 0, 0, 0.04, '/assets/backgrounds/saturn.jpg'),
-        new SphericalBody('URANUS BARYCENTER', 280, 0, 0, 0.04, '/assets/backgrounds/uranus.jpg'),
-        new SphericalBody('NEPTUNE BARYCENTER', 320, 0, 0, 0.04, '/assets/backgrounds/neptune.jpg'),
+        new SphericalBody('JUPITER BARYCENTER', 200, 0, 0, 0.12, '/assets/backgrounds/jupiter.jpg'),
+        new SphericalBody('SATURN BARYCENTER', 240, 0, 0, 0.1, '/assets/backgrounds/saturn.jpg'),
+        new SphericalBody('URANUS BARYCENTER', 280, 0, 0, 0.08, '/assets/backgrounds/uranus.jpg'),
+        new SphericalBody('NEPTUNE BARYCENTER', 320, 0, 0, 0.08, '/assets/backgrounds/neptune.jpg'),
         new SphericalBody('PLUTO BARYCENTER', 400, 0, 0, 0.04, '/assets/backgrounds/moon.jpg'),
         new SphericalBody('MERCURY', 0, 0, 0, 0.01, '/assets/backgrounds/mercury.jpg'),
         new SphericalBody('VENUS', 0, 0, 0, 0.02, '/assets/backgrounds/venus.jpg'),
@@ -47,23 +47,23 @@ export default class BodyBuilder {
         }
     }
 
-    public async AddToScene(scene: Three.Scene): Promise<Body[]> {
+    public async AddToScene(scene: Three.Scene): Promise<{ [id: string]: Body }> {
 
         window.console.log(`BodyBuilder.AddToScene()`)
-        const bodies = new Array<Body>();
+        const bodies: { [id: string]: Body } = {};
         const promises = [];
 
         // Add in the sun
         const sun = this.bodiesById['SUN'];
         promises.push(sun.load(scene));
-        bodies.push(sun);
+        bodies[sun.id] = sun;
 
         for (const id in Store.state.CsvByBodyId) {
 
             if (id.includes('INTERMEDIATE')) {
-                const marker = new Marker(id, 0, 0, 0, 0.02);
+                const marker = new Marker(id, 0, 0, 0, 0.01);
                 promises.push(marker.load(scene));
-                bodies.push(marker);
+                bodies[marker.id] = marker;
 
             } else if (!this.bodiesById[id]) {
                 window.console.error(`id ${id} not recognised!`)
@@ -73,7 +73,7 @@ export default class BodyBuilder {
                 const body = this.bodiesById[id];
                 promises.push(body.load(scene));
 
-                bodies.push(body);
+                bodies[body.id] = body;
             }
         }
 

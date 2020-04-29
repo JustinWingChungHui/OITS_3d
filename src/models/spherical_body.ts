@@ -29,12 +29,12 @@ export default class SphericalBody implements IBody{
         this.textureFile = texture;
     }
 
-    public animate() {
+    public animate(t: number) {
         if (this.sphere) {
-            this.sphere.rotation.y += 0.002;
+            this.sphere.rotation.z += 0.002;
 
             if (this.trajectory) {
-                const node = this.trajectory.getNextNode();
+                const node = this.trajectory.getNextNode(t);
                 this.sphere.position.x = node.vector.x;
                 this.sphere.position.y = node.vector.y;
                 this.sphere.position.z = node.vector.z;

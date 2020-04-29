@@ -1,7 +1,8 @@
 import * as Three from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import BodyBuilder from './body-builder';
-import IBody from '@/models/body';
+import Body from '@/models/body';
+import Probe from '@/models/probe';
 
 // https://stemkoski.github.io/Three.js/
 
@@ -11,13 +12,13 @@ export default class SceneBuilder {
     private scene: Three.Scene;
     private renderer: Three.WebGLRenderer;
     private controls: OrbitControls;
-    private bodies: IBody[] = [];
+    private bodiesById: { [id: string]: Body } = {};
 
     constructor(container: HTMLElement) {
         Three.Cache.enabled = true;
         this.container = container;
         this.scene = new Three.Scene();
-        this.camera = new Three.PerspectiveCamera(70, container.clientWidth/container.clientHeight, 1, 20000);
+        this.camera = new Three.PerspectiveCamera(70, container.clientWidth/container.clientHeight, 0.01, 200);
         this.camera.position.set(-0.64910268,-0.7735855, -3);
 
         this.renderer = new Three.WebGLRenderer({antialias: true});
@@ -41,7 +42,7 @@ export default class SceneBuilder {
         window.console.log(`SceneBuilder.load()`)
         await this.loadBackground();
         const bodyBuilder = new BodyBuilder()
-        this.bodies = await bodyBuilder.AddToScene(this.scene);
+        this.bodiesById = await bodyBuilder.AddToScene(this.scene);
         this.renderer.gammaFactor = 5.2;
         this.renderer.render(this.scene, this.camera);
     }
@@ -49,8 +50,13 @@ export default class SceneBuilder {
     public animate = () => {
         requestAnimationFrame(this.animate);
 
-        for (const body of this.bodies) {
-            body.animate()
+        const probe = this.bodiesById['PROBE'] as Probe;
+        const t = probe.animateAndGetTime();
+        window.console.log(t);
+        for (const id in this.bodiesById) {
+            if (id !== 'PROBE') {
+                this.bodiesById[id].animate(t); 
+            }
         }
 
         this.renderer.render(this.scene, this.camera);

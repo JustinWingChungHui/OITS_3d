@@ -38,29 +38,9 @@ const actions: ActionTree<StateInterface, StateInterface> = {
 
         for (const row of response.split("\n")) {
             if (row && row.trim().length > 0) {
-                if (row.startsWith('#END#')) {
-                    window.console.log('end of body data');
-
-                } else if (!row.includes(',')) {
-
-                    // Set a unique id for intermediate points
+                if (!row.includes(',')) {
                     id = row;
-
-                    if (id === 'INTERMEDIATE POINT' && id in data) {
-                        let i = 0;
-                        let unique = false;
-                        while (!unique) {
-                            if (!(`${id}_${i}` in data)) {
-                                id = `${id}_${i}`;
-                                unique = true;
-                            }
-                            i++;
-                        }
-                    }
-                    
-                    if (!(id in data)) {
-                        data[id] = new Array<string>();
-                    }
+                    data[id] = new Array<string>();
 
                 } else {
                     data[id].push(row);

@@ -26,12 +26,21 @@ export default class Trajectory {
         this.line = new Three.Line( geometry, material );
     }
 
-    public getNextNode(): TrajectoryNode {
-        const node = this.nodes[this.index];
+    public getNextNode(t: number = Number.MAX_VALUE): TrajectoryNode {
 
-        this.index++;
-        if (this.index >= this.nodes.length) {
-            this.index = 0;
+
+        let nextIndex = this.index + 1;
+        if (nextIndex >= this.nodes.length - 1) {
+            nextIndex = 0;
+        }
+
+        let node = this.nodes[this.index];
+        const nextNode = this.nodes[nextIndex];
+
+        // only get next point if t is within time window
+        if (t === Number.MAX_VALUE || Math.abs(nextNode.t - t) < 1000000) {
+            node = nextNode;
+            this.index = nextIndex;
         }
 
         return node;
