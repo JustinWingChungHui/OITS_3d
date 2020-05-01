@@ -50,6 +50,10 @@ const actions: ActionTree<StateInterface, StateInterface> = {
 
         context.commit('setCsvByBodyId', data);
     },
+
+    setT(context, t: number) {
+        context.commit('setT', t);
+    },
 };
 
 export default actions;

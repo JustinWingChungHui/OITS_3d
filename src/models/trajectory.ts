@@ -5,6 +5,7 @@ export default class Trajectory {
     public nodes: TrajectoryNode[] = []
     public index = 0;
     public line: Three.Line;
+    public currentNode: TrajectoryNode;
 
     constructor(csv: string[], pathColor = 'white') {
         const material = new Three.LineBasicMaterial( { color: pathColor } );
@@ -24,6 +25,12 @@ export default class Trajectory {
 
         const geometry = new Three.BufferGeometry().setFromPoints(points);
         this.line = new Three.Line( geometry, material );
+
+        if (this.nodes.length > 0) {
+            this.currentNode = this.nodes[0];
+        } else {
+            this.currentNode = new TrajectoryNode(0, 0, 0, 0);
+        }
     }
 
     public getNextNode(t: number = Number.MAX_VALUE): TrajectoryNode {
@@ -40,6 +47,7 @@ export default class Trajectory {
         // only get next point if t is within time window
         if (t === Number.MAX_VALUE || Math.abs(nextNode.t - t) < 1000000) {
             node = nextNode;
+            this.currentNode = node;
             this.index = nextIndex;
         }
 

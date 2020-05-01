@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import BodyBuilder from './body-builder';
 import Body from '@/models/body';
 import Probe from '@/models/probe';
+import store from '@/store';
 
 // https://stemkoski.github.io/Three.js/
 
@@ -28,6 +29,7 @@ export default class SceneBuilder {
         container.appendChild(this.renderer.domElement);
 
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.zoomSpeed = 3;
 
         // Load Light
         const ambientLight = new Three.AmbientLight(0xffffff, 1.8);
@@ -52,7 +54,15 @@ export default class SceneBuilder {
 
         const probe = this.bodiesById['PROBE'] as Probe;
         const t = probe.animateAndGetTime();
-        window.console.log(t);
+        store.dispatch('setT', t);
+        
+        const pVector = probe.trajectory?.currentNode?.vector;
+        if (pVector) {
+            this.controls.target.set(pVector.x, pVector.y, pVector.z);
+            
+            this.controls.update();
+        }
+
         for (const id in this.bodiesById) {
             if (id !== 'PROBE') {
                 this.bodiesById[id].animate(t); 
