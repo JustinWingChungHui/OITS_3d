@@ -54,6 +54,10 @@ const actions: ActionTree<StateInterface, StateInterface> = {
     setT(context, t: number) {
         context.commit('setT', t);
     },
+
+    setDeltaT(context, deltaT: number) {
+        context.commit('setDeltaT', deltaT);
+    },
 };
 
 export default actions;

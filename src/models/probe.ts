@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import IBody from './body';
 import Trajectory from './trajectory';
 import Store from '@/store';
+import store from '@/store';
 
 
 export default class Probe implements IBody{
@@ -38,6 +39,9 @@ export default class Probe implements IBody{
             if (this.id in Store.state.CsvByBodyId) {
                 this.trajectory = new Trajectory(Store.state.CsvByBodyId[this.id], "green");
                 this.trajectory.load(scene);
+
+                const deltaT = this.trajectory.nodes[1].t - this.trajectory.currentNode.t;
+                store.dispatch('setDeltaT', deltaT);
             }
         }
     }

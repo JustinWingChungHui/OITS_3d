@@ -15,6 +15,10 @@ const mutations: MutationTree<StateInterface> = {
 
     setT(state, t: number) {
         state.t = t;
+    },
+
+    setDeltaT(state, deltaT: number) {
+        state.deltaT = deltaT;
     }
 };
 
