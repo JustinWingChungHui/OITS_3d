@@ -1,5 +1,7 @@
 import { MutationTree } from 'vuex';
 import StateInterface from './state_interface';
+import Trajectory from '@/models/trajectory';
+import AnimationState from '@/models/animation_state';
 
 const mutations: MutationTree<StateInterface> = {
 
@@ -8,10 +10,11 @@ const mutations: MutationTree<StateInterface> = {
         state.uid = uid;
     },
 
-    setCsvByBodyId(state, csvByBodyId: { [id: string]: string[] }) {
-        window.console.log('setCsvByBodyId() mutation called');
-        state.CsvByBodyId = csvByBodyId;
+    setTrajectoryByBodyId(state, trajectoryByBodyId: { [id: string]: Trajectory }) {
+        window.console.log('setTrajectoryByBodyId() mutation called');
+        state.TrajectoryByBodyId = trajectoryByBodyId;
     },
+
 
     setT(state, t: number) {
         state.t = t;
@@ -19,6 +22,14 @@ const mutations: MutationTree<StateInterface> = {
 
     setDeltaT(state, deltaT: number) {
         state.deltaT = deltaT;
+    },
+
+    setAnimationState(state, animationState: AnimationState) {
+        state.animationState = animationState;
+    },
+
+    setLoading(state, loading: boolean) {
+        state.loading = loading;
     }
 };
 

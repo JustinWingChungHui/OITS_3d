@@ -2,6 +2,7 @@ import * as Three from 'three'
 import IBody from './body';
 import Trajectory from './trajectory';
 import Store from '@/store';
+import AnimationState from './animation_state';
 
 export default class SphericalBody implements IBody{
     public id: string;
@@ -29,12 +30,14 @@ export default class SphericalBody implements IBody{
         this.textureFile = texture;
     }
 
-    public animate(t: number) {
+    public animate() {
         if (this.sphere) {
-            this.sphere.rotation.z += 0.002;
+            if (Store.state.animationState == AnimationState.playing) {
+                this.sphere.rotation.z += 0.002;
+            }
 
             if (this.trajectory) {
-                const node = this.trajectory.getNextNode(t);
+                const node = this.trajectory.getNodeForCurrentTime();
                 this.sphere.position.x = node.vector.x;
                 this.sphere.position.y = node.vector.y;
                 this.sphere.position.z = node.vector.z;
@@ -47,18 +50,23 @@ export default class SphericalBody implements IBody{
         window.console.log(`SphericalBody.load()`)
         await this.loadTexture();
 
-        const sphereGeometry = new Three.SphereGeometry(this.radius, 32, 16 ); 
+        if (this.id in Store.state.TrajectoryByBodyId) {
+            this.trajectory = Store.state.TrajectoryByBodyId[this.id];
+            this.trajectory.line.material = new Three.LineBasicMaterial( { color: 'gray' } );
+            this.trajectory.load(scene);
+
+            this.x = this.trajectory.currentNode.vector.x;
+            this.y = this.trajectory.currentNode.vector.y;
+            this.z = this.trajectory.currentNode.vector.z;
+        }
+
+        const sphereGeometry = new Three.SphereGeometry(this.radius, 24, 16 ); 
 
         const sphereMaterial = new Three.MeshBasicMaterial( {map: this.texture} ); 
         this.sphere = new Three.Mesh(sphereGeometry, sphereMaterial);
         this.sphere.position.set(this.x, this.y, this.z);
 
         scene.add(this.sphere);
-
-        if (this.id in Store.state.CsvByBodyId) {
-            this.trajectory = new Trajectory(Store.state.CsvByBodyId[this.id], "gray");
-            this.trajectory.load(scene);
-        }
     }
 
     private async loadTexture(): Promise<void> {

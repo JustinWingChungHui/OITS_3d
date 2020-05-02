@@ -13,30 +13,30 @@ export default class BodyBuilder {
     private bodies: Array<Body> = [
         new Probe('PROBE', 0, 0, 10, 0.005),
         new SphericalBody('SUN', 0, 0, 0, 0.2, '/assets/backgrounds/sun.jpg'),
-        new SphericalBody('MERCURY BARYCENTER', 40, 0, 0, 0.01, '/assets/backgrounds/mercury.jpg'),
-        new SphericalBody('VENUS BARYCENTER', 80, 0, 0, 0.02, '/assets/backgrounds/venus.jpg'),
-        new SphericalBody('EARTH BARYCENTER', 0, 0, 0, 0.02, '/assets/backgrounds/earth.jpg'),
-        new SphericalBody('MARS BARYCENTER', 160, 0, 0, 0.03, '/assets/backgrounds/mars.jpg'),
-        new SphericalBody('JUPITER BARYCENTER', 200, 0, 0, 0.12, '/assets/backgrounds/jupiter.jpg'),
-        new SphericalBody('SATURN BARYCENTER', 240, 0, 0, 0.1, '/assets/backgrounds/saturn.jpg'),
-        new SphericalBody('URANUS BARYCENTER', 280, 0, 0, 0.08, '/assets/backgrounds/uranus.jpg'),
-        new SphericalBody('NEPTUNE BARYCENTER', 320, 0, 0, 0.08, '/assets/backgrounds/neptune.jpg'),
-        new SphericalBody('PLUTO BARYCENTER', 400, 0, 0, 0.04, '/assets/backgrounds/moon.jpg'),
-        new SphericalBody('MERCURY', 0, 0, 0, 0.01, '/assets/backgrounds/mercury.jpg'),
-        new SphericalBody('VENUS', 0, 0, 0, 0.02, '/assets/backgrounds/venus.jpg'),
+        new SphericalBody('MERCURY BARYCENTER', 40, 0, 0, 0.04, '/assets/backgrounds/mercury.jpg'),
+        new SphericalBody('VENUS BARYCENTER', 80, 0, 0, 0.04, '/assets/backgrounds/venus.jpg'),
+        new SphericalBody('EARTH BARYCENTER', 0, 0, 0, 0.06, '/assets/backgrounds/earth.jpg'),
+        new SphericalBody('MARS BARYCENTER', 160, 0, 0, 0.06, '/assets/backgrounds/mars.jpg'),
+        new SphericalBody('JUPITER BARYCENTER', 200, 0, 0, 0.22, '/assets/backgrounds/jupiter.jpg'),
+        new SphericalBody('SATURN BARYCENTER', 240, 0, 0, 0.2, '/assets/backgrounds/saturn.jpg'),
+        new SphericalBody('URANUS BARYCENTER', 280, 0, 0, 0.16, '/assets/backgrounds/uranus.jpg'),
+        new SphericalBody('NEPTUNE BARYCENTER', 320, 0, 0, 0.16, '/assets/backgrounds/neptune.jpg'),
+        new SphericalBody('PLUTO BARYCENTER', 400, 0, 0, 0.08, '/assets/backgrounds/moon.jpg'),
+        new SphericalBody('MERCURY', 0, 0, 0, 0.04, '/assets/backgrounds/mercury.jpg'),
+        new SphericalBody('VENUS', 0, 0, 0, 0.04, '/assets/backgrounds/venus.jpg'),
         new SphericalBody('MOON', 0, 0, 0, 0.01, '/assets/backgrounds/moon.jpg'),
-        new SphericalBody('EARTH', 0, 0, 0, 0.02, '/assets/backgrounds/earth.jpg'),
-        new Asteroid('CHURYUMOV-GERASIMENKO', 0, 0, 40, 0.02),
-        new Asteroid('LUTETIA', 0, 0, 40, 0.02,),
-        new Asteroid('STEINS', 0, 0, 40, 0.02),
-        new Asteroid('OUMUAMUA', 0, 0, 40, 0.02),
-        new Asteroid('HALLEY', 0, 0, 40, 0.02),
-        new Asteroid('BENNU', 0, 0, 40, 0.02),
-        new Asteroid('VESTA', 0, 0, 40, 0.02),
-        new Asteroid('3825054', 0, 0, 40, 0.02),
-        new Asteroid('2099942', 0, 0, 40, 0.02),
-        new Asteroid('3830896', 0, 0, 40, 0.02),
-        new Asteroid('2099942', 0, 0, 40, 0.02),
+        new SphericalBody('EARTH', 0, 0, 0, 0.06, '/assets/backgrounds/earth.jpg'),
+        new Asteroid('CHURYUMOV-GERASIMENKO', 0, 0, 40, 0.01),
+        new Asteroid('LUTETIA', 0, 0, 40, 0.01),
+        new Asteroid('STEINS', 0, 0, 40, 0.01),
+        new Asteroid('OUMUAMUA', 0, 0, 40, 0.01),
+        new Asteroid('HALLEY', 0, 0, 40, 0.01),
+        new Asteroid('BENNU', 0, 0, 40, 0.01),
+        new Asteroid('VESTA', 0, 0, 40, 0.01),
+        new Asteroid('3825054', 0, 0, 40, 0.01),
+        new Asteroid('2099942', 0, 0, 40, 0.01),
+        new Asteroid('3830896', 0, 0, 40, 0.01),
+        new Asteroid('2099942', 0, 0, 40, 0.01),
     ];
 
     private bodiesById: { [id: string]: Body } = {};
@@ -58,7 +58,7 @@ export default class BodyBuilder {
         promises.push(sun.load(scene));
         bodies[sun.id] = sun;
 
-        for (const id in Store.state.CsvByBodyId) {
+        for (const id in Store.state.TrajectoryByBodyId) {
 
             if (id.includes('INTERMEDIATE')) {
                 const marker = new Marker(id, 0, 0, 0, 0.01);

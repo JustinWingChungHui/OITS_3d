@@ -1,6 +1,7 @@
 <template>
   <div class="stats-container">
-    <strong>t:</strong> {{ t }}
+      <strong>t:</strong> {{ t }}
+      <strong> Date:</strong>{{ date }}
   </div>
 </template>
 
@@ -13,6 +14,10 @@ export default class Stats extends Vue {
 
   private get t(): number {
     return store.state.t;
+  }
+
+  private get date(): Date {
+    return store.getters.tDate;
   }
 
 }

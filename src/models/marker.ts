@@ -63,6 +63,17 @@ export default class Marker implements IBody{
 
     public async load(scene: Three.Scene): Promise<void> {
         window.console.log(`Marker.load()`)
+
+        if (this.id in Store.state.TrajectoryByBodyId) {
+            this.trajectory = Store.state.TrajectoryByBodyId[this.id];
+            this.trajectory.line.material = new Three.LineBasicMaterial( { color: 'gray' } );
+            this.trajectory.load(scene);
+
+            this.x = this.trajectory.currentNode.vector.x;
+            this.y = this.trajectory.currentNode.vector.y;
+            this.z = this.trajectory.currentNode.vector.z;
+        }
+
         const coneGeometry = new Three.ConeBufferGeometry(this.size, this.size * this.narrowness * 2, 16); 
 
         const coneMaterial = new Three.MeshBasicMaterial( {color: 'green'} ); 
@@ -94,9 +105,5 @@ export default class Marker implements IBody{
         scene.add(this.cone5);
         scene.add(this.cone6)
 
-        if (this.id in Store.state.CsvByBodyId) {
-            this.trajectory = new Trajectory(Store.state.CsvByBodyId[this.id], "gray");
-            this.trajectory.load(scene);
-        }
     }
 }

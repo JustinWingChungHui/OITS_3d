@@ -19,7 +19,7 @@ export default class SceneBuilder {
         Three.Cache.enabled = true;
         this.container = container;
         this.scene = new Three.Scene();
-        this.camera = new Three.PerspectiveCamera(70, container.clientWidth/container.clientHeight, 0.01, 200);
+        this.camera = new Three.PerspectiveCamera(70, container.clientWidth/container.clientHeight, 0.001, 400);
         this.camera.position.set(-0.64910268,-0.7735855, -3);
 
         this.renderer = new Three.WebGLRenderer({antialias: true});
@@ -29,7 +29,7 @@ export default class SceneBuilder {
         container.appendChild(this.renderer.domElement);
 
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.zoomSpeed = 3;
+        this.controls.zoomSpeed = 2.5;
 
         // Load Light
         const ambientLight = new Three.AmbientLight(0xffffff, 1.8);
@@ -50,11 +50,10 @@ export default class SceneBuilder {
     }
 
     public animate = () => {
-        requestAnimationFrame(this.animate);
-
         const probe = this.bodiesById['PROBE'] as Probe;
         const t = probe.animateAndGetTime();
-        store.dispatch('setT', t);
+        // set t directly on state to not kill Vuex
+        store.state.t = t;
         
         const pVector = probe.trajectory?.currentNode?.vector;
         if (pVector) {
@@ -65,11 +64,13 @@ export default class SceneBuilder {
 
         for (const id in this.bodiesById) {
             if (id !== 'PROBE') {
-                this.bodiesById[id].animate(t); 
+                this.bodiesById[id].animate(); 
             }
         }
 
         this.renderer.render(this.scene, this.camera);
+
+        requestAnimationFrame(this.animate);
     }
 
     private async loadBackground(): Promise<void> {

@@ -3,6 +3,8 @@ import StateInterface from './state_interface';
 import * as request from 'request-promise-native';
 
 import config from '@/config';
+import Trajectory from '@/models/trajectory';
+import AnimationState from '@/models/animation_state';
 
 const actions: ActionTree<StateInterface, StateInterface> = {
 
@@ -33,6 +35,7 @@ const actions: ActionTree<StateInterface, StateInterface> = {
         const response = await request.get(options) as string;
 
         const data: { [id: string]: string[] } = {};
+        const trajectoryByBodyId: { [id: string]: Trajectory } = {};
 
         let id = '';
 
@@ -41,14 +44,17 @@ const actions: ActionTree<StateInterface, StateInterface> = {
                 if (!row.includes(',')) {
                     id = row;
                     data[id] = new Array<string>();
-
                 } else {
                     data[id].push(row);
                 }
             }
         }
 
-        context.commit('setCsvByBodyId', data);
+        for (const bodyId in data) {
+            trajectoryByBodyId[bodyId] = new Trajectory(bodyId, data[bodyId]);
+        }
+
+        context.commit('setTrajectoryByBodyId', trajectoryByBodyId);
     },
 
     setT(context, t: number) {
@@ -58,6 +64,15 @@ const actions: ActionTree<StateInterface, StateInterface> = {
     setDeltaT(context, deltaT: number) {
         context.commit('setDeltaT', deltaT);
     },
+
+    setAnimationState(context, animationState: AnimationState) {
+        context.commit('setAnimationState', animationState);
+    },
+
+    setLoading(context, loading: boolean) {
+        window.console.log(`setLoading(loading: ${loading}) action called`);
+        context.commit('setLoading', loading);
+    }
 };
 
 export default actions;

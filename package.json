@@ -11,6 +11,7 @@
     "@types/request-promise-native": "^1.0.17",
     "@types/three": "^0.103.2",
     "core-js": "^3.6.4",
+    "open-iconic": "^1.1.1",
     "request-promise-native": "^1.0.8",
     "three": "^0.115.0",
     "vue": "^2.6.11",

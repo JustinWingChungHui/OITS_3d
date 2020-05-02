@@ -4,6 +4,7 @@ import IBody from './body';
 import Trajectory from './trajectory';
 import Store from '@/store';
 import store from '@/store';
+import AnimationState from './animation_state';
 
 
 export default class Probe implements IBody{
@@ -33,45 +34,45 @@ export default class Probe implements IBody{
         window.console.log(`Probe.load()`)
         await this.LoadGLTF();
 
+        if (this.id in Store.state.TrajectoryByBodyId) {
+            this.trajectory = Store.state.TrajectoryByBodyId[this.id];
+            this.trajectory.line.material = new Three.LineBasicMaterial( { color: 'green' } );
+            this.trajectory.load(scene);
+
+            this.x = this.trajectory.currentNode.vector.x;
+            this.y = this.trajectory.currentNode.vector.y;
+            this.z = this.trajectory.currentNode.vector.z;
+
+            const deltaT = this.trajectory.nodes[1].t - this.trajectory.currentNode.t;
+            store.dispatch('setDeltaT', deltaT);
+        }
+
         if (this.gltfScene) {
             scene.add(this.gltfScene);
-
-            if (this.id in Store.state.CsvByBodyId) {
-                this.trajectory = new Trajectory(Store.state.CsvByBodyId[this.id], "green");
-                this.trajectory.load(scene);
-
-                const deltaT = this.trajectory.nodes[1].t - this.trajectory.currentNode.t;
-                store.dispatch('setDeltaT', deltaT);
-            }
         }
     }
 
     public animate() {
-        if (this.gltfScene) {
-            this.gltfScene.rotation.x += 0.02;
-            this.gltfScene.rotation.y += 0.02;
-            this.gltfScene.rotation.z += 0.02;
-
-            if (this.trajectory) {
-                const node = this.trajectory.getNextNode();
-                this.gltfScene.position.x = node.vector.x;
-                this.gltfScene.position.y = node.vector.y;
-                this.gltfScene.position.z = node.vector.z;
-            }
-        }
+        this.animateAndGetTime();
     }
 
     public animateAndGetTime(): number {
         if (this.gltfScene) {
-            this.gltfScene.rotation.x += 0.02;
-            this.gltfScene.rotation.y += 0.02;
-            this.gltfScene.rotation.z += 0.02;
+            if (store.state.animationState === AnimationState.playing) {
+                this.gltfScene.rotation.x += 0.02;
+                this.gltfScene.rotation.y += 0.02;
+                this.gltfScene.rotation.z += 0.02;
+            }
 
             if (this.trajectory) {
                 const node = this.trajectory.getNextNode();
                 this.gltfScene.position.x = node.vector.x;
                 this.gltfScene.position.y = node.vector.y;
                 this.gltfScene.position.z = node.vector.z;
+
+                if (this.trajectory.isLastNode) {
+                    store.dispatch('setAnimationState', AnimationState.paused);
+                }
 
                 return node.t;
             }

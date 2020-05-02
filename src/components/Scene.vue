@@ -18,16 +18,21 @@ export default class Scene extends Vue {
 
   private async init() {
     console.log(`Scene.init()`);
-
+    store.dispatch('setLoading', true);
     const uid = this.$route.query.uid;
     console.log(`uid: ${uid}`);
     const container = document.getElementById('container');
 
-    if (uid && container) {
+    
 
+    if (uid && container) {
+      const height = window.innerHeight - container.getBoundingClientRect().top - 200;
+      container.style.height = `${height}px`;
       await store.dispatch('setUid', uid)
       this.scene = new SceneBuilder(container);
       await this.scene.load()
+
+      store.dispatch('setLoading', false);
       this.scene.animate(); 
     }
 
@@ -40,7 +45,5 @@ export default class Scene extends Vue {
   #container {
     width: 100%;
     height: 100%;
-    min-width: 800px;
-    min-height: 1000px;
   }
 </style>
