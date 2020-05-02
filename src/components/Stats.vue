@@ -1,7 +1,7 @@
 <template>
   <div class="stats-container">
-      <strong>t:</strong> {{ t }}
-      <strong> Date:</strong>{{ date }}
+      <div><strong>t:</strong> {{ t }}</div>
+      <div><strong> Date:</strong>{{ date }}</div>
   </div>
 </template>
 

@@ -52,7 +52,7 @@ export default class SphericalBody implements IBody{
 
         if (this.id in Store.state.TrajectoryByBodyId) {
             this.trajectory = Store.state.TrajectoryByBodyId[this.id];
-            this.trajectory.line.material = new Three.LineBasicMaterial( { color: 'gray' } );
+            this.trajectory.line.material = new Three.LineBasicMaterial( { color: 'darkblue' } );
             this.trajectory.load(scene);
 
             this.x = this.trajectory.currentNode.vector.x;

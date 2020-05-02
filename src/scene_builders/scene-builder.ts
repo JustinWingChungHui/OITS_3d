@@ -77,7 +77,7 @@ export default class SceneBuilder {
         window.console.log(`SceneBuilder.loadBackground()`)
 
         const promise = await new Promise<void>((resolve) => {
-            new Three.TextureLoader().load('/assets/backgrounds/space.jpg', (texture) => {
+            new Three.TextureLoader().load('/assets/backgrounds/stars_milky_way.jpg', (texture) => {
 
                 this.scene.background = texture;
                 resolve();

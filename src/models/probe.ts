@@ -36,7 +36,7 @@ export default class Probe implements IBody{
 
         if (this.id in Store.state.TrajectoryByBodyId) {
             this.trajectory = Store.state.TrajectoryByBodyId[this.id];
-            this.trajectory.line.material = new Three.LineBasicMaterial( { color: 'green' } );
+            this.trajectory.line.material = new Three.LineBasicMaterial( { color: 'white' } );
             this.trajectory.load(scene);
 
             this.x = this.trajectory.currentNode.vector.x;

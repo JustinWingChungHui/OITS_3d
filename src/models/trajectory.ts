@@ -94,8 +94,8 @@ export default class Trajectory {
         if (this.currentNode.t < store.state.t) {
             for (let i = this.index; i < this.nodes.length; i++) {
                 if (this.nodes[i].t > store.state.t) {
-                    this.index = i;
-                    this.currentNode = this.nodes[i];
+                    this.index = i - 1;
+                    this.currentNode = this.nodes[i - 1];
                     return this.currentNode;
                 }
             }
