@@ -1,13 +1,14 @@
 <template>
   <div class="stats-container">
       <div><strong>t:</strong> {{ t }}</div>
-      <div><strong> Date:</strong>{{ date }}</div>
+      <div><strong> Date:</strong>{{ formattedDate }}</div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import store from '@/store';
+import moment from 'moment/moment';
 
 @Component
 export default class Stats extends Vue {
@@ -16,8 +17,8 @@ export default class Stats extends Vue {
     return store.state.t;
   }
 
-  private get date(): Date {
-    return store.getters.tDate;
+  private get formattedDate(): string {
+    return moment(store.getters.tDate).format("YYYY-MM-DD");
   }
 
 }

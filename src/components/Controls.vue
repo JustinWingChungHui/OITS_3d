@@ -37,12 +37,7 @@ export default class Controls extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .controls-container {
-      flex: 0 1 auto;
-  /* The above is shorthand for:
-  flex-grow: 0,
-  flex-shrink: 1,
-  flex-basis: auto
-  */
+    width: 100%;
     margin: 1em;
   }
 
