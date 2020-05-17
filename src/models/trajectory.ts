@@ -20,7 +20,7 @@ export default class Trajectory {
 
     constructor(id: string, csv: string[], pathColor = 'white') {
         this.id = id;
-        const material = new Three.LineBasicMaterial( { color: pathColor } );
+        const material = new Three.LineBasicMaterial( { color: pathColor, linewidth: 1.0 } );
         const points = new Array<Three.Vector3>();
 
         for (const line of csv) {
@@ -91,9 +91,10 @@ export default class Trajectory {
         }
 
         // Find closest node
-        if (this.currentNode.t < store.state.t) {
+        if (this.currentNode.t < store.state.t + store.state.deltaT) {
             for (let i = this.index; i < this.nodes.length; i++) {
-                if (this.nodes[i].t > store.state.t) {
+                
+                if (this.nodes[i].t >= store.state.t) {
                     this.index = i - 1;
                     this.currentNode = this.nodes[i - 1];
                     return this.currentNode;
