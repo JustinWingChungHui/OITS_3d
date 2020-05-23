@@ -2,9 +2,9 @@ import * as Three from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import IBody from './body';
 import Trajectory from './trajectory';
-import Store from '@/store';
 import store from '@/store';
 import AnimationState from './animation_state';
+import config from '@/config';
 
 
 export default class Probe implements IBody{
@@ -13,20 +13,24 @@ export default class Probe implements IBody{
     public y: number;
     public z: number;
     public scale: number;
+    public colour: string;
     public trajectory: Trajectory | null = null;
 
+    public texture: Three.Texture | null = null;
     private gltfScene: Three.Group | null = null;
 
     constructor(id: string,
                 x: number,
                 y: number,
                 z: number,
+                colour: string,
                 scale: number) {
         this.id = id;
         this.x = x;
         this.y = y;
         this.z = z;
         this.scale = scale;
+        this.colour = colour
     }
 
 
@@ -34,9 +38,11 @@ export default class Probe implements IBody{
         window.console.log(`Probe.load()`)
         await this.LoadGLTF();
 
-        if (this.id in Store.state.TrajectoryByBodyId) {
-            this.trajectory = Store.state.TrajectoryByBodyId[this.id];
-            this.trajectory.line.material = new Three.LineBasicMaterial( { color: 'white' } );
+        if (this.id in store.state.TrajectoryByBodyId) {
+            this.trajectory = store.state.TrajectoryByBodyId[this.id];
+            this.trajectory.line.material = new Three.LineBasicMaterial({
+                color: config.probeTrajectoryColor
+            });
             this.trajectory.load(scene);
 
             this.x = this.trajectory.currentNode.vector.x;
@@ -58,7 +64,7 @@ export default class Probe implements IBody{
 
     public animateAndGetTime(): number {
         if (this.gltfScene) {
-            if (store.state.animationState === AnimationState.playing) {
+            if (store.getters.isAnimating) {
                 this.gltfScene.rotation.x += 0.02;
                 this.gltfScene.rotation.y += 0.02;
                 this.gltfScene.rotation.z += 0.02;
@@ -90,6 +96,18 @@ export default class Probe implements IBody{
                 gltf.scene.position.y = this.y;
                 gltf.scene.position.z = this.z;
                 this.gltfScene = gltf.scene;
+
+                this.gltfScene.traverse((child) => {
+                    if (child instanceof Three.Mesh) {
+                        const mesh = child as Three.Mesh;
+                        
+                        // Texture is not showing up , so use basic colour
+                        mesh.material = new Three.MeshBasicMaterial({
+                            color: this.colour,
+                        });
+                    }
+                });
+
                 resolve();
             });
         })

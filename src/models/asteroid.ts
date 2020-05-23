@@ -4,7 +4,7 @@ import IBody from './body';
 import Trajectory from './trajectory';
 import Store from '@/store';
 import store from '@/store';
-import AnimationState from './animation_state';
+import config from '@/config';
 
 export default class Asteroid implements IBody{
     public id: string;
@@ -36,7 +36,9 @@ export default class Asteroid implements IBody{
 
         if (this.id in Store.state.TrajectoryByBodyId) {
             this.trajectory = Store.state.TrajectoryByBodyId[this.id];
-            this.trajectory.line.material = new Three.LineBasicMaterial( { color: 'red' } );
+            this.trajectory.line.material = new Three.LineBasicMaterial({ 
+                color: config.asteroidTrajectoryColor 
+            });
             this.trajectory.load(scene);
 
             this.x = this.trajectory.currentNode.vector.x;
@@ -52,7 +54,7 @@ export default class Asteroid implements IBody{
     public animate() {
         if (this.gltfScene) {
 
-            if (store.state.animationState == AnimationState.playing) {
+            if (store.getters.isAnimating) {
                 this.gltfScene.rotation.x += 0.02;
                 this.gltfScene.rotation.y += 0.02;
                 this.gltfScene.rotation.z += 0.02;

@@ -1,10 +1,14 @@
 import * as Three from 'three'
 import IBody from './body';
 import Trajectory from './trajectory';
-import Store from '@/store';
-import AnimationState from './animation_state';
+import store from '@/store';
+import config from '@/config';
 
 export default class SphericalBody implements IBody{
+    // Decentish smoothness and performance
+    public static WIDTH_SEGMENTS = 24;
+    public static HEIGHT_SEGMENTS = 16;
+
     public id: string;
     public x: number;
     public y: number;
@@ -15,25 +19,28 @@ export default class SphericalBody implements IBody{
 
     private textureFile: string;
     private sphere: Three.Mesh | null = null;
+    private rotationSpeed: number;
 
     constructor(id: string,
                 x: number,
                 y: number,
                 z: number,
                 radius: number,
-                texture: string) {
+                texture: string,
+                rotationSpeed: number) {
         this.id = id;
         this.x = x;
         this.y = y;
         this.z = z;
         this.radius = radius;
         this.textureFile = texture;
+        this.rotationSpeed = rotationSpeed;
     }
 
     public animate() {
         if (this.sphere) {
-            if (Store.state.animationState == AnimationState.playing) {
-                this.sphere.rotation.z += 0.002;
+            if (store.getters.isAnimating) {
+                this.sphere.rotation.z += this.rotationSpeed;
             }
 
             if (this.trajectory) {
@@ -50,9 +57,11 @@ export default class SphericalBody implements IBody{
         window.console.log(`SphericalBody.load()`)
         await this.loadTexture();
 
-        if (this.id in Store.state.TrajectoryByBodyId) {
-            this.trajectory = Store.state.TrajectoryByBodyId[this.id];
-            this.trajectory.line.material = new Three.LineBasicMaterial( { color: 'blue' } );
+        if (this.id in store.state.TrajectoryByBodyId) {
+            this.trajectory = store.state.TrajectoryByBodyId[this.id];
+            this.trajectory.line.material = new Three.LineBasicMaterial({ 
+                color: config.planetTrajectoryColor
+            });
             this.trajectory.load(scene);
 
             this.x = this.trajectory.currentNode.vector.x;
@@ -60,7 +69,8 @@ export default class SphericalBody implements IBody{
             this.z = this.trajectory.currentNode.vector.z;
         }
 
-        const sphereGeometry = new Three.SphereGeometry(this.radius, 24, 16 ); 
+        const sphereGeometry = new Three.SphereGeometry(
+                        this.radius, SphericalBody.WIDTH_SEGMENTS, SphericalBody.HEIGHT_SEGMENTS); 
 
         const sphereMaterial = new Three.MeshBasicMaterial( {map: this.texture} ); 
         this.sphere = new Three.Mesh(sphereGeometry, sphereMaterial);

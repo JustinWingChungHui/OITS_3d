@@ -26,7 +26,7 @@ const actions: ActionTree<StateInterface, StateInterface> = {
     async getCsvResults(context) {
         window.console.log('getCsvResults() action called');
         
-        const path = config.CsvResults.replace(`{uid}`, context.state.uid);
+        const path = config.pathsUrl.replace(`{uid}`, context.state.uid);
 
         const options = {
             uri: `${config.BaseUrl}${path}`

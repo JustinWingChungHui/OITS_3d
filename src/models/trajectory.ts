@@ -2,6 +2,7 @@ import * as Three from 'three'
 import TrajectoryNode from './trajectory_node';
 import store from '@/store';
 import AnimationState from './animation_state';
+import config from '@/config';
 
 export default class Trajectory {
     public id: string;
@@ -10,13 +11,7 @@ export default class Trajectory {
     public line: Three.Line;
     public currentNode: TrajectoryNode;
 
-    public get isLastNode(): boolean {
-        if (this.index >= this.nodes.length - 1) {
-            return true;
-        }
-
-        return false;
-    }
+    public isLastNode = false;
 
     constructor(id: string, csv: string[], pathColor = 'white') {
         this.id = id;
@@ -50,6 +45,7 @@ export default class Trajectory {
         switch(store.state.animationState) {
             case AnimationState.rewind: {
                 this.index = 0;
+                this.isLastNode = false;
                 break;
             }
             case AnimationState.paused: {
@@ -58,6 +54,17 @@ export default class Trajectory {
             case AnimationState.playing: {
                 if (this.index  < this.nodes.length - 1) {
                     this.index++; 
+                } else {
+                    this.isLastNode = true;
+                }
+
+                break;
+            }
+            case AnimationState.fastForward: {
+                if (this.index  < this.nodes.length - config.fastforwardSpeed) {
+                    this.index += config.fastforwardSpeed; 
+                } else {
+                    this.isLastNode = true;
                 }
                 break;
             }
@@ -78,25 +85,31 @@ export default class Trajectory {
             return this.currentNode;
         }
 
-        if (this.nodes.length < this.index + 2) {
+        let frameskip = 1;
+        if (store.state.animationState === AnimationState.fastForward) {
+            frameskip = config.fastforwardSpeed;
+        }
+
+        if (this.nodes.length < this.index + frameskip + 1) {
+            this.isLastNode = true;
             return this.currentNode;
         }
 
         // Check next node is correct time
-        const nextNode = this.nodes[this.index + 1];
-        if (nextNode.t <= store.state.t + store.state.deltaT
-            && nextNode.t >= store.state.t - store.state.deltaT) {
+        const nextNode = this.nodes[this.index + frameskip];
+        if (nextNode.t <= store.state.t + store.state.deltaT * frameskip
+            && nextNode.t >= store.state.t - store.state.deltaT * frameskip) {
 
             return this.getNextNode();
         }
 
         // Find closest node
-        if (this.currentNode.t < store.state.t + store.state.deltaT) {
+        if (this.currentNode.t < store.state.t + store.state.deltaT * frameskip) {
             for (let i = this.index; i < this.nodes.length; i++) {
                 
                 if (this.nodes[i].t >= store.state.t) {
-                    this.index = i - 1;
-                    this.currentNode = this.nodes[i - 1];
+                    this.index = i - frameskip;
+                    this.currentNode = this.nodes[i - frameskip];
                     return this.currentNode;
                 }
             }

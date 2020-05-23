@@ -8,6 +8,9 @@
       <span class="play-pause-slash">/</span>
       <span class="oi" data-glyph="media-pause" title="Pause" aria-hidden="true"></span>
     </button>
+    <button class="media-btn fastforward-btn" @click="fastForward()">
+      <span class="oi" data-glyph="media-skip-forward" title="Fast Forward" aria-hidden="true"></span>
+    </button>
   </div>
 </template>
 
@@ -25,11 +28,15 @@ export default class Controls extends Vue {
   }
 
   public playPause() {
-    if (store.state.animationState === AnimationState.paused) {
-      store.dispatch('setAnimationState', AnimationState.playing);
-    } else {
+    if (store.getters.isAnimating) {
       store.dispatch('setAnimationState', AnimationState.paused);
+    } else {
+      store.dispatch('setAnimationState', AnimationState.playing);
     }
+  }
+
+  public fastForward() {
+    store.dispatch('setAnimationState', AnimationState.fastForward);
   }
 }
 </script>
@@ -85,15 +92,13 @@ export default class Controls extends Vue {
     border-color: #088725;
   }
 
-  .pause-btn {
-    background-color: #555555;
-    border-color: #555555;
+  .fastforward-btn {
+    background-color: rgb(255, 174, 0);
+    border-color: rgb(255, 174, 0);
   }
 
-  .pause-btn:hover {
-    background-color: #333333;
-    border-color: #333333;
+  .fastforward-btn:hover {
+    background-color: rgb(215, 124, 0);
+    border-color: rgb(215, 124, 0);
   }
-
-
 </style>
