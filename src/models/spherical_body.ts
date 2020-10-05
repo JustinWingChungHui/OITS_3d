@@ -48,6 +48,7 @@ export default class SphericalBody implements IBody{
                 this.sphere.position.x = node.vector.x;
                 this.sphere.position.y = node.vector.y;
                 this.sphere.position.z = node.vector.z;
+                this.trajectory.animate();
             }
         }
     }

@@ -65,6 +65,7 @@ export default class Asteroid implements IBody{
                 this.gltfScene.position.x = node.vector.x;
                 this.gltfScene.position.y = node.vector.y;
                 this.gltfScene.position.z = node.vector.z;
+                this.trajectory.animate();
             }
         }
     }

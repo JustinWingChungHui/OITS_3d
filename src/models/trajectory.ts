@@ -10,6 +10,7 @@ export default class Trajectory {
     public index = 0;
     public line: Three.Line;
     public currentNode: TrajectoryNode;
+    public showingPastOnly = false;
 
     public isLastNode = false;
 
@@ -38,6 +39,12 @@ export default class Trajectory {
         } else {
             this.currentNode = new TrajectoryNode(0, 0, 0, 0);
         }
+    }
+
+    public showPastOnly() {
+        this.showingPastOnly = true;
+        const geometry = this.line.geometry as THREE.BufferGeometry;
+        geometry.setDrawRange(0, 0)
     }
 
     public getNextNode(): TrajectoryNode {
@@ -118,6 +125,13 @@ export default class Trajectory {
         }
 
         return this.currentNode;
+    }
+
+    public animate() {
+        if (this.showingPastOnly) {
+            const geometry = this.line.geometry as THREE.BufferGeometry;
+            geometry.setDrawRange(0, this.index);
+        }
     }
 
     public load(scene: Three.Scene) {

@@ -43,6 +43,7 @@ export default class Probe implements IBody{
             this.trajectory.line.material = new Three.LineBasicMaterial({
                 color: config.probeTrajectoryColor
             });
+            this.trajectory.showPastOnly();
             this.trajectory.load(scene);
 
             this.x = this.trajectory.currentNode.vector.x;
@@ -79,6 +80,8 @@ export default class Probe implements IBody{
                 if (this.trajectory.isLastNode) {
                     store.dispatch('setAnimationState', AnimationState.paused);
                 }
+
+                this.trajectory.animate();
 
                 return node.t;
             }
