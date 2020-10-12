@@ -72,7 +72,20 @@ const actions: ActionTree<StateInterface, StateInterface> = {
     setLoading(context, loading: boolean) {
         window.console.log(`setLoading(loading: ${loading}) action called`);
         context.commit('setLoading', loading);
-    }
+    },
+
+    saveSettings(context) {
+        window.console.log(`Saving settings`);
+        window.localStorage.setItem(`settings`, JSON.stringify(context.state.userSettings));
+    },
+
+    loadSettings(context) {
+        window.console.log(`Load settings`);
+        const settingsJson = window.localStorage.getItem(`settings`);
+        if (settingsJson) {
+            context.commit('loadSettings', JSON.parse(settingsJson));
+        }
+    },
 };
 
 export default actions;

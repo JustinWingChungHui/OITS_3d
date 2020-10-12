@@ -2,6 +2,7 @@ import { MutationTree } from 'vuex';
 import StateInterface from './state_interface';
 import Trajectory from '@/models/trajectory';
 import AnimationState from '@/models/animation_state';
+import UserSettings from './userSettings';
 
 const mutations: MutationTree<StateInterface> = {
 
@@ -30,6 +31,10 @@ const mutations: MutationTree<StateInterface> = {
 
     setLoading(state, loading: boolean) {
         state.loading = loading;
+    },
+
+    loadSettings(state, settings: UserSettings) {
+        state.userSettings = settings;
     }
 };
 

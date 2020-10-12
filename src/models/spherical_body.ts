@@ -2,7 +2,7 @@ import * as Three from 'three'
 import IBody from './body';
 import Trajectory from './trajectory';
 import store from '@/store';
-import config from '@/config';
+
 
 export default class SphericalBody implements IBody{
     // Decentish smoothness and performance
@@ -61,7 +61,7 @@ export default class SphericalBody implements IBody{
         if (this.id in store.state.TrajectoryByBodyId) {
             this.trajectory = store.state.TrajectoryByBodyId[this.id];
             this.trajectory.line.material = new Three.LineBasicMaterial({ 
-                color: config.planetTrajectoryColor
+                color: store.state.userSettings.planetTrajectoryColor
             });
             this.trajectory.load(scene);
 
@@ -70,8 +70,10 @@ export default class SphericalBody implements IBody{
             this.z = this.trajectory.currentNode.vector.z;
         }
 
+        const size = this.radius * store.state.userSettings.probeSizeMultiple;
+
         const sphereGeometry = new Three.SphereGeometry(
-                        this.radius, SphericalBody.WIDTH_SEGMENTS, SphericalBody.HEIGHT_SEGMENTS); 
+                        size, SphericalBody.WIDTH_SEGMENTS, SphericalBody.HEIGHT_SEGMENTS); 
 
         const sphereMaterial = new Three.MeshBasicMaterial( {map: this.texture} ); 
         this.sphere = new Three.Mesh(sphereGeometry, sphereMaterial);

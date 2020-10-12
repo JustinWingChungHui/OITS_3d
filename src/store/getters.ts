@@ -9,6 +9,8 @@ const getters: GetterTree<StateInterface, StateInterface> = {
 
     isAnimating: (state): boolean => state.animationState === AnimationState.playing
                                         || state.animationState === AnimationState.fastForward,
+
+    backgroundPath: (state): string => config.backgrounds[state.userSettings.background],
 };
 
 export default getters;

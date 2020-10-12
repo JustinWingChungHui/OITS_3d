@@ -3,7 +3,19 @@ import Probe from '@/models/probe';
 import SphericalBody from '@/models/spherical_body';
 import Asteroid from '@/models/asteroid';
 
-const config = {
+interface Config {
+    BaseUrl: string;
+    pathsUrl: string;
+    ZeroDate: number;
+    bodies: Array<Body>;
+    backgrounds: { [id: string]: string };
+    markerSize: number;
+
+    cameraStartPosition: { [id: string]: number };
+    fastforwardSpeed: number;
+}
+
+const config: Config = {
     BaseUrl: 'https://oits.justinhui.com',
 
     // csv results
@@ -42,10 +54,15 @@ const config = {
         new Asteroid('2099942', 0, 0, 40, 0.005),
     ),
 
-    background: '/assets/backgrounds/stars_milky_way.jpg',
-
-    // Brightness
-    gammaFactor: 3.2,
+    backgrounds: {
+        'Milky Way' : '/assets/backgrounds/stars_milky_way.jpg',
+        'Universe': '/assets/backgrounds/universe.jpg',
+        'Psychedelic': '/assets/backgrounds/psychedelic.jpg',
+        'Space': '/assets/backgrounds/space.jpg',
+        'White': '/assets/backgrounds/White.jpg',
+        'Grey': '/assets/backgrounds/Grey.jpg',
+        'Black': '/assets/backgrounds/black.jpg',
+    },
 
     // Used to mark intermediate points
     markerSize: 0.01,
@@ -55,10 +72,6 @@ const config = {
         y: 0,
         z: 3,
     },
-
-    planetTrajectoryColor: 'blue',
-    probeTrajectoryColor: 'white',
-    asteroidTrajectoryColor: 'red',
 
     fastforwardSpeed: 8,
 }

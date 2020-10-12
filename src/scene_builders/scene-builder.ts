@@ -34,7 +34,7 @@ export default class SceneBuilder {
         this.controls.zoomSpeed = 2.5;
 
         // Load Light
-        const ambientLight = new Three.AmbientLight(0xffffff, 1.8);
+        const ambientLight = new Three.AmbientLight(0xffffff, store.state.userSettings.light);
         this.scene.add(ambientLight);
     }
 
@@ -43,7 +43,6 @@ export default class SceneBuilder {
         await this.loadBackground();
         const bodyBuilder = new BodyBuilder()
         this.bodiesById = await bodyBuilder.AddToScene(this.scene);
-        this.renderer.gammaFactor = config.gammaFactor;
         this.renderer.render(this.scene, this.camera);
     }
 
@@ -80,7 +79,7 @@ export default class SceneBuilder {
         window.console.log(`SceneBuilder.loadBackground()`)
 
         const promise = await new Promise<void>((resolve) => {
-            new Three.TextureLoader().load(config.background, (texture) => {
+            new Three.TextureLoader().load(store.getters.backgroundPath, (texture) => {
                 this.scene.background = texture;
                 resolve();
             });

@@ -9,6 +9,19 @@ const state: StateInterface = {
   deltaT: 1,
   animationState: AnimationState.paused,
   loading: true,
+  userSettings: {
+    background: 'Universe',
+    playbackSpeed: 1,
+    bodySizeMultiple: 1,
+    probeSizeMultiple: 1,
+    markerSizeMultiple: 1,
+    planetTrajectoryColor: 'blue',
+    probeTrajectoryColor: 'white',
+    asteroidTrajectoryColor: 'red',
+
+    // Brightness
+    light: 3.2,
+  }
 }
 
 export default state;

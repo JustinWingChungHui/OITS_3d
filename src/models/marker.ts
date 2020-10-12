@@ -74,7 +74,9 @@ export default class Marker implements IBody{
             this.z = this.trajectory.currentNode.vector.z;
         }
 
-        const coneGeometry = new Three.ConeBufferGeometry(this.size, this.size * this.narrowness * 2, 8); 
+        const size = this.size * Store.state.userSettings.bodySizeMultiple;
+
+        const coneGeometry = new Three.ConeBufferGeometry(size, size * this.narrowness * 2, 8); 
 
         const coneMaterial = new Three.MeshBasicMaterial( {color: 'green'} ); 
         this.cone1 = new Three.Mesh(coneGeometry, coneMaterial);

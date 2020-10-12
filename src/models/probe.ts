@@ -4,7 +4,6 @@ import IBody from './body';
 import Trajectory from './trajectory';
 import store from '@/store';
 import AnimationState from './animation_state';
-import config from '@/config';
 
 
 export default class Probe implements IBody{
@@ -41,7 +40,7 @@ export default class Probe implements IBody{
         if (this.id in store.state.TrajectoryByBodyId) {
             this.trajectory = store.state.TrajectoryByBodyId[this.id];
             this.trajectory.line.material = new Three.LineBasicMaterial({
-                color: config.probeTrajectoryColor
+                color: store.state.userSettings.probeTrajectoryColor
             });
             this.trajectory.showPastOnly();
             this.trajectory.load(scene);
@@ -94,7 +93,8 @@ export default class Probe implements IBody{
         const promise = await new Promise<void>((resolve) => {
 
             new GLTFLoader().load('/assets/probe/scene.gltf', (gltf) => {
-                gltf.scene.scale.set(this.scale, this.scale, this.scale);
+                const size = this.scale * store.state.userSettings.probeSizeMultiple;
+                gltf.scene.scale.set(size, size, size);
                 gltf.scene.position.x = this.x;
                 gltf.scene.position.y = this.y;
                 gltf.scene.position.z = this.z;

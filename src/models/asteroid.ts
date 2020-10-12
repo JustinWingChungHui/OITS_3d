@@ -2,9 +2,7 @@ import * as Three from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import IBody from './body';
 import Trajectory from './trajectory';
-import Store from '@/store';
 import store from '@/store';
-import config from '@/config';
 
 export default class Asteroid implements IBody{
     public id: string;
@@ -34,10 +32,10 @@ export default class Asteroid implements IBody{
 
         await this.LoadGLTF();
 
-        if (this.id in Store.state.TrajectoryByBodyId) {
-            this.trajectory = Store.state.TrajectoryByBodyId[this.id];
+        if (this.id in store.state.TrajectoryByBodyId) {
+            this.trajectory = store.state.TrajectoryByBodyId[this.id];
             this.trajectory.line.material = new Three.LineBasicMaterial({ 
-                color: config.asteroidTrajectoryColor 
+                color: store.state.userSettings.asteroidTrajectoryColor 
             });
             this.trajectory.load(scene);
 
