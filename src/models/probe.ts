@@ -65,9 +65,10 @@ export default class Probe implements IBody{
     public animateAndGetTime(): number {
         if (this.gltfScene) {
             if (store.getters.isAnimating) {
-                this.gltfScene.rotation.x += 0.02;
-                this.gltfScene.rotation.y += 0.02;
-                this.gltfScene.rotation.z += 0.02;
+                // Point towards Earth
+                // this.gltfScene.rotation.x += 0.02;
+                // this.gltfScene.rotation.y += 0.02;
+                // this.gltfScene.rotation.z += 0.02;
             }
 
             if (this.trajectory) {

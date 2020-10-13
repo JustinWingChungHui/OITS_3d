@@ -74,8 +74,10 @@ const actions: ActionTree<StateInterface, StateInterface> = {
         context.commit('setLoading', loading);
     },
 
-    saveSettings(context) {
+    async saveSettings(context) {
         window.console.log(`Saving settings`);
+        // Make sure local storage is done asynchronously
+        await null;
         window.localStorage.setItem(`settings`, JSON.stringify(context.state.userSettings));
     },
 
@@ -86,6 +88,13 @@ const actions: ActionTree<StateInterface, StateInterface> = {
             context.commit('loadSettings', JSON.parse(settingsJson));
         }
     },
+
+    async setPlaybackSpeed(context, playbackSpeed) {
+        window.console.log(`setPlaybackSpeed(${playbackSpeed})`);
+        context.commit('setPlaybackSpeed', playbackSpeed);
+
+        await context.dispatch('saveSettings');
+    }
 };
 
 export default actions;

@@ -35,6 +35,10 @@ const mutations: MutationTree<StateInterface> = {
 
     loadSettings(state, settings: UserSettings) {
         state.userSettings = settings;
+    },
+
+    setPlaybackSpeed(state, playbackSpeed: number) {
+        state.userSettings.playbackSpeed = playbackSpeed;
     }
 };
 

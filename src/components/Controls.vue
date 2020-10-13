@@ -1,16 +1,18 @@
 <template>
   <div class="controls-container">
-    <button class="media-btn rewind-btn" @click="rewind()">
+    <button class="pure-button rewind-btn" @click="rewind()">
       <span class="oi" data-glyph="media-step-backward" title="Rewind" aria-hidden="true"></span>
     </button>
-    <button class="media-btn play-btn" @click="playPause()">
+    <button class="pure-button play-btn" @click="playPause()">
       <span class="oi" data-glyph="media-play" title="Play" aria-hidden="true"></span>
       <span class="play-pause-slash">/</span>
       <span class="oi" data-glyph="media-pause" title="Pause" aria-hidden="true"></span>
     </button>
-    <button class="media-btn fastforward-btn" @click="fastForward()">
-      <span class="oi" data-glyph="media-skip-forward" title="Fast Forward" aria-hidden="true"></span>
+    <button class="pure-button" @click="settingsClick()">
+      <span class="oi" data-glyph="cog" title="Play" aria-hidden="true"></span>
     </button>
+    <Slider/>
+    <Settings ref="settings"/>
   </div>
 </template>
 
@@ -19,8 +21,15 @@ import { Component, Vue } from 'vue-property-decorator';
 import store from '@/store';
 import 'open-iconic/font/css/open-iconic.css';
 import AnimationState from '@/models/animation_state';
+import Slider from './Slider.vue';
+import Settings from './Settings.vue';
 
-@Component
+@Component@Component({
+  components: {
+    Slider,
+    Settings
+  },
+})
 export default class Controls extends Vue {
 
   public rewind() {
@@ -35,8 +44,9 @@ export default class Controls extends Vue {
     }
   }
 
-  public fastForward() {
-    store.dispatch('setAnimationState', AnimationState.fastForward);
+  public settingsClick() {
+    window.console.log(`settingsClick()`);
+    (this.$refs.settings as Settings).show();
   }
 }
 </script>
@@ -50,42 +60,22 @@ export default class Controls extends Vue {
 
   button::-moz-focus-inner { border: 0; }
 
-  .media-btn {
-    margin: 0.5em;
-    border-radius: 0.25rem;
-    padding-left: 1em;
-    padding-right: 1em;
-    padding-top: 0.75em;
-    padding-bottom: 0.5em;
-    color: white;
-    font-weight: 400;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    border-style: solid;
-    user-select: none;
-    cursor: pointer;
-    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-  }
-
   .rewind-btn {
+    color: white;
     background-color: #dc3545;
     border-color: #dc3545;
+    margin-right: 5px;
   }
   .rewind-btn:hover {
     background-color: #bc1525;
     border-color: #bc1525;
   }
 
-  .play-pause-slash {
-    font-size: 1.2em;
-    padding-top: 0.1em;
-    padding-bottom: 0.1em;
-  }
-
   .play-btn {
+    color: white;
     background-color: #28a745;
     border-color: #28a745;
+    margin-right: 5px;
   }
   .play-btn:hover {
     background-color: #088725;
