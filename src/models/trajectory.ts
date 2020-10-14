@@ -31,7 +31,8 @@ export default class Trajectory {
             this.nodes.push(node);
         }
 
-        const geometry = new Three.BufferGeometry().setFromPoints(points);
+        const geometry = new Three.BufferGeometry()
+                            .setFromPoints(points);
         this.line = new Three.Line(geometry, material);
 
         if (this.nodes.length > 0) {
@@ -60,8 +61,8 @@ export default class Trajectory {
                 break;
             }
             case AnimationState.playing: {
-                if (this.index  < this.nodes.length - store.state.userSettings.playbackSpeed - 1) {
-                    this.partialIndex += store.state.userSettings.playbackSpeed;
+                if (this.index  < this.nodes.length - store.state.playbackSpeed - 1) {
+                    this.partialIndex += store.state.playbackSpeed;
                     this.index = Math.floor(this.partialIndex); 
                 } else {
                     this.isLastNode = true;
@@ -88,9 +89,9 @@ export default class Trajectory {
             return this.currentNode;
         }
 
-        const frameskip = Math.floor(Math.max(1, store.state.userSettings.playbackSpeed));
+        const frameskip = Math.floor(Math.max(1, store.state.playbackSpeed));
 
-        if (this.nodes.length < this.index + store.state.userSettings.playbackSpeed + 1) {
+        if (this.nodes.length < this.index + store.state.playbackSpeed + 1) {
             this.isLastNode = true;
             return this.currentNode;
         }

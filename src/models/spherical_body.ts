@@ -40,7 +40,7 @@ export default class SphericalBody implements IBody{
     public animate() {
         if (this.sphere) {
             if (store.getters.isAnimating) {
-                this.sphere.rotation.z += this.rotationSpeed;
+                this.sphere.rotation.y += this.rotationSpeed;
             }
 
             if (this.trajectory) {
@@ -70,7 +70,7 @@ export default class SphericalBody implements IBody{
             this.z = this.trajectory.currentNode.vector.z;
         }
 
-        const size = this.radius * store.state.userSettings.probeSizeMultiple;
+        const size = this.radius * store.state.userSettings.bodySizeMultiple;
 
         const sphereGeometry = new Three.SphereGeometry(
                         size, SphericalBody.WIDTH_SEGMENTS, SphericalBody.HEIGHT_SEGMENTS); 
@@ -78,6 +78,7 @@ export default class SphericalBody implements IBody{
         const sphereMaterial = new Three.MeshBasicMaterial( {map: this.texture} ); 
         this.sphere = new Three.Mesh(sphereGeometry, sphereMaterial);
         this.sphere.position.set(this.x, this.y, this.z);
+        this.sphere.rotation.x += Math.PI / 2;
 
         scene.add(this.sphere);
     }

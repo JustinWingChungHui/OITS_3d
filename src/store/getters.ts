@@ -7,8 +7,7 @@ const getters: GetterTree<StateInterface, StateInterface> = {
 
     tDate: (state): Date => new Date((config.ZeroDate + state.t) * 1000),
 
-    isAnimating: (state): boolean => state.animationState === AnimationState.playing
-                                        || state.animationState === AnimationState.fastForward,
+    isAnimating: (state): boolean => state.animationState === AnimationState.playing,
 
     backgroundPath: (state): string => config.backgrounds[state.userSettings.background],
 };

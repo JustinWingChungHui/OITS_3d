@@ -12,7 +12,6 @@ interface Config {
     markerSize: number;
 
     cameraStartPosition: { [id: string]: number };
-    fastforwardSpeed: number;
 }
 
 const config: Config = {
@@ -26,32 +25,32 @@ const config: Config = {
     // Textures https://www.solarsystemscope.com/textures/
     // Codes http://www-pi.physics.uiowa.edu/docs/spice/NAIF_IDS.HTML
     bodies: new Array<Body>(
-        new Probe('PROBE', 0, 0, 10, 'white', 0.005),
-        new SphericalBody('SUN', 0, 0, 0, 0.2, '/assets/backgrounds/sun.jpg', 0.002),
-        new SphericalBody('MERCURY BARYCENTER', 40, 0, 0, 0.04, '/assets/backgrounds/mercury.jpg', 0.02),
-        new SphericalBody('VENUS BARYCENTER', 80, 0, 0, 0.04, '/assets/backgrounds/venus.jpg', 0.02),
-        new SphericalBody('EARTH BARYCENTER', 0, 0, 0, 0.06, '/assets/backgrounds/earth.jpg', 0.02),
-        new SphericalBody('MARS BARYCENTER', 160, 0, 0, 0.06, '/assets/backgrounds/mars.jpg', 0.02),
-        new SphericalBody('JUPITER BARYCENTER', 200, 0, 0, 0.22, '/assets/backgrounds/jupiter.jpg', 0.02),
-        new SphericalBody('SATURN BARYCENTER', 240, 0, 0, 0.2, '/assets/backgrounds/saturn.jpg', 0.02),
-        new SphericalBody('URANUS BARYCENTER', 280, 0, 0, 0.16, '/assets/backgrounds/uranus.jpg', 0.02),
-        new SphericalBody('NEPTUNE BARYCENTER', 320, 0, 0, 0.16, '/assets/backgrounds/neptune.jpg', 0.02),
-        new SphericalBody('PLUTO BARYCENTER', 400, 0, 0, 0.08, '/assets/backgrounds/moon.jpg', 0.02),
-        new SphericalBody('MERCURY', 0, 0, 0, 0.04, '/assets/backgrounds/mercury.jpg', 0.02),
-        new SphericalBody('VENUS', 0, 0, 0, 0.04, '/assets/backgrounds/venus.jpg', 0.02),
-        new SphericalBody('MOON', 0, 0, 0, 0.01, '/assets/backgrounds/moon.jpg', 0.02),
-        new SphericalBody('EARTH', 0, 0, 0, 0.06, '/assets/backgrounds/earth.jpg', 0.02),
-        new Asteroid('CHURYUMOV-GERASIMENKO', 0, 0, 40, 0.005),
-        new Asteroid('LUTETIA', 0, 0, 40, 0.005),
-        new Asteroid('STEINS', 0, 0, 40, 0.005),
-        new Asteroid('OUMUAMUA', 0, 0, 40, 0.005),
-        new Asteroid('HALLEY', 0, 0, 40, 0.005),
-        new Asteroid('BENNU', 0, 0, 40, 0.005),
-        new Asteroid('VESTA', 0, 0, 40, 0.005),
-        new Asteroid('3825054', 0, 0, 40, 0.005),
-        new Asteroid('2099942', 0, 0, 40, 0.005),
-        new Asteroid('3830896', 0, 0, 40, 0.005),
-        new Asteroid('2099942', 0, 0, 40, 0.005),
+        new Probe('PROBE', 0, 0, 10, 'white', 0.0005),
+        new SphericalBody('SUN', 0, 0, 0, 0.02, '/assets/backgrounds/sun.jpg', 0.002),
+        new SphericalBody('MERCURY BARYCENTER', 40, 0, 0, 0.004, '/assets/backgrounds/mercury.jpg', 0.02),
+        new SphericalBody('VENUS BARYCENTER', 80, 0, 0, 0.004, '/assets/backgrounds/venus.jpg', 0.02),
+        new SphericalBody('EARTH BARYCENTER', 0, 0, 0, 0.006, '/assets/backgrounds/earth.jpg', 0.02),
+        new SphericalBody('MARS BARYCENTER', 160, 0, 0, 0.006, '/assets/backgrounds/mars.jpg', 0.02),
+        new SphericalBody('JUPITER BARYCENTER', 200, 0, 0, 0.022, '/assets/backgrounds/jupiter.jpg', 0.02),
+        new SphericalBody('SATURN BARYCENTER', 240, 0, 0, 0.02, '/assets/backgrounds/saturn.jpg', 0.02),
+        new SphericalBody('URANUS BARYCENTER', 280, 0, 0, 0.016, '/assets/backgrounds/uranus.jpg', 0.02),
+        new SphericalBody('NEPTUNE BARYCENTER', 320, 0, 0, 0.016, '/assets/backgrounds/neptune.jpg', 0.02),
+        new SphericalBody('PLUTO BARYCENTER', 400, 0, 0, 0.008, '/assets/backgrounds/moon.jpg', 0.02),
+        new SphericalBody('MERCURY', 0, 0, 0, 0.004, '/assets/backgrounds/mercury.jpg', 0.02),
+        new SphericalBody('VENUS', 0, 0, 0, 0.004, '/assets/backgrounds/venus.jpg', 0.02),
+        new SphericalBody('MOON', 0, 0, 0, 0.001, '/assets/backgrounds/moon.jpg', 0.02),
+        new SphericalBody('EARTH', 0, 0, 0, 0.006, '/assets/backgrounds/earth.jpg', 0.02),
+        new Asteroid('CHURYUMOV-GERASIMENKO', 0, 0, 40, 0.0005),
+        new Asteroid('LUTETIA', 0, 0, 40, 0.0005),
+        new Asteroid('STEINS', 0, 0, 40, 0.0005),
+        new Asteroid('OUMUAMUA', 0, 0, 40, 0.0005),
+        new Asteroid('HALLEY', 0, 0, 40, 0.0005),
+        new Asteroid('BENNU', 0, 0, 40, 0.0005),
+        new Asteroid('VESTA', 0, 0, 40, 0.0005),
+        new Asteroid('3825054', 0, 0, 40, 0.0005),
+        new Asteroid('2099942', 0, 0, 40, 0.0005),
+        new Asteroid('3830896', 0, 0, 40, 0.0005),
+        new Asteroid('2099942', 0, 0, 40, 0.0005),
     ),
 
     backgrounds: {
@@ -65,15 +64,13 @@ const config: Config = {
     },
 
     // Used to mark intermediate points
-    markerSize: 0.01,
+    markerSize: 0.001,
 
     cameraStartPosition: {
         x: 0,
         y: 0,
         z: 3,
     },
-
-    fastforwardSpeed: 8,
 }
 
 export default config;

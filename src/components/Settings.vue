@@ -3,10 +3,10 @@
         <div id="settingsModal" style="display:none">
             <div class="settings-container">
                 <h2>Settings</h2>
-                <form class="pure-form pure-form-aligned">
+                <div class="pure-form pure-form-aligned">
                     <fieldset>
                         <div class="pure-control-group">
-                            <label for="aligned-name">Background</label>
+                            <label>Background</label>
                             <select v-model="settingsData.background">
                                 <option>Milky Way</option>
                                 <option>Universe</option>
@@ -18,14 +18,62 @@
                             </select>
                         </div>
                         <div class="pure-control-group">
-                            <label for="aligned-foo">Supercalifragilistic Label</label>
-                            <input type="text" id="aligned-foo" placeholder="Enter something here..." />
+                            <label>Planet Trajectory Colour</label>
+                            <select v-model="settingsData.planetTrajectoryColor">
+                                <option>blue</option>
+                                <option>red</option>
+                                <option>white</option>
+                                <option>green</option>
+                                <option>yellow</option>
+                                <option>pink</option>
+                                <option>orange</option>
+                            </select>
+                        </div>
+                        <div class="pure-control-group">
+                            <label>Probe Trajectory Colour</label>
+                            <select v-model="settingsData.probeTrajectoryColor">
+                                <option>blue</option>
+                                <option>red</option>
+                                <option>white</option>
+                                <option>green</option>
+                                <option>yellow</option>
+                                <option>pink</option>
+                                <option>orange</option>
+                            </select>
+                        </div>
+                        <div class="pure-control-group">
+                            <label>Asteroid Trajectory Colour</label>
+                            <select v-model="settingsData.asteroidTrajectoryColor">
+                                <option>blue</option>
+                                <option>red</option>
+                                <option>white</option>
+                                <option>green</option>
+                                <option>yellow</option>
+                                <option>pink</option>
+                                <option>orange</option>
+                            </select>
+                        </div>
+                        <div class="pure-control-group">
+                            <label>Body Size</label>
+                            <input type="number" v-model="settingsData.bodySizeMultiple" />
+                        </div>
+                        <div class="pure-control-group">
+                            <label>Probe Size</label>
+                            <input type="number" v-model="settingsData.probeSizeMultiple" />
+                        </div>
+                        <div class="pure-control-group">
+                            <label>Marker Size</label>
+                            <input type="number" v-model="settingsData.markerSizeMultiple" />
+                        </div>
+                        <div class="pure-control-group">
+                            <label>Asteroid Size</label>
+                            <input type="number" v-model="settingsData.asteroidSizeMultiple" />
                         </div>
                         <div class="pure-controls">
                              <button class="pure-button pure-button-primary" @click="save">Save</button>
                         </div>
                     </fieldset>
-                </form>
+                </div>
             </div>
         </div>
         <div class="modal">
@@ -49,24 +97,42 @@ export default class Settings extends Vue {
 
     public modal?: VanillaModal;
 
-    public settingsData: UserSettings = store.state.userSettings;
+    public settingsData: UserSettings = {
+        background: 'white',
+        probeSizeMultiple: 10,
+        bodySizeMultiple: 10,
+        markerSizeMultiple: 10,
+        asteroidSizeMultiple: 10,
+        planetTrajectoryColor: 'blue',
+        probeTrajectoryColor: 'white',
+        asteroidTrajectoryColor: 'red',
+        light: 3.2
+    };
 
     protected mounted() {
-        this.modal = new VanillaModal();
         store.dispatch('loadSettings')
-
-        this.settingsData = store.state.userSettings;
+        this.settingsData.background = store.state.userSettings.background;
+        this.settingsData.probeSizeMultiple = store.state.userSettings.probeSizeMultiple;
+        this.settingsData.bodySizeMultiple = store.state.userSettings.bodySizeMultiple;
+        this.settingsData.markerSizeMultiple = store.state.userSettings.markerSizeMultiple;
+        this.settingsData.asteroidSizeMultiple = store.state.userSettings.asteroidSizeMultiple;
+        this.settingsData.planetTrajectoryColor = store.state.userSettings.planetTrajectoryColor;
+        this.settingsData.probeTrajectoryColor = store.state.userSettings.probeTrajectoryColor;
+        this.settingsData.asteroidTrajectoryColor = store.state.userSettings.asteroidTrajectoryColor;
     }
 
     public show() {
         window.console.log(`show()`);
-        if (this.modal) {
-            this.modal.open('#settingsModal');
-        }
+        this.modal = new VanillaModal();
+        window.console.log(`this.modal.open('#settingsModal');`);
+        this.modal.open('#settingsModal');
     }
 
-    public save() {
-        store.dispatch('saveSettings')
+    public async save() {
+        await store.dispatch('setSettings', this.settingsData);
+        if (this.modal) {
+            this.modal.close();
+        }
     }
 }
 

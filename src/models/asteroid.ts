@@ -72,7 +72,8 @@ export default class Asteroid implements IBody{
         const promise = await new Promise<void>((resolve) => {
 
             new GLTFLoader().load('/assets/asteroid/scene.gltf', (gltf) => {
-                gltf.scene.scale.set(this.scale, this.scale, this.scale);
+                const size = this.scale * store.state.userSettings.asteroidSizeMultiple;
+                gltf.scene.scale.set(size, size, size);
                 gltf.scene.position.x = this.x;
                 gltf.scene.position.y = this.y;
                 gltf.scene.position.z = this.z;

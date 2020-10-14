@@ -5,6 +5,7 @@ import * as request from 'request-promise-native';
 import config from '@/config';
 import Trajectory from '@/models/trajectory';
 import AnimationState from '@/models/animation_state';
+import UserSettings from './userSettings';
 
 const actions: ActionTree<StateInterface, StateInterface> = {
 
@@ -17,6 +18,9 @@ const actions: ActionTree<StateInterface, StateInterface> = {
         else if (uid !== context.state.uid) {
 
             context.commit('setUid', uid);
+
+            // Load settings
+            await context.dispatch('loadSettings');
 
             // refresh results data
             await context.dispatch('getCsvResults');
@@ -74,6 +78,14 @@ const actions: ActionTree<StateInterface, StateInterface> = {
         context.commit('setLoading', loading);
     },
 
+    async setSettings(context, userSettings: UserSettings) {
+        window.console.log(`setSettings`);
+        window.console.log(userSettings);
+
+        context.commit('setSettings', userSettings);
+        await context.dispatch('saveSettings');
+    },
+
     async saveSettings(context) {
         window.console.log(`Saving settings`);
         // Make sure local storage is done asynchronously
@@ -85,15 +97,13 @@ const actions: ActionTree<StateInterface, StateInterface> = {
         window.console.log(`Load settings`);
         const settingsJson = window.localStorage.getItem(`settings`);
         if (settingsJson) {
-            context.commit('loadSettings', JSON.parse(settingsJson));
+            context.commit('setSettings', JSON.parse(settingsJson));
         }
     },
 
     async setPlaybackSpeed(context, playbackSpeed) {
         window.console.log(`setPlaybackSpeed(${playbackSpeed})`);
         context.commit('setPlaybackSpeed', playbackSpeed);
-
-        await context.dispatch('saveSettings');
     }
 };
 

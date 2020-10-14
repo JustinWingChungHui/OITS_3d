@@ -3,8 +3,7 @@
     <label>
         Playback Speed
     </label>
-      <input type="range" min="-3" max="20" v-model="value" class="slider">
-      <!--v-on:input="onValueChanged($event)" -->
+      <input type="range" min="-8" max="25" v-model="value" class="slider">
   </div>
 </template>
 
@@ -22,14 +21,7 @@ export default class Slider extends Vue {
     public onValueChanged() {
         window.console.log(`onValueChanged() ${this.value}`)
         const val = Number(this.value);
-        let playbackSpeed = 1;
-        if (val < 0) {
-            // Allows 1/2, 1/4, 1/8
-            playbackSpeed = Math.pow(2, val);
-
-        } else {
-            playbackSpeed = val + 1;
-        }
+        const playbackSpeed = Math.pow(1.2, val);
 
         store.dispatch('setPlaybackSpeed', playbackSpeed);
     }

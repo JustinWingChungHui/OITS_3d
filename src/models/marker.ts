@@ -37,24 +37,24 @@ export default class Marker implements IBody{
         if (this.trajectory && this.cone1 && this.cone2 
                 && this.cone3 && this.cone4
                 && this.cone5 && this.cone6) {
-
+            const size = this.size * Store.state.userSettings.markerSizeMultiple;
             const node = this.trajectory.getNextNode();
             this.cone1.position.x = node.vector.x;
-            this.cone1.position.y = node.vector.y - this.narrowness * this.size;
+            this.cone1.position.y = node.vector.y - this.narrowness * size;
             this.cone1.position.z = node.vector.z;
             this.cone2.position.x = node.vector.x;
             this.cone2.position.y = node.vector.y;
-            this.cone2.position.z = node.vector.z - this.narrowness * this.size;
+            this.cone2.position.z = node.vector.z - this.narrowness * size;
             this.cone3.position.x = node.vector.x;
-            this.cone3.position.y = node.vector.y + this.narrowness * this.size;
+            this.cone3.position.y = node.vector.y + this.narrowness * size;
             this.cone3.position.z = node.vector.z;
             this.cone4.position.x = node.vector.x;
             this.cone4.position.y = node.vector.y;
-            this.cone4.position.z = node.vector.z + this.narrowness * this.size;
-            this.cone5.position.x = node.vector.x + this.narrowness * this.size;
+            this.cone4.position.z = node.vector.z + this.narrowness * size;
+            this.cone5.position.x = node.vector.x + this.narrowness * size;
             this.cone5.position.y = node.vector.y;
             this.cone5.position.z = node.vector.z;
-            this.cone6.position.x = node.vector.x - this.narrowness * this.size;
+            this.cone6.position.x = node.vector.x - this.narrowness * size;
             this.cone6.position.y = node.vector.y;
             this.cone6.position.z = node.vector.z;
         }
@@ -74,7 +74,7 @@ export default class Marker implements IBody{
             this.z = this.trajectory.currentNode.vector.z;
         }
 
-        const size = this.size * Store.state.userSettings.bodySizeMultiple;
+        const size = this.size * Store.state.userSettings.markerSizeMultiple;
 
         const coneGeometry = new Three.ConeBufferGeometry(size, size * this.narrowness * 2, 8); 
 

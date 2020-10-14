@@ -10,5 +10,6 @@ export default interface StateInterface {
   deltaT: number;
   animationState: AnimationState;
   loading: boolean;
+  playbackSpeed: number;
   userSettings: UserSettings;
 }

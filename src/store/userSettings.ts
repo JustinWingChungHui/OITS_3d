@@ -1,9 +1,9 @@
 export default interface UserSettings {
     background: string;
-    playbackSpeed: number;
     probeSizeMultiple: number;
     bodySizeMultiple: number;
     markerSizeMultiple: number;
+    asteroidSizeMultiple: number;
     planetTrajectoryColor: string;
     probeTrajectoryColor: string;
     asteroidTrajectoryColor: string;
