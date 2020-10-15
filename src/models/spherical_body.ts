@@ -16,9 +16,9 @@ export default class SphericalBody implements IBody{
     public texture: Three.Texture | null = null;
     public radius: number;
     public trajectory: Trajectory | null = null;
+    public sphere: Three.Mesh | null = null;
 
     private textureFile: string;
-    private sphere: Three.Mesh | null = null;
     private rotationSpeed: number;
 
     constructor(id: string,

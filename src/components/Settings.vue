@@ -8,49 +8,31 @@
                         <div class="pure-control-group">
                             <label>Background</label>
                             <select v-model="settingsData.background">
-                                <option>Milky Way</option>
-                                <option>Universe</option>
-                                <option>Psychedelic</option>
-                                <option>Space</option>
-                                <option>White</option>
-                                <option>Grey</option>
-                                <option>Black</option>
+                                <option v-for="(item, key) in backgrounds" :key="key">{{key}}</option>
                             </select>
                         </div>
                         <div class="pure-control-group">
                             <label>Planet Trajectory Colour</label>
                             <select v-model="settingsData.planetTrajectoryColor">
-                                <option>blue</option>
-                                <option>red</option>
-                                <option>white</option>
-                                <option>green</option>
-                                <option>yellow</option>
-                                <option>pink</option>
-                                <option>orange</option>
+                                <option v-for="colour in colours" :key="colour">
+                                    {{colour}}
+                                </option>
                             </select>
                         </div>
                         <div class="pure-control-group">
                             <label>Probe Trajectory Colour</label>
                             <select v-model="settingsData.probeTrajectoryColor">
-                                <option>blue</option>
-                                <option>red</option>
-                                <option>white</option>
-                                <option>green</option>
-                                <option>yellow</option>
-                                <option>pink</option>
-                                <option>orange</option>
+                                <option v-for="colour in colours" :key="colour">
+                                    {{colour}}
+                                </option>
                             </select>
                         </div>
                         <div class="pure-control-group">
                             <label>Asteroid Trajectory Colour</label>
                             <select v-model="settingsData.asteroidTrajectoryColor">
-                                <option>blue</option>
-                                <option>red</option>
-                                <option>white</option>
-                                <option>green</option>
-                                <option>yellow</option>
-                                <option>pink</option>
-                                <option>orange</option>
+                                <option v-for="colour in colours" :key="colour">
+                                    {{colour}}
+                                </option>
                             </select>
                         </div>
                         <div class="pure-control-group">
@@ -87,15 +69,36 @@
 
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import VanillaModal from 'vanilla-modal';
 import store from '@/store';
 import UserSettings from '@/store/userSettings';
+import config from '@/config';
 
 @Component
 export default class Settings extends Vue {
 
     public modal?: VanillaModal;
+
+    public colours: Array<string> = [
+        'blue',
+        'red',
+        'white',
+        'green',
+        'yellow',
+        'pink',
+        'orange',
+        'magenta',
+        'lime',
+        'aqua',
+        'black',
+        'grey',
+        'purple',
+    ];
+
+    public get backgrounds(): { [id: string]: string } {
+        return config.backgrounds;
+    }
 
     public settingsData: UserSettings = {
         background: 'white',
@@ -106,7 +109,8 @@ export default class Settings extends Vue {
         planetTrajectoryColor: 'blue',
         probeTrajectoryColor: 'white',
         asteroidTrajectoryColor: 'red',
-        light: 3.2
+        light: 3.2,
+        lastUpdatedDate: new Date(),
     };
 
     protected mounted() {

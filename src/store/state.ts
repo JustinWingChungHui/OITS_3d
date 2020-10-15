@@ -22,6 +22,7 @@ const state: StateInterface = {
 
     // Brightness
     light: 3.2,
+    lastUpdatedDate: new Date(),
   }
 }
 

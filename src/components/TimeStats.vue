@@ -11,7 +11,7 @@ import store from '@/store';
 import moment from 'moment/moment';
 
 @Component
-export default class Stats extends Vue {
+export default class TimeStats extends Vue {
 
   private get t(): number {
     return store.state.t;
@@ -27,7 +27,7 @@ export default class Stats extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .stats-container {
-    width: 100%;
     margin: 1em;
+    float: left;
   }
 </style>

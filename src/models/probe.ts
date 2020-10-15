@@ -2,8 +2,10 @@ import * as Three from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import IBody from './body';
 import Trajectory from './trajectory';
+import SphericalBody from './spherical_body';
 import store from '@/store';
 import AnimationState from './animation_state';
+import state from '@/store/state';
 
 
 export default class Probe implements IBody{
@@ -64,13 +66,6 @@ export default class Probe implements IBody{
 
     public animateAndGetTime(): number {
         if (this.gltfScene) {
-            if (store.getters.isAnimating) {
-                // Point towards Earth
-                // this.gltfScene.rotation.x += 0.02;
-                // this.gltfScene.rotation.y += 0.02;
-                // this.gltfScene.rotation.z += 0.02;
-            }
-
             if (this.trajectory) {
                 const node = this.trajectory.getNextNode();
                 this.gltfScene.position.x = node.vector.x;
@@ -88,6 +83,25 @@ export default class Probe implements IBody{
         }
 
         return 0;
+    }
+
+    public pointTowardsBody(body: SphericalBody) {
+
+
+        if (this.gltfScene && body.sphere && store.getters.isAnimating) {
+            const dx = this.gltfScene.position.x - body.sphere.position.x;
+            const dy = this.gltfScene.position.x - body.sphere.position.y;
+            const dz = this.gltfScene.position.x - body.sphere.position.z;
+
+            this.gltfScene.rotation.y = Math.PI/2;
+
+            if (dx !== 0) {
+                const theta = Math.atan(dy / dx);
+
+                this.gltfScene.rotation.z = theta;
+                
+            }
+        }
     }
 
     private async LoadGLTF(): Promise<void> {

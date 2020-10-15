@@ -10,4 +10,5 @@ export default interface UserSettings {
   
     // Brightness
     light: number;
+    lastUpdatedDate: Date;
 }

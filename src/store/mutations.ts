@@ -37,6 +37,10 @@ const mutations: MutationTree<StateInterface> = {
         state.userSettings = settings;
     },
 
+    userSettingsUpdatedDate(state) {
+        state.userSettings.lastUpdatedDate = new Date();
+    },
+
     setPlaybackSpeed(state, playbackSpeed: number) {
         state.playbackSpeed = playbackSpeed;
     }

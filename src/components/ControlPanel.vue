@@ -11,7 +11,7 @@
     <button class="pure-button" @click="settingsClick()">
       <span class="oi" data-glyph="cog" title="Play" aria-hidden="true"></span>
     </button>
-    <Slider/>
+    
     <Settings ref="settings"/>
   </div>
 </template>
@@ -21,16 +21,14 @@ import { Component, Vue } from 'vue-property-decorator';
 import store from '@/store';
 import 'open-iconic/font/css/open-iconic.css';
 import AnimationState from '@/models/animation_state';
-import Slider from './Slider.vue';
 import Settings from './Settings.vue';
 
 @Component@Component({
   components: {
-    Slider,
     Settings
   },
 })
-export default class Controls extends Vue {
+export default class ControlPanel extends Vue {
 
   public rewind() {
     store.dispatch('setAnimationState', AnimationState.rewind);
@@ -54,8 +52,8 @@ export default class Controls extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .controls-container {
-    width: 100%;
     margin: 1em;
+    float: left;
   }
 
   button::-moz-focus-inner { border: 0; }

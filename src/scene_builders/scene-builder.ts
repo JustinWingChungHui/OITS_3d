@@ -5,20 +5,22 @@ import Body from '@/models/body';
 import Probe from '@/models/probe';
 import store from '@/store';
 import config from '@/config';
+import SphericalBody from '@/models/spherical_body';
 
 // https://stemkoski.github.io/Three.js/
 
 export default class SceneBuilder {
-    private container: HTMLElement;
     private camera: Three.PerspectiveCamera;
     private scene: Three.Scene;
     private renderer: Three.WebGLRenderer;
     private controls: OrbitControls;
     private bodiesById: { [id: string]: Body } = {};
 
+    private earth?: SphericalBody;
+    private probe?: Probe;
+
     constructor(container: HTMLElement) {
         Three.Cache.enabled = true;
-        this.container = container;
         this.scene = new Three.Scene();
         this.camera = new Three.PerspectiveCamera(70, container.clientWidth/container.clientHeight, 0.001, 400);
         const startPos = config.cameraStartPosition;
@@ -44,12 +46,18 @@ export default class SceneBuilder {
         const bodyBuilder = new BodyBuilder()
         this.bodiesById = await bodyBuilder.AddToScene(this.scene);
         this.renderer.render(this.scene, this.camera);
+
+        this.probe = this.bodiesById['PROBE'] as Probe;
+        this.earth = this.bodiesById['EARTH'] as SphericalBody;
+        if (!this.earth) {
+            this.earth = this.bodiesById['EARTH BARYCENTER'] as SphericalBody;
+        }
     }
 
     public animate = () => {
 
         // Animate the probe, use time relative to probe
-        const probe = this.bodiesById['PROBE'] as Probe;
+        const probe = this.probe as Probe;
         const t = probe.animateAndGetTime();
 
 
@@ -68,6 +76,10 @@ export default class SceneBuilder {
             if (id !== 'PROBE') {
                 this.bodiesById[id].animate(); 
             }
+        }
+
+        if (this.earth) {
+            probe.pointTowardsBody(this.earth);
         }
 
         this.renderer.render(this.scene, this.camera);

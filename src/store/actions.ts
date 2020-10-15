@@ -89,7 +89,9 @@ const actions: ActionTree<StateInterface, StateInterface> = {
     async saveSettings(context) {
         window.console.log(`Saving settings`);
         // Make sure local storage is done asynchronously
+
         await null;
+        context.commit('userSettingsUpdatedDate');
         window.localStorage.setItem(`settings`, JSON.stringify(context.state.userSettings));
     },
 
