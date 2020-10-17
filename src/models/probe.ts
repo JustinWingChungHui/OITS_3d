@@ -30,7 +30,8 @@ export default class Probe implements IBody{
         this.x = x;
         this.y = y;
         this.z = z;
-        this.scale = scale;
+        // Invert the object so that the lookat function makes probe look in opposite direction
+        this.scale = -scale;
         this.colour = colour
     }
 
@@ -86,21 +87,8 @@ export default class Probe implements IBody{
     }
 
     public pointTowardsBody(body: SphericalBody) {
-
-
         if (this.gltfScene && body.sphere && store.getters.isAnimating) {
-            const dx = this.gltfScene.position.x - body.sphere.position.x;
-            const dy = this.gltfScene.position.x - body.sphere.position.y;
-            const dz = this.gltfScene.position.x - body.sphere.position.z;
-
-            this.gltfScene.rotation.y = Math.PI/2;
-
-            if (dx !== 0) {
-                const theta = Math.atan(dy / dx);
-
-                this.gltfScene.rotation.z = theta;
-                
-            }
+            this.gltfScene.lookAt(body.sphere.position);
         }
     }
 
