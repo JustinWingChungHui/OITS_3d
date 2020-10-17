@@ -58,8 +58,8 @@ const config: Config = {
         'Universe': '/assets/backgrounds/universe.jpg',
         'Psychedelic': '/assets/backgrounds/psychedelic.jpg',
         'Space': '/assets/backgrounds/space.jpg',
-        'White': '/assets/backgrounds/White.jpg',
-        'Grey': '/assets/backgrounds/Grey.jpg',
+        'White': '/assets/backgrounds/white.jpg',
+        'Grey': '/assets/backgrounds/grey.jpg',
         'Black': '/assets/backgrounds/black.jpg',
     },
 
