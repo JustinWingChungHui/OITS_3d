@@ -6,9 +6,9 @@ export default interface UserSettings {
     asteroidSizeMultiple: number;
     planetTrajectoryColor: string;
     probeTrajectoryColor: string;
+    probeColor: string;
     asteroidTrajectoryColor: string;
-  
-    // Brightness
-    light: number;
+    cameraTracksProbe: boolean;
+
     lastUpdatedDate: Date;
 }

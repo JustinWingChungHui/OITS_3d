@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import IBody from './body';
 import Trajectory from './trajectory';
 import store from '@/store';
+import ResourceTracker from '../scene_builders/resource-tracker';
 
 export default class Asteroid implements IBody{
     public id: string;
@@ -34,9 +35,9 @@ export default class Asteroid implements IBody{
 
         if (this.id in store.state.TrajectoryByBodyId) {
             this.trajectory = store.state.TrajectoryByBodyId[this.id];
-            this.trajectory.line.material = new Three.LineBasicMaterial({ 
+            this.trajectory.line.material = ResourceTracker.track(new Three.LineBasicMaterial({ 
                 color: store.state.userSettings.asteroidTrajectoryColor 
-            });
+            }));
             this.trajectory.load(scene);
 
             this.x = this.trajectory.currentNode.vector.x;
@@ -53,9 +54,7 @@ export default class Asteroid implements IBody{
         if (this.gltfScene) {
 
             if (store.getters.isAnimating) {
-                this.gltfScene.rotation.x += 0.02;
                 this.gltfScene.rotation.y += 0.02;
-                this.gltfScene.rotation.z += 0.02;
             }
 
             if (this.trajectory) {
@@ -72,13 +71,14 @@ export default class Asteroid implements IBody{
         const promise = await new Promise<void>((resolve) => {
 
             new GLTFLoader().load('/assets/asteroid/scene.gltf', (gltf) => {
+                ResourceTracker.track(gltf);
                 const size = this.scale * store.state.userSettings.asteroidSizeMultiple;
                 gltf.scene.scale.set(size, size, size);
                 gltf.scene.position.x = this.x;
                 gltf.scene.position.y = this.y;
                 gltf.scene.position.z = this.z;
                 
-                this.gltfScene = gltf.scene;
+                this.gltfScene = ResourceTracker.track((gltf.scene));
                 resolve();
             });
         })

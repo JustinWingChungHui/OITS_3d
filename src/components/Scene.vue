@@ -53,6 +53,10 @@ export default class Scene extends Vue {
     window.console.log(`onsettingsLastUpdatedDateChanged(${oldValue}, ${newValue}`)
     if (newValue > oldValue && !this.initialising) {
 
+      if (this.scene) {
+        this.scene.dispose();
+      }
+
       const container = document.getElementById('container') as HTMLElement;
       container.innerHTML = '';
       await this.buildScene(container);

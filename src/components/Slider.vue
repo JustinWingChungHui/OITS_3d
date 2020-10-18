@@ -3,7 +3,7 @@
     <label>
         Playback Speed
     </label>
-      <input type="range" min="-10" max="25" v-model="value" class="slider">
+      <input type="range" min="-12" max="25" v-model="value" class="slider">
   </div>
 </template>
 
@@ -37,6 +37,8 @@ export default class Slider extends Vue {
     width: 100%; /* Width of the outside container */
     padding: 10px;
     max-width: 400px;
+    margin-left: 5px;
+    margin-right : 5px
 }
 
 .slider {

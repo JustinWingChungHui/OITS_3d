@@ -18,10 +18,10 @@ const state: StateInterface = {
     asteroidSizeMultiple: 10,
     planetTrajectoryColor: 'blue',
     probeTrajectoryColor: 'white',
+    probeColor: 'white',
     asteroidTrajectoryColor: 'red',
+    cameraTracksProbe: true,
 
-    // Brightness
-    light: 3.2,
     lastUpdatedDate: new Date(),
   }
 }

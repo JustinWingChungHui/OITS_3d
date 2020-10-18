@@ -6,7 +6,7 @@ import SphericalBody from './spherical_body';
 import store from '@/store';
 import AnimationState from './animation_state';
 import state from '@/store/state';
-
+import ResourceTracker from '../scene_builders/resource-tracker';
 
 export default class Probe implements IBody{
     public id: string;
@@ -42,9 +42,9 @@ export default class Probe implements IBody{
 
         if (this.id in store.state.TrajectoryByBodyId) {
             this.trajectory = store.state.TrajectoryByBodyId[this.id];
-            this.trajectory.line.material = new Three.LineBasicMaterial({
+            this.trajectory.line.material = ResourceTracker.track(new Three.LineBasicMaterial({
                 color: store.state.userSettings.probeTrajectoryColor
-            });
+            }));
             this.trajectory.showPastOnly();
             this.trajectory.load(scene);
 
@@ -52,7 +52,7 @@ export default class Probe implements IBody{
             this.y = this.trajectory.currentNode.vector.y;
             this.z = this.trajectory.currentNode.vector.z;
 
-            const deltaT = this.trajectory.nodes[1].t - this.trajectory.currentNode.t;
+            const deltaT = this.trajectory.nodes[1].t - this.trajectory.nodes[0].t;
             store.dispatch('setDeltaT', deltaT);
         }
 
@@ -96,21 +96,23 @@ export default class Probe implements IBody{
         const promise = await new Promise<void>((resolve) => {
 
             new GLTFLoader().load('/assets/probe/scene.gltf', (gltf) => {
+                ResourceTracker.track(gltf)
                 const size = this.scale * store.state.userSettings.probeSizeMultiple;
                 gltf.scene.scale.set(size, size, size);
                 gltf.scene.position.x = this.x;
                 gltf.scene.position.y = this.y;
                 gltf.scene.position.z = this.z;
-                this.gltfScene = gltf.scene;
+                this.gltfScene = ResourceTracker.track(gltf.scene);
 
                 this.gltfScene.traverse((child) => {
                     if (child instanceof Three.Mesh) {
                         const mesh = child as Three.Mesh;
                         
                         // Texture is not showing up , so use basic colour
-                        mesh.material = new Three.MeshBasicMaterial({
-                            color: this.colour,
-                        });
+                        mesh.material = ResourceTracker.track(new Three.MeshLambertMaterial({
+                            color: state.userSettings.probeColor,
+
+                        }));
                     }
                 });
 

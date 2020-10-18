@@ -2,6 +2,7 @@ import * as Three from 'three'
 import IBody from './body';
 import Trajectory from './trajectory';
 import Store from '@/store';
+import ResourceTracker from '../scene_builders/resource-tracker';
 
 export default class Marker implements IBody{
     public id: string;
@@ -66,7 +67,7 @@ export default class Marker implements IBody{
 
         if (this.id in Store.state.TrajectoryByBodyId) {
             this.trajectory = Store.state.TrajectoryByBodyId[this.id];
-            this.trajectory.line.material = new Three.LineBasicMaterial( { color: 'gray' } );
+            this.trajectory.line.material = ResourceTracker.track(new Three.LineBasicMaterial( { color: 'gray' } ));
             this.trajectory.load(scene);
 
             this.x = this.trajectory.currentNode.vector.x;
@@ -76,15 +77,15 @@ export default class Marker implements IBody{
 
         const size = this.size * Store.state.userSettings.markerSizeMultiple;
 
-        const coneGeometry = new Three.ConeBufferGeometry(size, size * this.narrowness * 2, 8); 
+        const coneGeometry = ResourceTracker.track(new Three.ConeBufferGeometry(size, size * this.narrowness * 2, 8)); 
 
-        const coneMaterial = new Three.MeshBasicMaterial( {color: 'green'} ); 
-        this.cone1 = new Three.Mesh(coneGeometry, coneMaterial);
-        this.cone2 = new Three.Mesh(coneGeometry, coneMaterial);
-        this.cone3 = new Three.Mesh(coneGeometry, coneMaterial);
-        this.cone4 = new Three.Mesh(coneGeometry, coneMaterial);
-        this.cone5 = new Three.Mesh(coneGeometry, coneMaterial);
-        this.cone6 = new Three.Mesh(coneGeometry, coneMaterial);
+        const coneMaterial = ResourceTracker.track(new Three.MeshBasicMaterial( {color: 'green'} )); 
+        this.cone1 = ResourceTracker.track(new Three.Mesh(coneGeometry, coneMaterial));
+        this.cone2 = ResourceTracker.track(new Three.Mesh(coneGeometry, coneMaterial));
+        this.cone3 = ResourceTracker.track(new Three.Mesh(coneGeometry, coneMaterial));
+        this.cone4 = ResourceTracker.track(new Three.Mesh(coneGeometry, coneMaterial));
+        this.cone5 = ResourceTracker.track(new Three.Mesh(coneGeometry, coneMaterial));
+        this.cone6 = ResourceTracker.track(new Three.Mesh(coneGeometry, coneMaterial));
 
         this.cone1.position.set(this.x, this.y, this.z);
         this.cone2.position.set(this.x, this.y, this.z);

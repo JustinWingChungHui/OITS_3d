@@ -98,6 +98,8 @@ const actions: ActionTree<StateInterface, StateInterface> = {
     loadSettings(context) {
         window.console.log(`Load settings`);
         const settingsJson = window.localStorage.getItem(`settings`);
+
+        window.console.log(settingsJson);
         if (settingsJson) {
             context.commit('setSettings', JSON.parse(settingsJson));
         }

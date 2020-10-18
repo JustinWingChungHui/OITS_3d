@@ -6,6 +6,7 @@ import Probe from '@/models/probe';
 import store from '@/store';
 import config from '@/config';
 import SphericalBody from '@/models/spherical_body';
+import ResourceTracker from './resource-tracker';
 
 // https://stemkoski.github.io/Three.js/
 
@@ -20,24 +21,31 @@ export default class SceneBuilder {
     private probe?: Probe;
 
     constructor(container: HTMLElement) {
+        ResourceTracker.init();
         Three.Cache.enabled = true;
-        this.scene = new Three.Scene();
-        this.camera = new Three.PerspectiveCamera(70, container.clientWidth/container.clientHeight, 0.001, 400);
+        this.scene = ResourceTracker.track(new Three.Scene());
+        this.camera = ResourceTracker.track(new Three.PerspectiveCamera(70, container.clientWidth/container.clientHeight, 0.001, 400));
         const startPos = config.cameraStartPosition;
         this.camera.position.set(startPos.x,startPos.y, startPos.z);
 
-        this.renderer = new Three.WebGLRenderer({antialias: true});
+        this.renderer = ResourceTracker.track(new Three.WebGLRenderer({antialias: true}));
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize(container.clientWidth, container.clientHeight);
 
         container.appendChild(this.renderer.domElement);
 
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls = ResourceTracker.track(new OrbitControls(this.camera, this.renderer.domElement));
         this.controls.zoomSpeed = 2.5;
 
         // Load Light
-        const ambientLight = new Three.AmbientLight(0xffffff, store.state.userSettings.light);
+        const ambientLight = ResourceTracker.track(new Three.AmbientLight(0xffffff, 0.2));
         this.scene.add(ambientLight);
+
+        const pointLight = ResourceTracker.track(new Three.PointLight(0xffffff, 2, 0, 1));
+        this.scene.add(pointLight);
+        pointLight.position.x = 0;
+        pointLight.position.y = 0;
+        pointLight.position.z = 0;
     }
 
     public async load(): Promise<void> {
@@ -65,10 +73,12 @@ export default class SceneBuilder {
         store.state.t = t;
         
         // Point the camera at the probe
-        const pVector = probe.trajectory?.currentNode?.vector;
-        if (pVector) {
-            this.controls.target.set(pVector.x, pVector.y, pVector.z);
-            this.controls.update();
+        if (store.state.userSettings.cameraTracksProbe) {
+            const pVector = probe.trajectory?.currentNode?.vector;
+            if (pVector) {
+                this.controls.target.set(pVector.x, pVector.y, pVector.z);
+                this.controls.update();
+            }
         }
 
         // Move the other bodies
@@ -85,6 +95,10 @@ export default class SceneBuilder {
         this.renderer.render(this.scene, this.camera);
 
         requestAnimationFrame(this.animate);
+    }
+
+    public dispose() {
+        ResourceTracker.dispose();
     }
 
     private async loadBackground(): Promise<void> {

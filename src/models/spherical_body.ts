@@ -2,7 +2,7 @@ import * as Three from 'three'
 import IBody from './body';
 import Trajectory from './trajectory';
 import store from '@/store';
-
+import ResourceTracker from '../scene_builders/resource-tracker';
 
 export default class SphericalBody implements IBody{
     // Decentish smoothness and performance
@@ -39,6 +39,7 @@ export default class SphericalBody implements IBody{
 
     public animate() {
         if (this.sphere) {
+
             if (store.getters.isAnimating) {
                 this.sphere.rotation.y += this.rotationSpeed;
             }
@@ -60,9 +61,9 @@ export default class SphericalBody implements IBody{
 
         if (this.id in store.state.TrajectoryByBodyId) {
             this.trajectory = store.state.TrajectoryByBodyId[this.id];
-            this.trajectory.line.material = new Three.LineBasicMaterial({ 
+            this.trajectory.line.material = ResourceTracker.track(new Three.LineBasicMaterial({ 
                 color: store.state.userSettings.planetTrajectoryColor
-            });
+            }));
             this.trajectory.load(scene);
 
             this.x = this.trajectory.currentNode.vector.x;
@@ -72,11 +73,11 @@ export default class SphericalBody implements IBody{
 
         const size = this.radius * store.state.userSettings.bodySizeMultiple;
 
-        const sphereGeometry = new Three.SphereGeometry(
-                        size, SphericalBody.WIDTH_SEGMENTS, SphericalBody.HEIGHT_SEGMENTS); 
+        const sphereGeometry = ResourceTracker.track(new Three.SphereGeometry(
+                        size, SphericalBody.WIDTH_SEGMENTS, SphericalBody.HEIGHT_SEGMENTS)); 
 
-        const sphereMaterial = new Three.MeshBasicMaterial( {map: this.texture} ); 
-        this.sphere = new Three.Mesh(sphereGeometry, sphereMaterial);
+        const sphereMaterial = ResourceTracker.track(new Three.MeshBasicMaterial( {map: this.texture} )); 
+        this.sphere = ResourceTracker.track(new Three.Mesh(sphereGeometry, sphereMaterial));
         this.sphere.position.set(this.x, this.y, this.z);
         this.sphere.rotation.x += Math.PI / 2;
 
@@ -87,7 +88,7 @@ export default class SphericalBody implements IBody{
         const promise = await new Promise<void>((resolve) => {
 
             new Three.TextureLoader().load(this.textureFile, (texture) => {
-                this.texture = texture;
+                this.texture = ResourceTracker.track(texture);
                 resolve();
             });
         })

@@ -20,6 +20,14 @@
                             </select>
                         </div>
                         <div class="pure-control-group">
+                            <label>Probe Colour</label>
+                            <select v-model="settingsData.probeColor">
+                                <option v-for="colour in colours" :key="colour">
+                                    {{colour}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="pure-control-group">
                             <label>Probe Trajectory Colour</label>
                             <select v-model="settingsData.probeTrajectoryColor">
                                 <option v-for="colour in colours" :key="colour">
@@ -50,6 +58,10 @@
                         <div class="pure-control-group">
                             <label>Asteroid Size</label>
                             <input type="number" v-model="settingsData.asteroidSizeMultiple" />
+                        </div>
+                        <div class="pure-control-group">
+                            <label>Camera Tracks Probe</label>
+                            <input type="checkbox" v-model="settingsData.cameraTracksProbe" />
                         </div>
                         <div class="pure-controls">
                              <button class="pure-button pure-button-primary" @click="save">Save</button>
@@ -109,7 +121,8 @@ export default class Settings extends Vue {
         planetTrajectoryColor: 'blue',
         probeTrajectoryColor: 'white',
         asteroidTrajectoryColor: 'red',
-        light: 3.2,
+        probeColor: 'white',
+        cameraTracksProbe: true,
         lastUpdatedDate: new Date(),
     };
 
@@ -123,6 +136,8 @@ export default class Settings extends Vue {
         this.settingsData.planetTrajectoryColor = store.state.userSettings.planetTrajectoryColor;
         this.settingsData.probeTrajectoryColor = store.state.userSettings.probeTrajectoryColor;
         this.settingsData.asteroidTrajectoryColor = store.state.userSettings.asteroidTrajectoryColor;
+        this.settingsData.probeColor = store.state.userSettings.probeColor;
+        this.settingsData.cameraTracksProbe = store.state.userSettings.cameraTracksProbe;
     }
 
     public show() {
@@ -133,6 +148,7 @@ export default class Settings extends Vue {
     }
 
     public async save() {
+        store.dispatch('setLoading', true);
         await store.dispatch('setSettings', this.settingsData);
         if (this.modal) {
             this.modal.close();
