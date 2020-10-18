@@ -3,7 +3,7 @@
     <label>
         Playback Speed
     </label>
-      <input type="range" min="-12" max="25" v-model="value" class="slider">
+      <input type="range" min="-20" max="25" v-model="value" class="slider">
   </div>
 </template>
 

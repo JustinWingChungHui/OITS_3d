@@ -101,7 +101,15 @@ const actions: ActionTree<StateInterface, StateInterface> = {
 
         window.console.log(settingsJson);
         if (settingsJson) {
-            context.commit('setSettings', JSON.parse(settingsJson));
+            
+            const settings = JSON.parse(settingsJson);
+
+            // New settings are set to defaults
+            for (const prop in context.state.userSettings as any) {
+                settings[prop] = settings[prop] ?? (context.state.userSettings as any)[prop];
+            }
+        
+            context.commit('setSettings', settings);
         }
     },
 
