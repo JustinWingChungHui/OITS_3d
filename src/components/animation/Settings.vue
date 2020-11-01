@@ -5,7 +5,7 @@
                 <h2>Settings</h2>
                 <div class="pure-form pure-form-aligned">
                     <fieldset>
-                        <div class="pure-control-group">
+                       <div class="pure-control-group">
                             <label>Background</label>
                             <select v-model="settingsData.background">
                                 <option v-for="(item, key) in backgrounds" :key="key">{{key}}</option>
@@ -30,6 +30,14 @@
                         <div class="pure-control-group">
                             <label>Probe Trajectory Colour</label>
                             <select v-model="settingsData.probeTrajectoryColor">
+                                <option v-for="colour in colours" :key="colour">
+                                    {{colour}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="pure-control-group">
+                            <label>Marker Colour</label>
+                            <select v-model="settingsData.markerColor">
                                 <option v-for="colour in colours" :key="colour">
                                     {{colour}}
                                 </option>
@@ -82,10 +90,13 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { namespace } from 'vuex-class';
 import VanillaModal from 'vanilla-modal';
 import store from '@/store';
-import UserSettings from '@/store/userSettings';
+import UserSettingValues from '@/store/user-setting-values';
 import config from '@/config';
+const UserSettings = namespace('UserSettings');
+
 
 @Component
 export default class Settings extends Vue {
@@ -112,7 +123,7 @@ export default class Settings extends Vue {
         return config.backgrounds;
     }
 
-    public settingsData: UserSettings = {
+    public settingsData: UserSettingValues = {
         background: 'white',
         probeSizeMultiple: 10,
         bodySizeMultiple: 10,
@@ -122,22 +133,25 @@ export default class Settings extends Vue {
         probeTrajectoryColor: 'white',
         asteroidTrajectoryColor: 'red',
         probeColor: 'white',
+        markerColor: 'green',
         cameraTracksProbe: true,
-        lastUpdatedDate: new Date(),
     };
 
+    @UserSettings.State
+    public Data!: UserSettingValues;
+
+    @UserSettings.Action
+    public Update!: (userSettings: UserSettingValues) => Promise<void>;
+
+    @UserSettings.Action
+    public Load!: () => void;
+
     protected mounted() {
-        store.dispatch('loadSettings')
-        this.settingsData.background = store.state.userSettings.background;
-        this.settingsData.probeSizeMultiple = store.state.userSettings.probeSizeMultiple;
-        this.settingsData.bodySizeMultiple = store.state.userSettings.bodySizeMultiple;
-        this.settingsData.markerSizeMultiple = store.state.userSettings.markerSizeMultiple;
-        this.settingsData.asteroidSizeMultiple = store.state.userSettings.asteroidSizeMultiple;
-        this.settingsData.planetTrajectoryColor = store.state.userSettings.planetTrajectoryColor;
-        this.settingsData.probeTrajectoryColor = store.state.userSettings.probeTrajectoryColor;
-        this.settingsData.asteroidTrajectoryColor = store.state.userSettings.asteroidTrajectoryColor;
-        this.settingsData.probeColor = store.state.userSettings.probeColor;
-        this.settingsData.cameraTracksProbe = store.state.userSettings.cameraTracksProbe;
+        window.console.log(`Settings mounted()`);
+        this.Load();
+
+        window.console.log(this.Data);
+        this.settingsData = this.Data;
     }
 
     public show() {
@@ -148,8 +162,7 @@ export default class Settings extends Vue {
     }
 
     public async save() {
-        store.dispatch('setLoading', true);
-        await store.dispatch('setSettings', this.settingsData);
+        await this.Update(this.settingsData);
         if (this.modal) {
             this.modal.close();
         }

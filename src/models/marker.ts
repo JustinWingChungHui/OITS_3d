@@ -3,6 +3,8 @@ import IBody from './body';
 import Trajectory from './trajectory';
 import Store from '@/store';
 import ResourceTracker from '../scene_builders/resource-tracker';
+import MissionAnimation from '@/store/mission-animation';
+
 
 export default class Marker implements IBody{
     public id: string;
@@ -38,7 +40,7 @@ export default class Marker implements IBody{
         if (this.trajectory && this.cone1 && this.cone2 
                 && this.cone3 && this.cone4
                 && this.cone5 && this.cone6) {
-            const size = this.size * Store.state.userSettings.markerSizeMultiple;
+            const size = this.size * Store.state.UserSettings.Data.markerSizeMultiple;
             const node = this.trajectory.getNextNode();
             this.cone1.position.x = node.vector.x;
             this.cone1.position.y = node.vector.y - this.narrowness * size;
@@ -65,9 +67,12 @@ export default class Marker implements IBody{
     public async load(scene: Three.Scene): Promise<void> {
         window.console.log(`Marker.load()`)
 
-        if (this.id in Store.state.TrajectoryByBodyId) {
-            this.trajectory = Store.state.TrajectoryByBodyId[this.id];
+        const trajectoryByBodyId = (Store.state.MissionAnimation as MissionAnimation).TrajectoryByBodyId
+
+        if (this.id in trajectoryByBodyId) {
+            this.trajectory = trajectoryByBodyId[this.id];
             this.trajectory.line.material = ResourceTracker.track(new Three.LineBasicMaterial( { color: 'gray' } ));
+
             this.trajectory.load(scene);
 
             this.x = this.trajectory.currentNode.vector.x;
@@ -75,11 +80,14 @@ export default class Marker implements IBody{
             this.z = this.trajectory.currentNode.vector.z;
         }
 
-        const size = this.size * Store.state.userSettings.markerSizeMultiple;
+        const size = this.size * Store.state.UserSettings.Data.markerSizeMultiple;
 
         const coneGeometry = ResourceTracker.track(new Three.ConeBufferGeometry(size, size * this.narrowness * 2, 8)); 
 
-        const coneMaterial = ResourceTracker.track(new Three.MeshBasicMaterial( {color: 'green'} )); 
+        const coneMaterial = ResourceTracker.track(new Three.MeshBasicMaterial( {
+            color: Store.state.UserSettings.Data.markerColor
+        } ));
+
         this.cone1 = ResourceTracker.track(new Three.Mesh(coneGeometry, coneMaterial));
         this.cone2 = ResourceTracker.track(new Three.Mesh(coneGeometry, coneMaterial));
         this.cone3 = ResourceTracker.track(new Three.Mesh(coneGeometry, coneMaterial));

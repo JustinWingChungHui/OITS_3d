@@ -3,6 +3,8 @@ import IBody from './body';
 import Trajectory from './trajectory';
 import store from '@/store';
 import ResourceTracker from '../scene_builders/resource-tracker';
+import MissionAnimation from '@/store/mission-animation';
+
 
 export default class SphericalBody implements IBody{
     // Decentish smoothness and performance
@@ -59,11 +61,14 @@ export default class SphericalBody implements IBody{
         window.console.log(`SphericalBody.load()`)
         await this.loadTexture();
 
-        if (this.id in store.state.TrajectoryByBodyId) {
-            this.trajectory = store.state.TrajectoryByBodyId[this.id];
+        const trajectoryByBodyId = (store.state.MissionAnimation as MissionAnimation).TrajectoryByBodyId
+
+        if (this.id in trajectoryByBodyId) {
+            this.trajectory = trajectoryByBodyId[this.id];
             this.trajectory.line.material = ResourceTracker.track(new Three.LineBasicMaterial({ 
-                color: store.state.userSettings.planetTrajectoryColor
+                color: store.state.UserSettings.Data.planetTrajectoryColor
             }));
+
             this.trajectory.load(scene);
 
             this.x = this.trajectory.currentNode.vector.x;
@@ -71,7 +76,7 @@ export default class SphericalBody implements IBody{
             this.z = this.trajectory.currentNode.vector.z;
         }
 
-        const size = this.radius * store.state.userSettings.bodySizeMultiple;
+        const size = this.radius * store.state.UserSettings.Data.bodySizeMultiple;
 
         const sphereGeometry = ResourceTracker.track(new Three.SphereGeometry(
                         size, SphericalBody.WIDTH_SEGMENTS, SphericalBody.HEIGHT_SEGMENTS)); 

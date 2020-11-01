@@ -8,7 +8,7 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class Loading extends Vue {
 
   public get loading(): boolean {
-    return this.$store.state.loading;
+    return this.$store.state.MissionAnimation.Loading;
   }
 }
 
