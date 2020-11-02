@@ -4,6 +4,8 @@ import config from '@/config';
 import * as request from 'request-promise-native';
 import store from '@/store';
 import { MissionResponse } from '@/models/missions/missions_response';
+import axios from 'axios';
+import { AxiosResponse } from 'axios';
 
 @Module({ namespaced: true })
 class Missions extends VuexModule {
@@ -27,10 +29,10 @@ class Missions extends VuexModule {
             json: true
         }
 
-        const response = await request.get(options) as MissionResponse[];
+        const response = await axios.get(`${config.BaseUrl}${config.missionsUrl}`) as AxiosResponse<MissionResponse[]>;
         window.console.log('MissionResponse');
         window.console.log(response);
-        this.context.commit('SetMissions', response);
+        this.context.commit('SetMissions', response.data);
 
         store.dispatch('MissionAnimation/UpdateLoading', false);
     }

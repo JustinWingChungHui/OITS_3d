@@ -3,7 +3,8 @@ import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
 import Trajectory from '@/models/trajectory';
 import AnimationState from '@/models/animation_state';
 import config from '@/config';
-import * as request from 'request-promise-native';
+import axios from 'axios';
+import { AxiosResponse } from 'axios';
 import store from '@/store';
 
 @Module({ namespaced: true })
@@ -95,19 +96,16 @@ class MissionAnimation extends VuexModule {
         window.console.log('GetCsvResults() action called');
         
         const path = config.pathsUrl.replace(`{uid}`, this.uid);
+        const url = `${config.BaseUrl}${path}`;
 
-        const options = {
-            uri: `${config.BaseUrl}${path}`
-        }
-
-        const response = await request.get(options) as string;
+        const response = await axios.get(url) as AxiosResponse<string>;
 
         const data: { [id: string]: string[] } = {};
         const trajectoryByBodyId: { [id: string]: Trajectory } = {};
 
         let id = '';
 
-        for (const row of response.split("\n")) {
+        for (const row of response.data.split("\n")) {
             if (row && row.trim().length > 0) {
                 if (!row.includes(',')) {
                     id = row;
