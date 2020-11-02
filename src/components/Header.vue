@@ -32,8 +32,8 @@ export default class Header extends Vue { }
   }
 
   .header h1 {
-        font-weight: 100;
-      margin: 0;
+    font-weight: 100;
+    margin: 0;
   }
 </style>
 

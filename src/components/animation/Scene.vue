@@ -8,7 +8,6 @@ import SceneBuilder from '@/scene_builders/scene-builder';
 import store from '@/store';
 import { namespace } from 'vuex-class';
 const UserSettings = namespace('UserSettings');
-const MissionAnimation = namespace('MissionAnimation');
 
 @Component
 export default class Scene extends Vue {

@@ -1,7 +1,5 @@
 
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
-import store from '@/store';
-//https://gist.github.com/beardcoder/ff6d4f7bb82e7b34febce273b5759d6d
 
 //https://bezkoder.com/vuex-typescript-jwt-auth/
 

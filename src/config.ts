@@ -6,6 +6,7 @@ import Asteroid from '@/models/asteroid';
 interface Config {
     BaseUrl: string;
     pathsUrl: string;
+    missionsUrl: string;
     ZeroDate: number;
     bodies: Array<Body>;
     backgrounds: { [id: string]: string };
@@ -19,6 +20,7 @@ const config: Config = {
 
     // csv results
     pathsUrl: '/results/{uid}/paths/',
+    missionsUrl: '/missions/',
 
     ZeroDate: 946724329, // 2000-01-01 00:00:00 corrected for Barycentric time
 
