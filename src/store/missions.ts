@@ -1,9 +1,8 @@
 
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
 import config from '@/config';
-import * as request from 'request-promise-native';
 import store from '@/store';
-import { MissionResponse } from '@/models/missions/missions_response';
+import Mission from '@/models/missions/mission';
 import axios from 'axios';
 import { AxiosResponse } from 'axios';
 
@@ -12,11 +11,17 @@ class Missions extends VuexModule {
 
     public Loading = true;
 
-    public Missions: MissionResponse[] = [];
+    public Mission?: Mission;
+    public Missions: Mission[] = [];
 
     @Mutation
-    public SetMissions(missions: MissionResponse[]) {
-        this.Missions = missions;
+    public SetMissions(mission: Mission[]) {
+        this.Missions = mission;
+    }
+
+    @Mutation
+    public SetMission(mission: Mission) {
+        this.Mission = mission;
     }
 
     @Action({ rawError: true })
@@ -24,12 +29,9 @@ class Missions extends VuexModule {
         window.console.log('GetMissions() action called');
         store.dispatch('MissionAnimation/UpdateLoading', true);
 
-        const options = {
-            uri: `${config.BaseUrl}${config.missionsUrl}`,
-            json: true
-        }
+        const uri = `${config.BaseUrl}${config.missionsUrl}`;
 
-        const response = await axios.get(`${config.BaseUrl}${config.missionsUrl}`) as AxiosResponse<MissionResponse[]>;
+        const response = await axios.get(uri) as AxiosResponse<Mission[]>;
         window.console.log('MissionResponse');
         window.console.log(response);
         this.context.commit('SetMissions', response.data);
@@ -37,7 +39,13 @@ class Missions extends VuexModule {
         store.dispatch('MissionAnimation/UpdateLoading', false);
     }
 
- 
+    @Action({ rawError: true })
+    public async GetMission(pk: number) {
+        const uri = `${config.BaseUrl}${config.missionsUrl}${pk}/`;
+
+        const response = await axios.get(uri) as AxiosResponse<Mission>;
+        this.context.commit('SetMission', response.data);
+    }
 }
 
 export default Missions

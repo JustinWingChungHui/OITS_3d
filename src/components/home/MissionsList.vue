@@ -6,6 +6,7 @@
           <th>Description</th>
           <th>Status</th>
           <th>Created At</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -18,7 +19,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import store from '@/store';
 import MissionEntry from './MissionEntry.vue';
-import { MissionResponse } from '@/models/missions/missions_response';
+import Mission from '@/models/missions/mission';
 import { namespace } from 'vuex-class';
 const Missions = namespace('Missions');
 
@@ -30,10 +31,20 @@ const Missions = namespace('Missions');
 export default class MissionsList extends Vue { 
 
   @Missions.State('Missions')
-  public Missions!: MissionResponse[]
+  public Missions!: Mission[]
 
   protected async mounted() {
     await store.dispatch('Missions/GetMissions');
+    await this.CheckStatus();
+  }
+
+  protected async CheckStatus() {
+    window.setTimeout(async () => {
+      if (this.$router.currentRoute.name == 'Home') {
+        await store.dispatch('Missions/GetMissions');
+        this.CheckStatus();
+      }
+    }, 5000);
   }
 }
 
@@ -47,5 +58,6 @@ export default class MissionsList extends Vue {
     margin: 0 auto;
     width: 100%;
  }
+
 </style>
 

@@ -20,7 +20,7 @@ const config: Config = {
 
     // csv results
     pathsUrl: '/results/{uid}/paths/',
-    missionsUrl: '/missions/',
+    missionsUrl: '/api/mission/',
 
     ZeroDate: 946724329, // 2000-01-01 00:00:00 corrected for Barycentric time
 
