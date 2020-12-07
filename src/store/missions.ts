@@ -2,7 +2,9 @@
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
 import config from '@/config';
 import store from '@/store';
+import router from '@/router';
 import Mission from '@/models/missions/mission';
+import MissionParams from '@/models/missions/mission_params';
 import axios from 'axios';
 import { AxiosResponse } from 'axios';
 
@@ -14,14 +16,19 @@ class Missions extends VuexModule {
     public Mission?: Mission;
     public Missions: Mission[] = [];
 
+    public get missionUpdatesEnabled(): boolean {
+        return router.currentRoute.name === 'Home';
+    }
+
     @Mutation
-    public SetMissions(mission: Mission[]) {
-        this.Missions = mission;
+    public SetMissions(missions: Mission[]) {
+        this.Missions = missions;
     }
 
     @Mutation
     public SetMission(mission: Mission) {
         this.Mission = mission;
+        this.Mission.objectParameters = JSON.parse(mission.parameters) as MissionParams;
     }
 
     @Action({ rawError: true })
@@ -45,6 +52,35 @@ class Missions extends VuexModule {
 
         const response = await axios.get(uri) as AxiosResponse<Mission>;
         this.context.commit('SetMission', response.data);
+
+        const missions = this.Missions.map(m => {
+            if (m.id === this.Mission?.id) {
+                return this.Mission
+            } else {
+                return m;
+            }
+        });
+        
+        this.context.commit('SetMissions', missions);
+    }
+
+    @Action({ rawError: true })
+    public EnableMissionUpdates() {
+        for (const mission of this.Missions) {
+            if (mission.status !== 'C') {
+                this.context.dispatch('GetMissionUpdate', mission.id);
+            }
+        }
+    }
+
+    @Action({ rawError: true })
+    public async GetMissionUpdate(pk: number) {
+        await this.context.dispatch('GetMission', pk);
+        window.setTimeout(async() => {
+            if (this.missionUpdatesEnabled) {
+                await this.context.dispatch('GetMissionUpdate', pk);
+            }
+        }, 5000);
     }
 }
 

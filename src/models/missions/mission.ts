@@ -1,3 +1,4 @@
+import MissionParams from '@/models/missions/mission_params';
 
 export default interface Mission {
     id: number;
@@ -6,6 +7,7 @@ export default interface Mission {
     status: string;
     parameters: string;
     created_at: Date;
+    objectParameters: MissionParams;
 }
 
 

@@ -4,8 +4,8 @@
         <tr>
           <th>ID</th>
           <th>Description</th>
-          <th>Status</th>
           <th>Created At</th>
+          <th>Status</th>
           <th></th>
         </tr>
       </thead>
@@ -35,16 +35,7 @@ export default class MissionsList extends Vue {
 
   protected async mounted() {
     await store.dispatch('Missions/GetMissions');
-    await this.CheckStatus();
-  }
-
-  protected async CheckStatus() {
-    window.setTimeout(async () => {
-      if (this.$router.currentRoute.name == 'Home') {
-        await store.dispatch('Missions/GetMissions');
-        this.CheckStatus();
-      }
-    }, 5000);
+    store.dispatch('Missions/EnableMissionUpdates');
   }
 }
 

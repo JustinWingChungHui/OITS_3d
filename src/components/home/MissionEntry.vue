@@ -2,14 +2,14 @@
     <tr>
         <td>{{ Mission.id }}</td>
         <td>{{ Mission.description }}</td>
-        <td :class="StatusDescription">{{ StatusDescription }}</td>
         <td>{{ FormattedDate }}</td>
+        <td :class="StatusDescription">{{ StatusDescription }}</td>
         <td>
-          <router-link :to="{ path: '/edit', query: {id: Mission.id } }">
+          <router-link :to="{ path: `/edit/${Mission.id}` }">
             <span class="oi mission-link" data-glyph="pencil"></span>
           </router-link>
           
-          <router-link :to="{ path: '/animation', query: { uid: Mission.uid }}" target="_blank">
+          <router-link v-if="Mission.status === 'C'" :to="{ path: '/animation', query: { uid: Mission.uid }}" target="_blank">
             <span class="oi mission-link" data-glyph="media-play"></span>
           </router-link>
         </td>
@@ -56,15 +56,15 @@ export default class MissionEntry extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .Complete {
-    color: darkgreen !important;
+    background-color: lime !important;
   }
 
   .New {
-    color: darkred !important;
+    background-color: red !important;
   }
 
   .Processing {
-    color: orange !important;
+    background-color: orange !important;
   }
 
   .mission-link{

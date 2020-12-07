@@ -80,7 +80,7 @@
         </div>
         <div class="modal">
             <div class="modal-inner">
-                <span data-modal-close>&times;</span>
+                <span data-modal-close class="oi" data-glyph="x"></span>
                 <div class="modal-content"></div>
             </div>
         </div>
@@ -92,7 +92,6 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import VanillaModal from 'vanilla-modal';
-import store from '@/store';
 import UserSettingValues from '@/store/user-setting-values';
 import config from '@/config';
 const UserSettings = namespace('UserSettings');
