@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import HelpButton from '@/components/HelpButton.vue';
 import config from '@/config';
 import { namespace } from 'vuex-class';
 import Mission from '@/models/missions/mission';
@@ -18,7 +17,6 @@ const Missions = namespace('Missions');
 
 @Component({
   components: {
-    HelpButton,
   },
 })
 export default class MissionStageEdit extends Vue { 
@@ -42,7 +40,7 @@ export default class MissionStageEdit extends Vue {
   }
 
   protected edit() {
-    window.console.log(`MissionStageEdit.save()`);
+    this.$emit('editClicked');
   }
 }
 

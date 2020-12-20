@@ -15,6 +15,8 @@ interface Config {
     cameraStartPosition: { [id: string]: number };
 
     bodiesByNAIFCodes: { [id: string]: string };
+
+    binarySpiceFiles: string[];
 }
 
 const config: Config = {
@@ -49,7 +51,8 @@ const config: Config = {
         '2000004': 'VESTA',
         '3825054': '3825054',
         '2099942': '2099942',
-        '3830896': '3830896'
+        '3830896': '3830896',
+        '1003639': '1003639',
     },
 
     // Textures https://www.solarsystemscope.com/textures/
@@ -101,6 +104,18 @@ const config: Config = {
         y: 0,
         z: 3,
     },
+
+    binarySpiceFiles: [
+        "1000012.bsp",
+        "101955.bsp",
+        "2IBorisov.bsp",
+        "de430.bsp",
+        "Bennu.bsp",
+        "BORISOV_24-11-2019.bsp",
+        "extrasolar.bsp",
+        "lutetia.bsp",
+        "steins.bsp"
+    ]
 }
 
 export default config;

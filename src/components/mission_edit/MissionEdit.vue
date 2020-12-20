@@ -3,7 +3,7 @@
       <form class="pure-form pure-form-aligned">
           <fieldset>
               
-              <h3>Description: </h3>
+              <h3>Mission Description: </h3>
               <input class="pure-input-1 description" type="text" v-model="description"/>
 
               <hr/>
@@ -17,7 +17,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                        <MissionStageEdit v-for="index in stageIndexes" :key="index" :stageIndex="index" />
+                        <MissionStageEdit v-for="index in stageIndexes" :key="index" :stageIndex="index" @editClicked="editClicked(index)"/>
                     </tbody>
                   </table>
                   <p>
@@ -56,28 +56,43 @@
                 </label>
               </div>
 
+              <hr/>
+              <h4>Binary Spice Files
+                <HelpButton :message="'Filenames for Binary Spice Kernels'"/>
+              </h4>
+              <div class="pure-control-group">
+                <multiselect v-model="bsp" :options="spiceFiles" :multiple="true">
+                </multiselect>
+            </div>
+
 
           </fieldset>
       </form >
       <div class="pure-controls">
-        <button type="button" class="pure-button pure-button-primary" @click="save">Save</button>
+        <button type="button" class="pure-button pure-button-primary" @click="save">Launch new Mission</button>
       </div>
       <hr/>
+      <MissionStageDetails ref="missionStageDetails" />
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import Multiselect from 'vue-multiselect'
 import HelpButton from '@/components/HelpButton.vue';
-import MissionStageEdit from '@/components/mission_edit/MissionStageEdit.vue';
+import MissionStageEdit from './MissionStageEdit.vue';
+import MissionStageDetails from './MissionStageDetails.vue';
 import { namespace } from 'vuex-class';
 import Mission from '@/models/missions/mission';
+import config from '@/config';
 const Missions = namespace('Missions');
 
 @Component({
   components: {
+    Multiselect,
     HelpButton,
     MissionStageEdit,
+    MissionStageDetails,
   },
 })
 export default class MissionEdit extends Vue { 
@@ -96,6 +111,11 @@ export default class MissionEdit extends Vue {
 
   public stageIndexes: Array<number> = [];
 
+  public bsp: string[] = [];
+
+  public get spiceFiles(): string[] {
+    return config.binarySpiceFiles;
+  }
 
   @Missions.State
   public Mission!: Mission;
@@ -116,16 +136,22 @@ export default class MissionEdit extends Vue {
     this.rendezVous = this.Mission?.objectParameters?.RENDEZVOUS;
     this.nData = this.Mission?.objectParameters?.Ndata;
     this.runtime = this.Mission?.objectParameters?.RUN_TIME;
-
+    this.bsp = this.Mission?.objectParameters?.BSP;
     for (let i=0; i < this.Mission?.objectParameters?.ID?.length || 0; i++ ) {
       this.stageIndexes.push(i);
     }
+  }
+
+  private editClicked(stageIndex: number) {
+     window.console.log(`MissionEdit.editClicked(stageIndex: ${stageIndex})`);
+    const modal = this.$refs.missionStageDetails as MissionStageDetails;
+    modal.show(stageIndex);
   }
 }
 
 </script>
 
-
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 hr {
