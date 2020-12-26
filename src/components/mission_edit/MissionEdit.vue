@@ -34,11 +34,16 @@
                       </tr>
                     </thead>
                     <tbody>
-                        <MissionStageEdit v-for="index in stageIndexes" :key="index" :stageIndex="index" @editClicked="editClicked(index)"/>
+                        <MissionStageEdit v-for="index in stageIndexes" 
+                          :key="index" 
+                          :stageIndex="index"
+                          :lastStage="index === stageIndexes.length - 1" 
+                          @editClicked="editClicked(index)"
+                          @deleteClicked="removeLastStageClicked(index)"/>
                     </tbody>
                   </table>
                   <p>
-                    <button type="button" class="pure-button">
+                    <button type="button" class="pure-button" @click="addStageClicked()">
                       <span class="oi" data-glyph="plus"></span> Add Stage
                     </button>
                   </p>
@@ -104,6 +109,7 @@ import MissionStageDetails from './MissionStageDetails.vue';
 import { namespace } from 'vuex-class';
 import Mission from '@/models/missions/mission';
 import config from '@/config';
+import store from '@/store';
 const Missions = namespace('Missions');
 
 @Component({
@@ -151,8 +157,26 @@ export default class MissionEdit extends Vue {
     this.refreshData();
   }
 
-  protected save() {
+  protected async save() {
     window.console.log(`MissionEdit.save()`);
+
+    if (this.Mission && this.Mission.objectParameters) {
+      this.Mission.description = this.description;
+      this.Mission.objectParameters.description = this.description;
+      this.Mission.objectParameters.t01 = this.t01;
+      this.Mission.objectParameters.tmin1 = this.tmin1;
+      this.Mission.objectParameters.tmax1 = this.tmax1;
+      this.Mission.objectParameters.Duration = this.duration;
+      this.Mission.objectParameters.PROGRADE_ONLY = this.progradeOnly;
+      this.Mission.objectParameters.RENDEZVOUS = this.rendezVous;
+      this.Mission.objectParameters.Ndata = this.nData;
+      this.Mission.objectParameters.RUN_TIME = this.runtime;
+      this.Mission.objectParameters.BSP = this.bsp;
+
+      await store.dispatch('Missions/PostSelectedMission');
+
+      this.$router.push('/');
+    }
   }
 
   private refreshData() {
@@ -166,6 +190,8 @@ export default class MissionEdit extends Vue {
     this.nData = this.Mission?.objectParameters?.Ndata;
     this.runtime = this.Mission?.objectParameters?.RUN_TIME;
     this.bsp = this.Mission?.objectParameters?.BSP;
+
+    this.stageIndexes = [];
     for (let i=0; i < this.Mission?.objectParameters?.ID?.length || 0; i++ ) {
       this.stageIndexes.push(i);
     }
@@ -175,6 +201,18 @@ export default class MissionEdit extends Vue {
      window.console.log(`MissionEdit.editClicked(stageIndex: ${stageIndex})`);
     const modal = this.$refs.missionStageDetails as MissionStageDetails;
     modal.show(stageIndex);
+  }
+
+  private addStageClicked() {
+    store.dispatch('Missions/AddStageToSelectedMission');
+    this.refreshData();
+  }
+
+  private removeLastStageClicked(stageIndex: number) {
+    if (stageIndex === this.stageIndexes.length - 1) {
+      store.dispatch('Missions/RemoveLastStageFromSelectedMission');
+      this.refreshData();
+    }
   }
 }
 

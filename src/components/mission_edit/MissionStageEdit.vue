@@ -3,7 +3,8 @@
       <td>{{naifId}}</td>
       <td>{{stageName}}</td>
       <td>
-          <span class="oi edit-stage-link" data-glyph="pencil" @click="edit"></span>
+          <span class="oi edit-stage-link" data-glyph="pencil" @click="onEditClicked"></span>
+          <span v-if="lastStage" class="oi edit-stage-link" data-glyph="trash" @click="onDeleteClicked"></span>
       </td>
     </tr>
 </template>
@@ -27,6 +28,9 @@ export default class MissionStageEdit extends Vue {
   @Prop()
   public stageIndex?: number;
 
+  @Prop({default: false})
+  public lastStage?: boolean;
+
   public get naifId(): string {
     return this.Mission.objectParameters.ID[this.stageIndex || 0];
   }
@@ -39,8 +43,12 @@ export default class MissionStageEdit extends Vue {
     window.console.log(`MissionStageEdit.mounted()`);
   }
 
-  protected edit() {
+  protected onEditClicked() {
     this.$emit('editClicked');
+  }
+
+  protected onDeleteClicked() {
+    this.$emit('deleteClicked', this.stageIndex);
   }
 }
 

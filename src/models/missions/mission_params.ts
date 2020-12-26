@@ -1,4 +1,5 @@
 export default interface MissionParams {
+    description: string;
     BSP: string[];
     Duration: number;
     ID: string[];
