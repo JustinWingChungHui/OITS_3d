@@ -1,4 +1,4 @@
-export default interface UserSettings {
+interface UserSettingValues {
     background: string;
     probeSizeMultiple: number;
     bodySizeMultiple: number;
@@ -8,7 +8,8 @@ export default interface UserSettings {
     probeTrajectoryColor: string;
     probeColor: string;
     asteroidTrajectoryColor: string;
+    markerColor: string;
     cameraTracksProbe: boolean;
-
-    lastUpdatedDate: Date;
 }
+
+export default UserSettingValues;

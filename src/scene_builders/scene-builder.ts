@@ -39,6 +39,7 @@ export default class SceneBuilder {
 
         // Load Light
         const ambientLight = ResourceTracker.track(new Three.AmbientLight(0xffffff, 0.2));
+
         this.scene.add(ambientLight);
 
         const pointLight = ResourceTracker.track(new Three.PointLight(0xffffff, 2, 0, 1));
@@ -70,10 +71,10 @@ export default class SceneBuilder {
 
 
         // set t directly on state to not kill Vuex
-        store.state.t = t;
+        store.state.MissionAnimation.t = t;
         
         // Point the camera at the probe
-        if (store.state.userSettings.cameraTracksProbe) {
+        if (store.state.UserSettings.Data.cameraTracksProbe) {
             const pVector = probe.trajectory?.currentNode?.vector;
             if (pVector) {
                 this.controls.target.set(pVector.x, pVector.y, pVector.z);
@@ -104,8 +105,12 @@ export default class SceneBuilder {
     private async loadBackground(): Promise<void> {
         window.console.log(`SceneBuilder.loadBackground()`)
 
+        const backgroundPath = store.getters['MissionAnimation/BackgroundPath'];
+        window.console.log(`backgroundPath: ${backgroundPath}`);
+
         const promise = await new Promise<void>((resolve) => {
-            new Three.TextureLoader().load(store.getters.backgroundPath, (texture) => {
+            new Three.TextureLoader().load(backgroundPath, (texture) => {
+                window.console.log(`background loaded`);
                 this.scene.background = texture;
                 resolve();
             });

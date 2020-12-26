@@ -1,7 +1,7 @@
 <template>
   <div class="stats-container">
-      <div><strong>t:</strong> {{ t }}</div>
-      <div><strong> Date:</strong>{{ formattedDate }}</div>
+      <div><strong>t: </strong> {{ t }}</div>
+      <div><strong> Date: </strong>{{ formattedDate }}</div>
   </div>
 </template>
 
@@ -14,11 +14,11 @@ import moment from 'moment/moment';
 export default class TimeStats extends Vue {
 
   private get t(): number {
-    return store.state.t;
+    return store.state.MissionAnimation.t;
   }
 
   private get formattedDate(): string {
-    return moment(store.getters.tDate).format("YYYY-MM-DD");
+    return moment(store.getters['MissionAnimation/tDate']).format("YYYY-MM-DD");
   }
 
 }

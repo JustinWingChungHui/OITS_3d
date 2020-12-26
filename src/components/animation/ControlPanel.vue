@@ -31,14 +31,18 @@ import Settings from './Settings.vue';
 export default class ControlPanel extends Vue {
 
   public rewind() {
-    store.dispatch('setAnimationState', AnimationState.rewind);
+    store.dispatch('MissionAnimation/UpdateAnimationState', AnimationState.rewind);
   }
 
   public playPause() {
-    if (store.getters.isAnimating) {
-      store.dispatch('setAnimationState', AnimationState.paused);
+    window.console.log(`playPause()`);
+
+    const isAnimating = store.getters['MissionAnimation/IsAnimating'];
+    window.console.log(`isAnimating: ${isAnimating}`);
+    if (isAnimating) {
+      store.dispatch('MissionAnimation/UpdateAnimationState', AnimationState.paused);
     } else {
-      store.dispatch('setAnimationState', AnimationState.playing);
+      store.dispatch('MissionAnimation/UpdateAnimationState', AnimationState.playing);
     }
   }
 

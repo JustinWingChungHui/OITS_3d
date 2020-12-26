@@ -4,8 +4,10 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import SceneBuilder from '../scene_builders/scene-builder';
+import SceneBuilder from '@/scene_builders/scene-builder';
 import store from '@/store';
+import { namespace } from 'vuex-class';
+const UserSettings = namespace('UserSettings');
 
 @Component
 export default class Scene extends Vue {
@@ -14,9 +16,8 @@ export default class Scene extends Vue {
 
   private initialising = false;
 
-  private get settingsLastUpdatedDate(): Date {
-    return store.state.userSettings.lastUpdatedDate;
-  }
+  @UserSettings.State('LastUpdatedDate')
+  private settingsLastUpdatedDate!: Date
 
   protected async mounted() {
     this.initialising = true;
@@ -24,9 +25,11 @@ export default class Scene extends Vue {
     this.initialising = false;
   }
 
+
   private async init() {
     console.log(`Scene.init()`);
-    store.dispatch('setLoading', true);
+
+    store.dispatch('MissionAnimation/UpdateLoading', true);
     const uid = this.$route.query.uid;
     console.log(`uid: ${uid}`);
     const container = document.getElementById('container');
@@ -34,17 +37,18 @@ export default class Scene extends Vue {
     if (uid && container) {
       const height = window.innerHeight - container.getBoundingClientRect().top - 200;
       container.style.height = `${height}px`;
-      await store.dispatch('setUid', uid)
+      await store.dispatch('MissionAnimation/UpdateUid', uid)
       await this.buildScene(container);
     }
   }
 
   private async buildScene(container: HTMLElement) {
-    store.dispatch('setLoading', true);
+    console.log(`Scene.buildScene()`);
+
+    store.dispatch('MissionAnimation/UpdateLoading', true);
     this.scene = new SceneBuilder(container);
     await this.scene.load()
-
-    store.dispatch('setLoading', false);
+    store.dispatch('MissionAnimation/UpdateLoading', false);
     this.scene.animate(); 
   }
 
@@ -52,10 +56,6 @@ export default class Scene extends Vue {
   private async onsettingsLastUpdatedDateChanged(newValue: Date, oldValue: Date) {
     window.console.log(`onsettingsLastUpdatedDateChanged(${oldValue}, ${newValue}`)
     if (newValue > oldValue && !this.initialising) {
-
-      if (this.scene) {
-        this.scene.dispose();
-      }
 
       const container = document.getElementById('container') as HTMLElement;
       container.innerHTML = '';

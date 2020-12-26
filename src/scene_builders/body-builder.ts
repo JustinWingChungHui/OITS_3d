@@ -25,7 +25,7 @@ export default class BodyBuilder {
         promises.push(sun.load(scene));
         bodies[sun.id] = sun;
 
-        for (const id in Store.state.TrajectoryByBodyId) {
+        for (const id in Store.state.MissionAnimation.TrajectoryByBodyId) {
 
             if (id.includes('INTERMEDIATE')) {
                 const marker = new Marker(id, 0, 0, 0, config.markerSize);

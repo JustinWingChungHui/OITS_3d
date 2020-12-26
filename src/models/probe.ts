@@ -5,8 +5,9 @@ import Trajectory from './trajectory';
 import SphericalBody from './spherical_body';
 import store from '@/store';
 import AnimationState from './animation_state';
-import state from '@/store/state';
 import ResourceTracker from '../scene_builders/resource-tracker';
+import MissionAnimation from '@/store/mission-animation';
+
 
 export default class Probe implements IBody{
     public id: string;
@@ -40,11 +41,14 @@ export default class Probe implements IBody{
         window.console.log(`Probe.load()`)
         await this.LoadGLTF();
 
-        if (this.id in store.state.TrajectoryByBodyId) {
-            this.trajectory = store.state.TrajectoryByBodyId[this.id];
+        const trajectoryByBodyId = (store.state.MissionAnimation as MissionAnimation).TrajectoryByBodyId
+
+        if (this.id in trajectoryByBodyId) {
+            this.trajectory = trajectoryByBodyId[this.id];
             this.trajectory.line.material = ResourceTracker.track(new Three.LineBasicMaterial({
-                color: store.state.userSettings.probeTrajectoryColor
+                color: store.state.UserSettings.Data.probeTrajectoryColor
             }));
+
             this.trajectory.showPastOnly();
             this.trajectory.load(scene);
 
@@ -53,7 +57,7 @@ export default class Probe implements IBody{
             this.z = this.trajectory.currentNode.vector.z;
 
             const deltaT = this.trajectory.nodes[1].t - this.trajectory.nodes[0].t;
-            store.dispatch('setDeltaT', deltaT);
+            store.dispatch('MissionAnimation/UpdateDeltaT', deltaT);
         }
 
         if (this.gltfScene) {
@@ -74,7 +78,7 @@ export default class Probe implements IBody{
                 this.gltfScene.position.z = node.vector.z;
 
                 if (this.trajectory.isLastNode) {
-                    store.dispatch('setAnimationState', AnimationState.paused);
+                    store.dispatch('MissionAnimation/UpdateAnimationState', AnimationState.paused);
                 }
 
                 this.trajectory.animate();
@@ -87,7 +91,8 @@ export default class Probe implements IBody{
     }
 
     public pointTowardsBody(body: SphericalBody) {
-        if (this.gltfScene && body.sphere && store.getters.isAnimating) {
+
+        if (this.gltfScene && body.sphere && store.getters['MissionAnimation/IsAnimating']) {
             this.gltfScene.lookAt(body.sphere.position);
         }
     }
@@ -96,8 +101,10 @@ export default class Probe implements IBody{
         const promise = await new Promise<void>((resolve) => {
 
             new GLTFLoader().load('/assets/probe/scene.gltf', (gltf) => {
+
                 ResourceTracker.track(gltf)
-                const size = this.scale * store.state.userSettings.probeSizeMultiple;
+                const size = this.scale * store.state.UserSettings.Data.probeSizeMultiple;
+
                 gltf.scene.scale.set(size, size, size);
                 gltf.scene.position.x = this.x;
                 gltf.scene.position.y = this.y;
@@ -110,7 +117,7 @@ export default class Probe implements IBody{
                         
                         // Texture is not showing up , so use basic colour
                         mesh.material = ResourceTracker.track(new Three.MeshLambertMaterial({
-                            color: state.userSettings.probeColor,
+                            color: store.state.UserSettings.Data.probeColor,
 
                         }));
                     }

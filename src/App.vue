@@ -1,31 +1,54 @@
 <template>
   <div id="app">
-    <!-- <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div> -->
+    <Header v-if="this.$route.name !== 'Animation'" />
+    <div id="nav" v-if="this.$route.name !== 'Animation'">
+      <router-link to="/">MISSIONS</router-link>
+      <router-link to="/about">ABOUT</router-link>
+    </div>
     <router-view/>
   </div>
 </template>
 
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import Header from '@/components/Header.vue';
+
+@Component({
+  components: {
+    Header
+  },
+})
+export default class App extends Vue { }
+
+</script>
+
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 #nav {
-  padding: 30px;
+  padding: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1em;
+  padding-right: 1em;
+  max-width: 768px;
+  letter-spacing: .01em;
+  font-weight: 300;
+  text-align: center;
+  line-height: 1.6;
 }
 
 #nav a {
-  font-weight: bold;
-  color: #2c3e50;
+  padding: 2em;
+  color: #999;
 }
 
 #nav a.router-link-exact-active {
-  color: #42b983;
+  color: black;
 }
 
 body {

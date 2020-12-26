@@ -50,7 +50,7 @@ export default class Trajectory {
 
     public getNextNode(): TrajectoryNode {
 
-        switch(store.state.animationState) {
+        switch(store.state.MissionAnimation.AnimationState) {
             case AnimationState.rewind: {
                 this.index = 0;
                 this.partialIndex = 0;
@@ -61,8 +61,9 @@ export default class Trajectory {
                 break;
             }
             case AnimationState.playing: {
-                if (this.index  < this.nodes.length - store.state.playbackSpeed - 1) {
-                    this.partialIndex += store.state.playbackSpeed;
+                const playbackSpeed = store.state.MissionAnimation.PlaybackSpeed;
+                if (this.index  < this.nodes.length - playbackSpeed - 1) {
+                    this.partialIndex += playbackSpeed;
                     this.index = Math.floor(this.partialIndex); 
                 } else {
                     this.isLastNode = true;
@@ -81,7 +82,7 @@ export default class Trajectory {
 
     public getNodeForCurrentTime(): TrajectoryNode {
 
-        if (store.state.animationState === AnimationState.rewind) {
+        if (store.state.MissionAnimation.AnimationState === AnimationState.rewind) {
             this.index = 0;
             this.partialIndex = 0;
             const node = this.nodes[this.index];
@@ -89,26 +90,29 @@ export default class Trajectory {
             return this.currentNode;
         }
 
-        const frameskip = Math.floor(Math.max(1, store.state.playbackSpeed));
+        const frameskip = Math.floor(Math.max(1, store.state.MissionAnimation.PlaybackSpeed));
 
-        if (this.nodes.length < this.index + store.state.playbackSpeed + 1) {
+        if (this.nodes.length < this.index + frameskip + 1) {
             this.isLastNode = true;
             return this.currentNode;
         }
 
+        const t = store.state.MissionAnimation.t;
+        const deltaT = store.state.MissionAnimation.deltaT;
+
         // Check next node is correct time
         const nextNode = this.nodes[this.index + frameskip];
-        if (nextNode.t <= store.state.t + store.state.deltaT * frameskip
-            && nextNode.t >= store.state.t - store.state.deltaT * frameskip) {
+        if (nextNode.t <= t + deltaT * frameskip
+            && nextNode.t >= t - deltaT * frameskip) {
 
             return this.getNextNode();
         }
 
         // Find closest node
-        if (this.currentNode.t < store.state.t + store.state.deltaT * frameskip) {
+        if (this.currentNode.t < t + deltaT * frameskip) {
             for (let i = this.index; i < this.nodes.length; i++) {
                 
-                if (this.nodes[i].t >= store.state.t) {
+                if (this.nodes[i].t >= t) {
                     this.index = i - frameskip;
                     this.partialIndex = i - frameskip;
                     this.currentNode = this.nodes[i - frameskip];
@@ -119,6 +123,7 @@ export default class Trajectory {
             window.console.error(`no node found for state t: ${store.state.t}`);
         }
 
+        window.console.log(2);
         return this.currentNode;
     }
 

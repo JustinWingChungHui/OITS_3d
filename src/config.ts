@@ -6,12 +6,17 @@ import Asteroid from '@/models/asteroid';
 interface Config {
     BaseUrl: string;
     pathsUrl: string;
+    missionsUrl: string;
     ZeroDate: number;
     bodies: Array<Body>;
     backgrounds: { [id: string]: string };
     markerSize: number;
 
     cameraStartPosition: { [id: string]: number };
+
+    bodiesByNAIFCodes: { [id: string]: string };
+
+    binarySpiceFiles: string[];
 }
 
 const config: Config = {
@@ -19,11 +24,40 @@ const config: Config = {
 
     // csv results
     pathsUrl: '/results/{uid}/paths/',
+    missionsUrl: '/api/mission/',
 
     ZeroDate: 946724329, // 2000-01-01 00:00:00 corrected for Barycentric time
 
+    // https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/FORTRAN/req/naif_ids.html#Barycenters
+    bodiesByNAIFCodes: {
+        'INTERMEDIATE POINT': 'INTERMEDIATE POINT',
+        '0': 'SOLAR SYSTEM BARYCENTER',
+        '1': 'MERCURY BARYCENTER',
+        '2': 'VENUS BARYCENTER',
+        '3': 'EARTH BARYCENTER',
+        '4': 'MARS BARYCENTER',
+        '5': 'JUPITER BARYCENTER',
+        '6': 'SATURN BARYCENTER',
+        '7': 'URANUS BARYCENTER',
+        '8': 'NEPTUNE BARYCENTER',
+        '9': 'PLUTO BARYCENTER',
+        '10': 'SUN',
+        '1000012': 'CHURYUMOV-GERASIMENKO',
+        '2000021': 'LUTETIA',
+        '2002867': 'STEINS',
+        '3788040': 'OUMUAMUA',
+        '1000036': 'HALLEY',
+        '2101955': 'BENNU',
+        '2000004': 'VESTA',
+        '3825054': '3825054',
+        '2099942': '2099942',
+        '3830896': '3830896',
+        '1003639': '1003639',
+    },
+
     // Textures https://www.solarsystemscope.com/textures/
     // Codes http://www-pi.physics.uiowa.edu/docs/spice/NAIF_IDS.HTML
+    // Used for results
     bodies: new Array<Body>(
         new Probe('PROBE', 0, 0, 10, 'white', 0.0005),
         new SphericalBody('SUN', 0, 0, 0, 0.02, '/assets/backgrounds/sun.jpg', 0.002),
@@ -50,7 +84,6 @@ const config: Config = {
         new Asteroid('3825054', 0, 0, 40, 0.0005),
         new Asteroid('2099942', 0, 0, 40, 0.0005),
         new Asteroid('3830896', 0, 0, 40, 0.0005),
-        new Asteroid('2099942', 0, 0, 40, 0.0005),
     ),
 
     backgrounds: {
@@ -71,6 +104,18 @@ const config: Config = {
         y: 0,
         z: 3,
     },
+
+    binarySpiceFiles: [
+        "1000012.bsp",
+        "101955.bsp",
+        "2IBorisov.bsp",
+        "de430.bsp",
+        "Bennu.bsp",
+        "BORISOV_24-11-2019.bsp",
+        "extrasolar.bsp",
+        "lutetia.bsp",
+        "steins.bsp"
+    ]
 }
 
 export default config;

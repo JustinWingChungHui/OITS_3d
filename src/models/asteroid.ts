@@ -4,6 +4,8 @@ import IBody from './body';
 import Trajectory from './trajectory';
 import store from '@/store';
 import ResourceTracker from '../scene_builders/resource-tracker';
+import MissionAnimation from '@/store/mission-animation';
+
 
 export default class Asteroid implements IBody{
     public id: string;
@@ -27,17 +29,21 @@ export default class Asteroid implements IBody{
         this.scale = scale;
     }
 
-
     public async load(scene: Three.Scene): Promise<void> {
         window.console.log(`Asteroid.load()`)
 
         await this.LoadGLTF();
 
-        if (this.id in store.state.TrajectoryByBodyId) {
-            this.trajectory = store.state.TrajectoryByBodyId[this.id];
+
+        const trajectoryByBodyId = (store.state.MissionAnimation as MissionAnimation).TrajectoryByBodyId
+
+        if (this.id in trajectoryByBodyId) {
+            this.trajectory = trajectoryByBodyId[this.id];
+            
             this.trajectory.line.material = ResourceTracker.track(new Three.LineBasicMaterial({ 
-                color: store.state.userSettings.asteroidTrajectoryColor 
+                color: store.state.UserSettings.Data.asteroidTrajectoryColor 
             }));
+
             this.trajectory.load(scene);
 
             this.x = this.trajectory.currentNode.vector.x;
@@ -53,7 +59,8 @@ export default class Asteroid implements IBody{
     public animate() {
         if (this.gltfScene) {
 
-            if (store.getters.isAnimating) {
+
+            if (store.getters['MissionAnimation/IsAnimating']) {
                 this.gltfScene.rotation.y += 0.02;
             }
 
@@ -71,8 +78,8 @@ export default class Asteroid implements IBody{
         const promise = await new Promise<void>((resolve) => {
 
             new GLTFLoader().load('/assets/asteroid/scene.gltf', (gltf) => {
-                ResourceTracker.track(gltf);
-                const size = this.scale * store.state.userSettings.asteroidSizeMultiple;
+                ResourceTracker.track(gltf)
+                const size = this.scale * store.state.UserSettings.Data.asteroidSizeMultiple;
                 gltf.scene.scale.set(size, size, size);
                 gltf.scene.position.x = this.x;
                 gltf.scene.position.y = this.y;
