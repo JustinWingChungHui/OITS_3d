@@ -12,7 +12,7 @@
     </div>
     <div class="pure-control-group">
         <label>DeltaV Constraint (m/s): </label>
-        <input type="number" v-model="periacon"/>
+        <input type="number" v-model="dVcon"/>
         <HelpButton :message="'=0: no constraint, <0: Indicates absolute value is minimum, >0 Indicates value is maximum'"/>
     </div>
 
@@ -36,10 +36,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 import HelpButton from '@/components/HelpButton.vue';
 import { namespace } from 'vuex-class';
 import Mission from '@/models/missions/mission';
+import BodyStage from '@/models/missions/body_stage'
+import store from '@/store';
 const Missions = namespace('Missions');
 
 @Component({
@@ -51,6 +53,9 @@ export default class BodyInterceptDetails extends Vue {
 
   @Missions.State
   public Mission!: Mission;
+
+  @Prop()
+  public ID?: string;
 
   public stageIndex = 0;
 
@@ -79,13 +84,20 @@ export default class BodyInterceptDetails extends Vue {
   }
 
   public apply() {
-    if (this.Mission.objectParameters.Perihcon.length > this.stageIndex) {
-      this.Mission.objectParameters.Periacon[this.stageIndex] = this.periacon;
-      this.Mission.objectParameters.Perihcon[this.stageIndex] = this.perihcon;
-      this.Mission.objectParameters.dVcon[this.stageIndex] = this.dVcon;
-      this.Mission.objectParameters.tmax[this.stageIndex] = this.tmax;
-      this.Mission.objectParameters.t0[this.stageIndex] = this.t0;
-      this.Mission.objectParameters.tmin[this.stageIndex] = this.tmin;
+
+    if (this.ID) {
+      const bodyStage: BodyStage = {
+        StageIndex: this.stageIndex,
+        ID: this.ID,
+        Periacon: this.perihcon,
+        Perihcon: this.perihcon,
+        dVcon: this.dVcon,
+        t0: this.t0,
+        tmax: this.tmax,
+        tmin: this.tmin
+      };
+
+      store.dispatch('Missions/UpdateBodyStage', bodyStage);
     }
   }
 }

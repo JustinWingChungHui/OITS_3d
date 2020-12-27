@@ -14,7 +14,7 @@
 
              <hr/>
 
-              <BodyInterceptDetails ref="bodyInterceptDetails" />
+              <BodyInterceptDetails ref="bodyInterceptDetails" :ID="naifId"/>
               <IntermediatePointDetails v-show="isIntermediatePoint" ref="intermediatePointDetails" />
 
               <div class="pure-controls">
@@ -107,6 +107,7 @@ export default class MissionStageDetails extends Vue {
       intermediatePointDetails.apply();
     }
 
+    this.$emit('stageUpdated', this.stageIndex);
     this.modal?.close();
   }
 }

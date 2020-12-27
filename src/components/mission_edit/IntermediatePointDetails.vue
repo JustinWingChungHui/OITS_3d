@@ -52,6 +52,8 @@ import { Component, Vue } from 'vue-property-decorator';
 import HelpButton from '@/components/HelpButton.vue';
 import { namespace } from 'vuex-class';
 import Mission from '@/models/missions/mission';
+import IntermediatePointStage from '@/models/missions/intermediate_point_stage';
+import store from '@/store';
 const Missions = namespace('Missions');
 
 @Component({
@@ -116,16 +118,19 @@ export default class IntermediatePointDetails extends Vue {
   }
 
   public apply() {
-    if (this.Mission.objectParameters.rIP.length > this.intermediatePointIndex) {
-      this.Mission.objectParameters.rIP[this.intermediatePointIndex] = this.rIP;
-      this.Mission.objectParameters.thetaIP[this.intermediatePointIndex] = this.thetaIP;
-      this.Mission.objectParameters.thetalb[this.intermediatePointIndex] = this.thetalb;
-      this.Mission.objectParameters.thetaub[this.intermediatePointIndex] = this.thetaub;
-      this.Mission.objectParameters.thiIP[this.intermediatePointIndex] = this.thiIP;
-      this.Mission.objectParameters.thilb[this.intermediatePointIndex] = this.thilb;
-      this.Mission.objectParameters.thiub[this.intermediatePointIndex] = this.thiub;
 
-    }
+    const ips: IntermediatePointStage = {
+      intermediatePointIndex: this.intermediatePointIndex,
+      rIP: this.rIP,
+      thetaIP: this.thetaIP,
+      thetalb: this.thetalb,
+      thetaub: this.thetaub,
+      thiIP: this.thiIP,
+      thilb: this.thilb,
+      thiub: this.thiub
+    };
+
+    store.dispatch('Missions/UpdateIntermediatePointStage', ips);
   }
 
   private getIntermediatePointIndex(): number {

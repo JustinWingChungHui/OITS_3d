@@ -94,7 +94,7 @@
         <button type="button" class="pure-button pure-button-primary" @click="save">Launch new Mission</button>
       </div>
       <hr/>
-      <MissionStageDetails ref="missionStageDetails" />
+      <MissionStageDetails ref="missionStageDetails" @stageUpdated="onStageUpdated"/>
     </div>
 </template>
 
@@ -172,7 +172,8 @@ export default class MissionEdit extends Vue {
       this.Mission.objectParameters.Ndata = this.nData;
       this.Mission.objectParameters.RUN_TIME = this.runtime;
       this.Mission.objectParameters.BSP = this.bsp;
-
+      this.Mission.objectParameters.Nbody = this.Mission.objectParameters.Periacon.length;
+      this.Mission.objectParameters.NIP = this.Mission.objectParameters.rIP.length;
       await store.dispatch('Missions/PostSelectedMission');
 
       this.$router.push('/');
@@ -198,7 +199,7 @@ export default class MissionEdit extends Vue {
   }
 
   private editClicked(stageIndex: number) {
-     window.console.log(`MissionEdit.editClicked(stageIndex: ${stageIndex})`);
+    window.console.log(`MissionEdit.editClicked(stageIndex: ${stageIndex})`);
     const modal = this.$refs.missionStageDetails as MissionStageDetails;
     modal.show(stageIndex);
   }
@@ -213,6 +214,16 @@ export default class MissionEdit extends Vue {
       store.dispatch('Missions/RemoveLastStageFromSelectedMission');
       this.refreshData();
     }
+  }
+
+  private onStageUpdated(stageIndex: number) {
+    window.console.log(`MissionEdit.onStageUpdated(stageIndex: ${stageIndex})`);
+    window.console.log(`this.Mission`);
+    window.console.log(this.Mission);
+
+    window.console.log(`store.state.Missions.Mission`);
+    window.console.log(store.state.Missions.Mission);
+    this.refreshData();
   }
 }
 

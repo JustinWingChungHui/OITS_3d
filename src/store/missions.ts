@@ -5,6 +5,8 @@ import store from '@/store';
 import router from '@/router';
 import Mission from '@/models/missions/mission';
 import MissionParams from '@/models/missions/mission_params';
+import BodyStage from '@/models/missions/body_stage';
+import IntermediatePointStage from '@/models/missions/intermediate_point_stage';
 import axios from 'axios';
 import { AxiosResponse } from 'axios';
 
@@ -34,6 +36,35 @@ class Missions extends VuexModule {
             this.Mission.objectParameters.description = this.Mission.description;
         }
     }
+
+    @Mutation
+    public SetBodyStage(bodyStage: BodyStage) {
+        const mission = this.Mission?.objectParameters;
+        if (mission && mission.Periacon.length > bodyStage.StageIndex) {
+            mission.ID[bodyStage.StageIndex] = bodyStage.ID;
+            mission.Periacon[bodyStage.StageIndex] = bodyStage.Periacon;
+            mission.Perihcon[bodyStage.StageIndex] = bodyStage.Perihcon;
+            mission.dVcon[bodyStage.StageIndex] = bodyStage.dVcon;
+            mission.tmax[bodyStage.StageIndex] = bodyStage.tmax;
+            mission.t0[bodyStage.StageIndex] = bodyStage.t0;
+            mission.tmin[bodyStage.StageIndex] = bodyStage.tmin;
+        }
+    }
+    
+    @Mutation
+    public SetIntermediatePointStage(ips: IntermediatePointStage) {
+        const mission = this.Mission?.objectParameters;
+        if (mission && mission.rIP.length > ips.intermediatePointIndex) {
+            mission.rIP[ips.intermediatePointIndex] = ips.rIP;
+            mission.thetaIP[ips.intermediatePointIndex] = ips.thetaIP;
+            mission.thetalb[ips.intermediatePointIndex] = ips.thetalb;
+            mission.thetaub[ips.intermediatePointIndex] = ips.thetaub;
+            mission.thiIP[ips.intermediatePointIndex] = ips.thiIP;
+            mission.thilb[ips.intermediatePointIndex] = ips.thilb;
+            mission.thiub[ips.intermediatePointIndex] = ips.thiub;
+        }
+    }
+
 
     @Action({ rawError: true })
     public async GetMissions() {
@@ -126,6 +157,16 @@ class Missions extends VuexModule {
             mission.t0.pop();
             mission.tmin.pop();
         }
+    }
+
+    @Action({ rawError: true })
+    public UpdateBodyStage(bodyStage: BodyStage) {
+        this.context.commit('SetBodyStage', bodyStage);
+    }
+
+    @Action({ rawError: true })
+    public UpdateIntermediatePointStage(intermediatePointStage: IntermediatePointStage) {
+        this.context.commit('SetIntermediatePointStage', intermediatePointStage);
     }
 }
 
