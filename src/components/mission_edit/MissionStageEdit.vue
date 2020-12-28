@@ -28,15 +28,18 @@ export default class MissionStageEdit extends Vue {
   @Prop()
   public stageIndex?: number;
 
-  @Prop({default: false})
+  @Prop({ default: false })
   public lastStage?: boolean;
 
-  public get naifId(): string {
-    return this.Mission.objectParameters.ID[this.stageIndex || 0];
-  }
+  @Prop({ default: 0 })
+  public naifId?: string; 
 
   public get stageName(): string {
-    return config.bodiesByNAIFCodes[this.naifId];
+    if (this.naifId) {
+      return config.bodiesByNAIFCodes[this.naifId];
+    } else {
+      return '';
+    }
   }
 
   protected mounted() {

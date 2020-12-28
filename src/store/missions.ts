@@ -43,11 +43,14 @@ class Missions extends VuexModule {
         if (mission && mission.Periacon.length > bodyStage.StageIndex) {
             mission.ID[bodyStage.StageIndex] = bodyStage.ID;
             mission.Periacon[bodyStage.StageIndex] = bodyStage.Periacon;
-            mission.Perihcon[bodyStage.StageIndex] = bodyStage.Perihcon;
             mission.dVcon[bodyStage.StageIndex] = bodyStage.dVcon;
             mission.tmax[bodyStage.StageIndex] = bodyStage.tmax;
             mission.t0[bodyStage.StageIndex] = bodyStage.t0;
             mission.tmin[bodyStage.StageIndex] = bodyStage.tmin;
+
+            if (bodyStage.StageIndex > 0) {
+                mission.Perihcon[bodyStage.StageIndex - 1] = bodyStage.Perihcon;
+            }
         }
     }
     
@@ -124,7 +127,7 @@ class Missions extends VuexModule {
     public async PostSelectedMission() {
 
         store.dispatch('MissionAnimation/UpdateLoading', true);
-        const uri = `${config.BaseUrl}${config.missionsUrl}/`;
+        const uri = `${config.BaseUrl}${config.missionsUrl}`;
 
         await axios.post(uri, this.Mission?.objectParameters) as AxiosResponse<Mission>;
 

@@ -37,7 +37,8 @@
                         <MissionStageEdit v-for="index in stageIndexes" 
                           :key="index" 
                           :stageIndex="index"
-                          :lastStage="index === stageIndexes.length - 1" 
+                          :lastStage="index === stageIndexes.length - 1"
+                          :naifId="Mission.objectParameters.ID[index]"
                           @editClicked="editClicked(index)"
                           @deleteClicked="removeLastStageClicked(index)"/>
                     </tbody>
