@@ -15,7 +15,7 @@
             </router-link>
           </span>
 
-          <span v-if="Mission.readonly === false" class="tool" data-tip="Delete Mission">
+          <span v-if="Mission.readonly === false && Mission.status === 'C'" class="tool" data-tip="Delete Mission">
               <span class="oi mission-link delete" data-glyph="trash" @click="onDelete"></span>
           </span>
 
