@@ -2,9 +2,11 @@
   <div class="animation">
     <Loading />
     <Scene />
-    <div class="float-controls-container">
+    <div class="animation-controls-container  float-controls-container">
       <TimeStats />
       <ControlPanel />
+    </div>
+    <div class="animation-controls-container ">
       <Slider/>
     </div>
   </div>
@@ -34,9 +36,9 @@ export default class Animation extends Vue { }
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.float-controls-container {
+.animation-controls-container {
   width: 90%;
-  margin: 1em 5%;
+  margin: 0.5em 5% 0em 5%;
 }
 
 .float-controls-container:before,

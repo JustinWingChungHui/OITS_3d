@@ -34,14 +34,16 @@ export default class Slider extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 label {
-    position: fixed;
     font-weight: bold;
     margin-left: 0.2em;
 }
 
 .slider-container {
     width: 100%; /* Width of the outside container */
-    padding: 10px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
     max-width: 400px;
 }
 
@@ -55,7 +57,6 @@ label {
     opacity: 0.7;
     -webkit-transition: .2s;
     transition: opacity .2s;
-    margin-top: 2em;
 }
 
 .slider::-webkit-slider-thumb {
