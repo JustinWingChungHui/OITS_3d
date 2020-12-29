@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import VanillaModal from 'vanilla-modal';
+import VanillaModal, { VanillaModalConfig } from 'vanilla-modal';
 import HelpButton from '@/components/HelpButton.vue';
 import BodyInterceptDetails from './BodyInterceptDetails.vue';
 import IntermediatePointDetails from './IntermediatePointDetails.vue';
@@ -79,7 +79,11 @@ export default class MissionStageDetails extends Vue {
 
     this.loadBodyData();
 
-    this.modal = new VanillaModal();
+    const options: VanillaModalConfig = {
+      clickOutside: false
+    };
+
+    this.modal = new VanillaModal(options);
     this.modal.open('#missionStageDetailsModal');
   }
 

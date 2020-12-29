@@ -5,9 +5,8 @@
     <div class="float-controls-container">
       <TimeStats />
       <ControlPanel />
-    </div>
       <Slider/>
-    
+    </div>
   </div>
 </template>
 
@@ -36,8 +35,8 @@ export default class Animation extends Vue { }
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .float-controls-container {
-  width: 100%;
-  margin: 5px;
+  width: 90%;
+  margin: 1em 5%;
 }
 
 .float-controls-container:before,

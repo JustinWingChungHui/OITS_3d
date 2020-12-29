@@ -8,6 +8,7 @@ export default interface Mission {
     parameters: string;
     created_at: Date;
     objectParameters: MissionParams;
+    readonly: boolean;
 }
 
 

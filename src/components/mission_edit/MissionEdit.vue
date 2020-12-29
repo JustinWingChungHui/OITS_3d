@@ -161,28 +161,32 @@ export default class MissionEdit extends Vue {
   protected async save() {
     window.console.log(`MissionEdit.save()`);
 
-    if (this.Mission && this.Mission.objectParameters) {
-      this.Mission.description = this.description;
-      this.Mission.objectParameters.description = this.description;
-      this.Mission.objectParameters.t01 = this.t01;
-      this.Mission.objectParameters.tmin1 = this.tmin1;
-      this.Mission.objectParameters.tmax1 = this.tmax1;
-      this.Mission.objectParameters.Duration = this.duration;
-      this.Mission.objectParameters.PROGRADE_ONLY = this.progradeOnly;
-      this.Mission.objectParameters.RENDEZVOUS = this.rendezVous;
-      this.Mission.objectParameters.Ndata = this.nData;
-      this.Mission.objectParameters.RUN_TIME = this.runtime;
-      this.Mission.objectParameters.BSP = this.bsp;
-      this.Mission.objectParameters.Nbody = this.Mission.objectParameters.Periacon.length;
-      this.Mission.objectParameters.NIP = this.Mission.objectParameters.rIP.length;
-      await store.dispatch('Missions/PostSelectedMission');
+    try {
+      if (this.Mission && this.Mission.objectParameters) {
+        this.Mission.description = this.description;
+        this.Mission.objectParameters.description = this.description;
+        this.Mission.objectParameters.t01 = this.t01;
+        this.Mission.objectParameters.tmin1 = this.tmin1;
+        this.Mission.objectParameters.tmax1 = this.tmax1;
+        this.Mission.objectParameters.Duration = this.duration;
+        this.Mission.objectParameters.PROGRADE_ONLY = this.progradeOnly;
+        this.Mission.objectParameters.RENDEZVOUS = this.rendezVous;
+        this.Mission.objectParameters.Ndata = this.nData;
+        this.Mission.objectParameters.RUN_TIME = this.runtime;
+        this.Mission.objectParameters.BSP = this.bsp;
+        this.Mission.objectParameters.Nbody = this.Mission.objectParameters.Periacon.length;
+        this.Mission.objectParameters.NIP = this.Mission.objectParameters.rIP.length;
+        await store.dispatch('Missions/PostSelectedMission');
 
-      this.$router.push('/');
+        this.$router.push('/');
+      }
+    } catch(ex) {
+      window.alert(ex);
     }
   }
 
   private refreshData() {
-    this.description = this.Mission?.description;
+    this.description = `${this.Mission?.description} - copy`;
     this.t01 = this.Mission?.objectParameters?.t01;
     this.tmin1 = this.Mission?.objectParameters?.tmin1;
     this.tmax1 = this.Mission?.objectParameters?.tmax1;
@@ -193,6 +197,10 @@ export default class MissionEdit extends Vue {
     this.runtime = this.Mission?.objectParameters?.RUN_TIME;
     this.bsp = this.Mission?.objectParameters?.BSP;
 
+    this.refreshStageData();
+  }
+
+  private refreshStageData() {
     this.stageIndexes = [];
     for (let i=0; i < this.Mission?.objectParameters?.ID?.length || 0; i++ ) {
       this.stageIndexes.push(i);
@@ -207,13 +215,13 @@ export default class MissionEdit extends Vue {
 
   private addStageClicked() {
     store.dispatch('Missions/AddStageToSelectedMission');
-    this.refreshData();
+    this.refreshStageData();
   }
 
   private removeLastStageClicked(stageIndex: number) {
     if (stageIndex === this.stageIndexes.length - 1) {
       store.dispatch('Missions/RemoveLastStageFromSelectedMission');
-      this.refreshData();
+      this.refreshStageData();
     }
   }
 
@@ -224,7 +232,7 @@ export default class MissionEdit extends Vue {
 
     window.console.log(`store.state.Missions.Mission`);
     window.console.log(store.state.Missions.Mission);
-    this.refreshData();
+    this.refreshStageData();
   }
 }
 

@@ -30,4 +30,8 @@ export default class TimeStats extends Vue {
     margin: 1em;
     float: left;
   }
+
+  strong {
+    font-weight: bold;
+  }
 </style>

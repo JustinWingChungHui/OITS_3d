@@ -171,6 +171,15 @@ class Missions extends VuexModule {
     public UpdateIntermediatePointStage(intermediatePointStage: IntermediatePointStage) {
         this.context.commit('SetIntermediatePointStage', intermediatePointStage);
     }
+
+    @Action({ rawError: true })
+    public async DeleteMission(pk: number) {
+        window.console.log('DeleteMission() action called');
+        const uri = `${config.BaseUrl}${config.missionsUrl}${pk}/`;
+        await axios.delete(uri) as AxiosResponse<Mission>;
+
+        await store.dispatch('Missions/GetMissions', false);
+    }
 }
 
 export default Missions

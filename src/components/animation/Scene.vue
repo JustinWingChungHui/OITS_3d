@@ -35,10 +35,16 @@ export default class Scene extends Vue {
     const container = document.getElementById('container');
 
     if (uid && container) {
+
+      try {
       const height = window.innerHeight - container.getBoundingClientRect().top - 200;
       container.style.height = `${height}px`;
       await store.dispatch('MissionAnimation/UpdateUid', uid)
       await this.buildScene(container);
+      
+      } catch(ex) {
+        window.alert('Error occured loading data');
+      }
     }
   }
 

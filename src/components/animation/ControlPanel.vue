@@ -8,7 +8,7 @@
       <span class="play-pause-slash">/</span>
       <span class="oi" data-glyph="media-pause" title="Pause" aria-hidden="true"></span>
     </button>
-    <button class="pure-button" @click="settingsClick()">
+    <button class="pure-button settings-btn" @click="settingsClick()">
       <span class="oi" data-glyph="cog" title="Play" aria-hidden="true"></span>
     </button>
     
@@ -84,13 +84,7 @@ export default class ControlPanel extends Vue {
     border-color: #088725;
   }
 
-  .fastforward-btn {
-    background-color: rgb(255, 174, 0);
-    border-color: rgb(255, 174, 0);
-  }
-
-  .fastforward-btn:hover {
-    background-color: rgb(215, 124, 0);
-    border-color: rgb(215, 124, 0);
+  .settings-btn, .play-btn, .rewind-btn {
+    border-radius: 4px;
   }
 </style>
