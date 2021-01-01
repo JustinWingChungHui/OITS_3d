@@ -10,17 +10,17 @@
               <h3>Launch Date</h3>
               <div class="pure-control-group">
                   <label>Earliest: </label>
-                  <date-picker v-model="tmin1" format="YYYY MMM DD" value-type="format"></date-picker>
+                  <date-picker v-model="tmin1" format="YYYY MMM DD"></date-picker>
                   <HelpButton :message="'Earliest allowable launch date'"/>
               </div>
               <div class="pure-control-group">
                   <label>Initial: </label>
-                  <date-picker v-model="t01" format="YYYY MMM DD" value-type="format"></date-picker>
+                  <date-picker v-model="t01" format="YYYY MMM DD"></date-picker>
                   <HelpButton :message="'Initial guess for the launch date'"/>
               </div>
               <div class="pure-control-group">
                   <label>Latest: </label>
-                  <date-picker v-model="tmax1" format="YYYY MMM DD" value-type="format"></date-picker>
+                  <date-picker v-model="tmax1" format="YYYY MMM DD"></date-picker>
                   <HelpButton :message="'Latest allowable launch date'"/>
               </div>
               <hr/>
@@ -111,6 +111,8 @@ import { namespace } from 'vuex-class';
 import Mission from '@/models/missions/mission';
 import config from '@/config';
 import store from '@/store';
+import moment from 'moment';
+
 const Missions = namespace('Missions');
 
 @Component({
@@ -144,11 +146,11 @@ export default class MissionEdit extends Vue {
     return config.binarySpiceFiles;
   }
 
-  public tmin1 = '';
+  public tmin1 = moment().toDate();
 
-  public tmax1 = '';
+  public tmax1 = moment().toDate();
 
-  public t01 = '';
+  public t01 = moment().toDate();
 
   @Missions.State
   public Mission!: Mission;
@@ -165,9 +167,9 @@ export default class MissionEdit extends Vue {
       if (this.Mission && this.Mission.objectParameters) {
         this.Mission.description = this.description;
         this.Mission.objectParameters.description = this.description;
-        this.Mission.objectParameters.t01 = this.t01;
-        this.Mission.objectParameters.tmin1 = this.tmin1;
-        this.Mission.objectParameters.tmax1 = this.tmax1;
+        this.Mission.objectParameters.t01 = moment(this.t01).format('YYYY MMM DD').toLowerCase();
+        this.Mission.objectParameters.tmin1 = moment(this.tmin1).format('YYYY MMM DD').toLowerCase();
+        this.Mission.objectParameters.tmax1 = moment(this.tmax1).format('YYYY MMM DD').toLowerCase();
         this.Mission.objectParameters.Duration = this.duration;
         this.Mission.objectParameters.PROGRADE_ONLY = this.progradeOnly;
         this.Mission.objectParameters.RENDEZVOUS = this.rendezVous;
@@ -187,9 +189,9 @@ export default class MissionEdit extends Vue {
 
   private refreshData() {
     this.description = `${this.Mission?.description} - copy`;
-    this.t01 = this.Mission?.objectParameters?.t01;
-    this.tmin1 = this.Mission?.objectParameters?.tmin1;
-    this.tmax1 = this.Mission?.objectParameters?.tmax1;
+    this.t01 = moment(this.Mission?.objectParameters?.t01, 'YYYY MMM DD').toDate();
+    this.tmin1 = moment(this.Mission?.objectParameters?.tmin1, 'YYYY MMM DD').toDate();
+    this.tmax1 = moment(this.Mission?.objectParameters?.tmax1, 'YYYY MMM DD').toDate();
     this.duration = this.Mission?.objectParameters?.Duration;
     this.progradeOnly = this.Mission?.objectParameters?.PROGRADE_ONLY;
     this.rendezVous = this.Mission?.objectParameters?.RENDEZVOUS;
@@ -233,6 +235,12 @@ export default class MissionEdit extends Vue {
     window.console.log(`store.state.Missions.Mission`);
     window.console.log(store.state.Missions.Mission);
     this.refreshStageData();
+  }
+
+  private momentFormat = {
+     stringify: (date: Date) => {
+        return date ? moment(date).format('LL') : ''
+      },
   }
 }
 
