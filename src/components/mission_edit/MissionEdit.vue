@@ -79,7 +79,7 @@
                 </label>
 
                  <label class="pure-checkbox">
-                <input type="checkbox" v-model="trajectory_optimization"/>
+                <input type="checkbox" v-model="trajectoryOptimization"/>
                     Trajectory Optimisation:
                     <HelpButton :message="'Runs optimizer to get best trajectory otherwise use initial guess values'"/>
                 </label>
@@ -140,7 +140,7 @@ export default class MissionEdit extends Vue {
 
   public rendezVous = false;
 
-  public trajectory_optimization = true;
+  public trajectoryOptimization = true;
 
   public nData = 200;
 
@@ -181,7 +181,7 @@ export default class MissionEdit extends Vue {
         this.Mission.objectParameters.Duration = this.duration;
         this.Mission.objectParameters.PROGRADE_ONLY = this.progradeOnly;
         this.Mission.objectParameters.RENDEZVOUS = this.rendezVous;
-        this.Mission.objectParameters.trajectory_optimization = this.trajectory_optimization;
+        this.Mission.objectParameters.trajectory_optimization = this.trajectoryOptimization;
         this.Mission.objectParameters.Ndata = this.nData;
         this.Mission.objectParameters.RUN_TIME = this.runtime;
         this.Mission.objectParameters.BSP = this.bsp;
@@ -207,7 +207,7 @@ export default class MissionEdit extends Vue {
     this.nData = this.Mission?.objectParameters?.Ndata;
     this.runtime = this.Mission?.objectParameters?.RUN_TIME;
     this.bsp = this.Mission?.objectParameters?.BSP;
-    this.trajectory_optimization = this.Mission.objectParameters.trajectory_optimization;
+    this.trajectoryOptimization = this.Mission.objectParameters.trajectory_optimization;
     this.refreshStageData();
   }
 

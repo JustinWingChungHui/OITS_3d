@@ -100,6 +100,10 @@ export default class BodyInterceptDetails extends Vue {
       store.dispatch('Missions/UpdateBodyStage', bodyStage);
     }
   }
+
+  private isValid(): boolean {
+    return false;
+  }
 }
 
 </script>
