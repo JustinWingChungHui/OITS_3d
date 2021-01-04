@@ -106,6 +106,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable @typescript-eslint/camelcase */
 import { Component, Vue } from 'vue-property-decorator';
 import DatePicker from 'vue2-datepicker';
 import 'vue2-datepicker/index.css';
