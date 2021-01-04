@@ -173,8 +173,8 @@ export default class MissionEdit extends Vue {
         this.Mission.objectParameters.Duration = this.duration;
         this.Mission.objectParameters.PROGRADE_ONLY = this.progradeOnly;
         this.Mission.objectParameters.RENDEZVOUS = this.rendezVous;
-        this.Mission.objectParameters.Ndata = this.nData;
-        this.Mission.objectParameters.RUN_TIME = this.runtime;
+        this.Mission.objectParameters.Ndata = Number(this.nData);
+        this.Mission.objectParameters.RUN_TIME = Number(this.runtime);
         this.Mission.objectParameters.BSP = this.bsp;
         this.Mission.objectParameters.Nbody = this.Mission.objectParameters.Periacon.length;
         this.Mission.objectParameters.NIP = this.Mission.objectParameters.rIP.length;

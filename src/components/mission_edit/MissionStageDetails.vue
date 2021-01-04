@@ -5,11 +5,11 @@
           <h2>Stage Details</h2>
           <div class="pure-form pure-form-aligned">
             <div class="pure-control-group">
-                <label>Body</label>
+                <label>Body:</label>
                 <select v-model="naifId">
                     <option v-for="(item, key) in bodiesByNAIFCodes" :key="key" :value="key">{{key}} - {{item}}</option>
                 </select>
-                <HelpButton :message="'Body to Visit'"/>
+                <!-- <HelpButton :message="'Body to Visit'"/> -->
             </div>
 
              <hr/>
@@ -128,6 +128,7 @@ export default class MissionStageDetails extends Vue {
   padding-bottom: 2em;
   padding-left: 5em;
   padding-right: 5em;
+
 }
 
 hr {
