@@ -3,42 +3,42 @@
     <h4>Intermediate Point</h4>
     <div class="pure-control-group">
         <label>Radial Distance (AU): </label>
-        <input type="number" v-model="rIP"/>
+        <input type="number" v-model.number="rIP"/>
         <HelpButton :message="'Radial distance of Intermediate Point from origin of ecliptic'"/>
     </div>
 
     <h4>Heliocentric Latitude</h4>
     <div class="pure-control-group">
         <label>Upper Bound (rad): </label>
-        <input type="number" v-model="thiub"/>
+        <input type="number" v-model.number="thiub"/>
         <HelpButton :message="'Upper bound of the heliocentric latitude of the Intermediate point'"/>
     </div>
 
     <div class="pure-control-group">
         <label>Initial (rad): </label>
-        <input type="number" v-model="thiIP"/>
+        <input type="number" v-model.number="thiIP"/>
         <HelpButton :message="'Initial guess of the heliocentric latitude of the Intermediate point'"/>
     </div>
     <div class="pure-control-group">
         <label>Lower Bound (rad): </label>
-        <input type="number" v-model="thilb"/>
+        <input type="number" v-model.number="thilb"/>
         <HelpButton :message="'Lower bound of the heliocentric latitude of the Intermediate point'"/>
     </div>
 
     <h4>Heliocentric Longitude</h4>
     <div class="pure-control-group">
         <label>Upper Bound (rad): </label>
-        <input type="number" v-model="thetaub"/>
+        <input type="number" v-model.number="thetaub"/>
         <HelpButton :message="'Upper bound of the heliocentric longitude of Intermediate point'"/>
     </div>
     <div class="pure-control-group">
         <label>Initial (rad): </label>
-        <input type="number" v-model="thetaIP"/>
+        <input type="number" v-model.number="thetaIP"/>
         <HelpButton :message="'Initial guess of the heliocentric longitude of Intermediate point'"/>
     </div>
     <div class="pure-control-group">
         <label>Lower Bound (rad): </label>
-        <input type="number" v-model="thetalb"/>
+        <input type="number" v-model.number="thetalb"/>
         <HelpButton :message="'Lower bound of the heliocentric longitude of Intermediate point'"/>
     </div>
 

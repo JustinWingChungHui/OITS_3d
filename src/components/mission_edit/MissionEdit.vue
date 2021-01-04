@@ -52,30 +52,36 @@
               <h3>Optimizer Details</h3>
               <div class="pure-control-group">
                   <label>Duration (seconds): </label>
-                  <input type="number" v-model="duration"/>
+                  <input type="number" v-model.number="duration"/>
                   <HelpButton :message="'Limit on Total Mission duration in seconds. 0 means no constraint.'"/>
               </div>
               <div class="pure-control-group">
                   <label>nData: </label>
-                  <input type="number" v-model="nData"/>
+                  <input type="number" v-model.number="nData"/>
                   <HelpButton :message="'Number of data points output for each transfer in turn'"/>
               </div>
               <div class="pure-control-group">
                   <label>Run time (minutes): </label>
-                  <input type="number" v-model="runtime"/>
+                  <input type="number" v-model.number="runtime"/>
                   <HelpButton :message="'Run time for optimization in minutes'"/>
               </div>
               <div class="pure-controls">
                 <label class="pure-checkbox">
                     <input type="checkbox" v-model="rendezVous"/>
-                    Rendez-Vous
+                    Rendez-Vous:
                     <HelpButton :message="'Flag to indicate if there is a rendezvous at final destination'"/>
                 </label>
 
                 <label class="pure-checkbox">
                 <input type="checkbox" v-model="progradeOnly"/>
-                    Prograde Only
+                    Prograde Only:
                     <HelpButton :message="'Flag to indicate that each transfer should be prograde only'"/>
+                </label>
+
+                 <label class="pure-checkbox">
+                <input type="checkbox" v-model="trajectory_optimization"/>
+                    Trajectory Optimisation:
+                    <HelpButton :message="'Runs optimizer to get best trajectory otherwise use initial guess values'"/>
                 </label>
               </div>
 
@@ -134,6 +140,8 @@ export default class MissionEdit extends Vue {
 
   public rendezVous = false;
 
+  public trajectory_optimization = true;
+
   public nData = 200;
 
   public runtime = 20;
@@ -173,8 +181,9 @@ export default class MissionEdit extends Vue {
         this.Mission.objectParameters.Duration = this.duration;
         this.Mission.objectParameters.PROGRADE_ONLY = this.progradeOnly;
         this.Mission.objectParameters.RENDEZVOUS = this.rendezVous;
-        this.Mission.objectParameters.Ndata = Number(this.nData);
-        this.Mission.objectParameters.RUN_TIME = Number(this.runtime);
+        this.Mission.objectParameters.trajectory_optimization = this.trajectory_optimization;
+        this.Mission.objectParameters.Ndata = this.nData;
+        this.Mission.objectParameters.RUN_TIME = this.runtime;
         this.Mission.objectParameters.BSP = this.bsp;
         this.Mission.objectParameters.Nbody = this.Mission.objectParameters.Periacon.length;
         this.Mission.objectParameters.NIP = this.Mission.objectParameters.rIP.length;
@@ -198,7 +207,7 @@ export default class MissionEdit extends Vue {
     this.nData = this.Mission?.objectParameters?.Ndata;
     this.runtime = this.Mission?.objectParameters?.RUN_TIME;
     this.bsp = this.Mission?.objectParameters?.BSP;
-
+    this.trajectory_optimization = this.Mission.objectParameters.trajectory_optimization;
     this.refreshStageData();
   }
 

@@ -2,34 +2,34 @@
   <div>
     <div class="pure-control-group">
         <label>Periacon (km): </label>
-        <input type="number" v-model="periacon"/>
+        <input type="number" v-model.number="periacon"/>
         <HelpButton :message="'Periapsis distance Constraint.  Minimum altitude in km.'"/>
     </div>
     <div class="pure-control-group" v-if="stageIndex !== 0">
         <label>Perihcon (AU): </label>
-        <input type="number" v-model="perihcon" />
+        <input type="number" v-model.number="perihcon" />
         <HelpButton :message="'Minimum Perihelia for transfer from previous body'"/>
     </div>
     <div class="pure-control-group">
         <label>DeltaV Constraint (m/s): </label>
-        <input type="number" v-model="dVcon"/>
+        <input type="number" v-model.number="dVcon"/>
         <HelpButton :message="'=0: no constraint, <0: Indicates absolute value is minimum, >0 Indicates value is maximum'"/>
     </div>
 
     <h4>Flight Time</h4>
     <div class="pure-control-group">
         <label>Maximum (days): </label>
-        <input type="number" v-model="tmax" :readonly="stageIndex === 0"/>
+        <input type="number" v-model.number="tmax" :readonly="stageIndex === 0"/>
         <HelpButton :message="'Upper bound for flight time. 0 for home planet'"/>
     </div>
     <div class="pure-control-group">
         <label>Initial (days): </label>
-        <input type="number" v-model="t0" :readonly="stageIndex === 0"/>
+        <input type="number" v-model.number="t0" :readonly="stageIndex === 0"/>
         <HelpButton :message="'Initial guess for flight time. 0 for home planet'"/>
     </div>
     <div class="pure-control-group">
         <label>Minimum (days): </label>
-        <input type="number" v-model="tmin" :readonly="stageIndex === 0"/>
+        <input type="number" v-model.number="tmin" :readonly="stageIndex === 0"/>
         <HelpButton :message="'Lower bound for flight time. 0 for home planet'"/>
     </div>
   </div>
