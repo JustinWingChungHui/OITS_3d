@@ -3,7 +3,10 @@
     <div class="about-content">
     <h1>About</h1>
     <p>
-      The Optical Interplanetary Trajectory Software is software that find the most optimized trajectory between bodies in the solar system to reduce the amount of fuel needed.
+      The Optimum Interplanetary Trajectory Software (OITS) is software that finds the optimum trajectory between user-specified sequence of celestial bodies. 
+    </p>
+    <p>
+      'Optimum' is in the sense of minimum ∆V, equivalent to minimising fuel usage.
     </p>
 
     <h3>Credits</h3>

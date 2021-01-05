@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-        <h1>Adam Hibberd's Optical Interplanetary Trajectory Software</h1>
+        <h1>Adam Hibberd's Optimum Interplanetary Trajectory Software</h1>
     </div>
 </template>
 
