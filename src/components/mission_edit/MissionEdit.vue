@@ -58,7 +58,7 @@
               <div class="pure-control-group">
                   <label>nData: </label>
                   <input type="number" v-model.number="nData"/>
-                  <HelpButton :message="'Number of data points output for each transfer in turn'"/>
+                  <HelpButton :message="'Number of steps in a year, e.g. 365 means the time step will be 1 day'"/>
               </div>
               <div class="pure-control-group">
                   <label>Run time (minutes): </label>
