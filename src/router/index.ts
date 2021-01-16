@@ -19,9 +19,10 @@ Vue.use(VueRouter)
     component: () => import( '../views/About.vue')
   },
   {
-    path: '/animation',
+    path: '/animation/:id',
     name: 'Animation',
-    component: () => import('../views/Animation.vue')
+    component: () => import('../views/Animation.vue'),
+    props: true
   },
   {
     path: '/edit/:id',

@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
 import SceneBuilder from '@/scene_builders/scene-builder';
 import store from '@/store';
 import { namespace } from 'vuex-class';
@@ -11,6 +11,9 @@ const UserSettings = namespace('UserSettings');
 
 @Component
 export default class Scene extends Vue {
+
+  @Prop({default: 0})
+  public id?: number;
 
   private scene: SceneBuilder | null = null;
 
@@ -30,16 +33,16 @@ export default class Scene extends Vue {
     console.log(`Scene.init()`);
 
     store.dispatch('MissionAnimation/UpdateLoading', true);
-    const uid = this.$route.query.uid;
-    console.log(`uid: ${uid}`);
+
+    console.log(`id: ${this.id}`);
     const container = document.getElementById('container');
 
-    if (uid && container) {
+    if (this.id && container) {
 
       try {
       const height = window.innerHeight - container.getBoundingClientRect().top - 200;
       container.style.height = `${height}px`;
-      await store.dispatch('MissionAnimation/UpdateUid', uid)
+      await store.dispatch('MissionAnimation/UpdateId', this.id)
       await this.buildScene(container);
       
       } catch(ex) {

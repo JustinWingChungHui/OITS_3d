@@ -23,7 +23,7 @@ const config: Config = {
     BaseUrl: 'https://oits.justinhui.com',
 
     // csv results
-    pathsUrl: '/results/{uid}/paths/',
+    pathsUrl: '/results/{id}/values/',
     missionsUrl: '/api/mission/',
 
     ZeroDate: 946724329, // 2000-01-01 00:00:00 corrected for Barycentric time

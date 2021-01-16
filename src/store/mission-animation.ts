@@ -10,7 +10,7 @@ import store from '@/store';
 @Module({ namespaced: true })
 class MissionAnimation extends VuexModule {
 
-    public uid = '';
+    public id = 0;
     public TrajectoryByBodyId: { [id: string]: Trajectory } = {};
     public t = 0;
     public deltaT = 1;
@@ -36,9 +36,9 @@ class MissionAnimation extends VuexModule {
 
 
     @Mutation
-    public SetUid(uid: string) {
-        window.console.log(`SetUid(${uid}) mutation called`);
-        this.uid = uid;
+    public SetId(id: number) {
+        window.console.log(`SetId(${id}) mutation called`);
+        this.id = id;
     }
 
     @Mutation
@@ -74,12 +74,12 @@ class MissionAnimation extends VuexModule {
     }
 
     @Action({ rawError: true })
-    public async UpdateUid(uid: string) {
-        window.console.log(`UpdateUid(uid: ${uid}) action called`);
+    public async UpdateId(id: number) {
+        window.console.log(`UpdateId(uid: ${id}) action called`);
 
-        this.context.commit('SetUid', uid);
+        this.context.commit('SetId', id);
 
-        if (!uid) {
+        if (!id) {
             this.context.commit('SetTrajectoryByBodyId', {});
         }
         else {
@@ -95,7 +95,7 @@ class MissionAnimation extends VuexModule {
     public async GetCsvResults() {
         window.console.log('GetCsvResults() action called');
         
-        const path = config.pathsUrl.replace(`{uid}`, this.uid);
+        const path = config.pathsUrl.replace(`{id}`, this.id.toString());
         const url = `${config.BaseUrl}${path}`;
 
         const response = await axios.get(url) as AxiosResponse<string>;

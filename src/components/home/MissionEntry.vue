@@ -20,7 +20,7 @@
           </span>
 
           <span class="tool" data-tip="Play Mission Animation">
-            <router-link class="mission-link play" v-if="Mission.status === 'C'" :to="{ path: '/animation', query: { uid: Mission.uid }}">
+            <router-link class="mission-link play" v-if="Mission.status === 'C'" :to="{ path: `/animation/${Mission.id}` }">
                 <span class="oi" data-glyph="media-play"></span>
             </router-link>
           </span>

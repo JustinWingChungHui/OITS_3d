@@ -1,7 +1,7 @@
 <template>
   <div class="animation">
     <Loading />
-    <Scene />
+    <Scene :id="id"/>
     <div class="animation-controls-container  float-controls-container">
       <TimeStats />
       <ControlPanel />
@@ -18,7 +18,7 @@ import TimeStats from '@/components/animation/TimeStats.vue';
 import ControlPanel from '@/components/animation/ControlPanel.vue';
 import Loading from '@/components/Loading.vue';
 import Slider from '@/components/animation/Slider.vue';
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component({
   components: {
@@ -29,7 +29,11 @@ import { Component, Vue } from 'vue-property-decorator';
     Slider
   },
 })
-export default class Animation extends Vue { }
+export default class Animation extends Vue { 
+
+  @Prop({default: 0})
+  public id?: number;
+}
 
 </script>
 
