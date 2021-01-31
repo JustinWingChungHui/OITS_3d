@@ -104,15 +104,18 @@ export default class MissionStageDetails extends Vue {
   protected apply() {
     window.console.log(`MissionStageDetails.apply()`);
     const bodyInterceptDetails = this.$refs.bodyInterceptDetails as BodyInterceptDetails;
-    bodyInterceptDetails.apply();
+    if (bodyInterceptDetails.isValid()) {
+      bodyInterceptDetails.apply();
 
-    if (this.isIntermediatePoint) {
-      const intermediatePointDetails = this.$refs.intermediatePointDetails as IntermediatePointDetails;
-      intermediatePointDetails.apply();
+      if (this.isIntermediatePoint) {
+        const intermediatePointDetails = this.$refs.intermediatePointDetails as IntermediatePointDetails;
+        intermediatePointDetails.apply();
+      }
+
+      this.$emit('stageUpdated', this.stageIndex);
+      this.modal?.close();
+
     }
-
-    this.$emit('stageUpdated', this.stageIndex);
-    this.modal?.close();
   }
 }
 
