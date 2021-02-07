@@ -5,6 +5,7 @@
         <label>Radial Distance (AU): </label>
         <input type="number" v-model.number="rIP"/>
         <HelpButton :message="'Radial distance of Intermediate Point from origin of ecliptic'"/>
+        <span id="rIPError" class="validation-error"></span >
     </div>
 
     <h4>Heliocentric Latitude</h4>
@@ -12,17 +13,21 @@
         <label>Upper Bound (rad): </label>
         <input type="number" v-model.number="thiub"/>
         <HelpButton :message="'Upper bound of the heliocentric latitude of the Intermediate point'"/>
+        <span id="thiubError" class="validation-error"></span >
     </div>
 
     <div class="pure-control-group">
         <label>Initial (rad): </label>
         <input type="number" v-model.number="thiIP"/>
         <HelpButton :message="'Initial guess of the heliocentric latitude of the Intermediate point'"/>
+        <span id="thiIPError" class="validation-error"></span >
     </div>
+
     <div class="pure-control-group">
         <label>Lower Bound (rad): </label>
         <input type="number" v-model.number="thilb"/>
         <HelpButton :message="'Lower bound of the heliocentric latitude of the Intermediate point'"/>
+        <span id="thilbError" class="validation-error"></span >
     </div>
 
     <h4>Heliocentric Longitude</h4>
@@ -30,6 +35,7 @@
         <label>Upper Bound (rad): </label>
         <input type="number" v-model.number="thetaub"/>
         <HelpButton :message="'Upper bound of the heliocentric longitude of Intermediate point'"/>
+        <span id="thetaubError" class="validation-error"></span >
     </div>
     <div class="pure-control-group">
         <label>Initial (rad): </label>
@@ -40,6 +46,7 @@
         <label>Lower Bound (rad): </label>
         <input type="number" v-model.number="thetalb"/>
         <HelpButton :message="'Lower bound of the heliocentric longitude of Intermediate point'"/>
+        <span id="thetalbError" class="validation-error"></span >
     </div>
 
 
@@ -54,6 +61,8 @@ import { namespace } from 'vuex-class';
 import Mission from '@/models/missions/mission';
 import IntermediatePointStage from '@/models/missions/intermediate_point_stage';
 import store from '@/store';
+import Validator from '@/helpers/validator';
+import { ValidationType } from '@/helpers/field_validation';
 const Missions = namespace('Missions');
 
 @Component({
@@ -88,6 +97,74 @@ export default class IntermediatePointDetails extends Vue {
     return this.Mission.objectParameters.ID[this.stageIndex]?.toUpperCase()?.trim() === 'INTERMEDIATE POINT';
   }
 
+  private get validator(): Validator {
+    return new Validator(this, [{
+        FieldName: 'rIP',
+        ValidationMessageId: 'rIPError',
+        rules: [{
+            Type: ValidationType.Required,
+          },{
+            Type: ValidationType.Minimum,
+            Params: 0
+          }]
+      },{
+        FieldName: 'thetalb',
+        ValidationMessageId: 'thetalbError',
+        rules: [{
+            Type: ValidationType.Required,
+          },{
+            Type: ValidationType.Minimum,
+            Params: 0
+          }]
+      },{
+        FieldName: 'thetaIP',
+        ValidationMessageId: 'thetaIPError',
+        rules: [{
+            Type: ValidationType.Required,
+          },{
+            Type: ValidationType.Minimum,
+            Params: this.thetalb
+          }]
+      },{
+        FieldName: 'thetaub',
+        ValidationMessageId: 'thetaubError',
+        rules: [{
+            Type: ValidationType.Required,
+          },{
+            Type: ValidationType.Minimum,
+            Params: this.thetaIP
+          }]
+      },{
+        FieldName: 'thilb',
+        ValidationMessageId: 'thilbError',
+        rules: [{
+            Type: ValidationType.Required,
+          },{
+            Type: ValidationType.Minimum,
+            Params: 0
+          }]
+      },{
+        FieldName: 'thiIP',
+        ValidationMessageId: 'thiIPError',
+        rules: [{
+            Type: ValidationType.Required,
+          },{
+            Type: ValidationType.Minimum,
+            Params: this.thilb
+          }]
+      },{
+        FieldName: 'thiub',
+        ValidationMessageId: 'thiubError',
+        rules: [{
+            Type: ValidationType.Required,
+          },{
+            Type: ValidationType.Minimum,
+            Params: this.thiIP
+          }]
+      }
+    ]);
+  }
+
 
   public loadData(stageIndex: number) {
     window.console.log('IntermediatePointDetails.mounted()');
@@ -115,6 +192,10 @@ export default class IntermediatePointDetails extends Vue {
         this.Mission.objectParameters.thiub.push(0);
       }
     }
+  }
+
+  public isValid(): boolean {
+    return this.validator.IsValid();
   }
 
   public apply() {
@@ -155,6 +236,10 @@ export default class IntermediatePointDetails extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+.validation-error {
+  color: red;
+  font-size: small;
+  margin-left: 0.5em;
+}
 </style>
 

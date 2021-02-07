@@ -5,23 +5,26 @@
               
               <h3>Mission Description: </h3>
               <input class="pure-input-1 description" type="text" v-model="description"/>
-
+              <span id="descriptionError" class="validation-error"></span >
               <hr/>
               <h3>Launch Date</h3>
               <div class="pure-control-group">
                   <label>Earliest: </label>
                   <date-picker v-model="tmin1" format="YYYY MMM DD"></date-picker>
                   <HelpButton :message="'Earliest allowable launch date'"/>
+                  <span id="tmin1Error" class="validation-error"></span >
               </div>
               <div class="pure-control-group">
                   <label>Initial: </label>
                   <date-picker v-model="t01" format="YYYY MMM DD"></date-picker>
                   <HelpButton :message="'Initial guess for the launch date'"/>
+                  <span id="t0Error" class="validation-error"></span >
               </div>
               <div class="pure-control-group">
                   <label>Latest: </label>
                   <date-picker v-model="tmax1" format="YYYY MMM DD"></date-picker>
                   <HelpButton :message="'Latest allowable launch date'"/>
+                  <span id="tmax1Error" class="validation-error"></span >
               </div>
               <hr/>
               <h3>Stages</h3>
@@ -54,16 +57,19 @@
                   <label>Duration (seconds): </label>
                   <input type="number" v-model.number="duration"/>
                   <HelpButton :message="'Limit on Total Mission duration in seconds. 0 means no constraint.'"/>
+                  <span id="durationError" class="validation-error"></span >
               </div>
               <div class="pure-control-group">
                   <label>nData: </label>
                   <input type="number" v-model.number="nData"/>
                   <HelpButton :message="'Number of steps in a year, e.g. 365 means the time step will be 1 day'"/>
+                  <span id="nDataError" class="validation-error"></span >
               </div>
               <div class="pure-control-group">
                   <label>Run time (minutes): </label>
                   <input type="number" v-model.number="runtime"/>
                   <HelpButton :message="'Run time for optimization in minutes'"/>
+                  <span id="runtimeError" class="validation-error"></span >
               </div>
               <div class="pure-controls">
                 <label class="pure-checkbox">
@@ -119,6 +125,8 @@ import Mission from '@/models/missions/mission';
 import config from '@/config';
 import store from '@/store';
 import moment from 'moment';
+import Validator from '@/helpers/validator';
+import { ValidationType } from '@/helpers/field_validation';
 
 const Missions = namespace('Missions');
 
@@ -164,6 +172,67 @@ export default class MissionEdit extends Vue {
   @Missions.State
   public Mission!: Mission;
 
+  private get validator(): Validator {
+    return new Validator(this, [{
+        FieldName: 'description',
+        ValidationMessageId: 'descriptionError',
+        rules: [{
+            Type: ValidationType.Required,
+          }]
+      },{
+        FieldName: 'tmin1',
+        ValidationMessageId: 'tmin1Error',
+        rules: [{
+            Type: ValidationType.Required,
+          }]
+      },{
+        FieldName: 't01',
+        ValidationMessageId: 't01Error',
+        rules: [{
+            Type: ValidationType.Required,
+          },{
+            Type: ValidationType.Minimum,
+            Params: this.tmin1
+          }]
+      },{
+        FieldName: 'tmax1',
+        ValidationMessageId: 'tmax1Error',
+        rules: [{
+            Type: ValidationType.Required,
+          },{
+            Type: ValidationType.Minimum,
+            Params: this.t01
+          }]
+      },{
+        FieldName: 'duration',
+        ValidationMessageId: 'durationError',
+        rules: [{
+            Type: ValidationType.Required,
+          },{
+            Type: ValidationType.Minimum,
+            Params: 0
+          }]
+      },{
+        FieldName: 'nData',
+        ValidationMessageId: 'nDataError',
+        rules: [{
+            Type: ValidationType.Required,
+          },{
+            Type: ValidationType.Minimum,
+            Params: 0
+          }]
+      },{
+        FieldName: 'runtime',
+        ValidationMessageId: 'runtimeError',
+        rules: [{
+            Type: ValidationType.Required,
+          },{
+            Type: ValidationType.Minimum,
+            Params: 0
+          }]
+      }
+    ]);
+  }
 
   protected mounted() {
     this.refreshData();
@@ -172,30 +241,33 @@ export default class MissionEdit extends Vue {
   protected async save() {
     window.console.log(`MissionEdit.save()`);
 
-    try {
-      if (this.Mission && this.Mission.objectParameters) {
-        this.Mission.description = this.description;
-        this.Mission.objectParameters.description = this.description;
-        this.Mission.objectParameters.t01 = moment(this.t01).format('YYYY MMM DD').toLowerCase();
-        this.Mission.objectParameters.tmin1 = moment(this.tmin1).format('YYYY MMM DD').toLowerCase();
-        this.Mission.objectParameters.tmax1 = moment(this.tmax1).format('YYYY MMM DD').toLowerCase();
-        this.Mission.objectParameters.Duration = this.duration;
-        this.Mission.objectParameters.PROGRADE_ONLY = this.progradeOnly;
-        this.Mission.objectParameters.RENDEZVOUS = this.rendezVous;
-        this.Mission.objectParameters.trajectory_optimization = this.trajectoryOptimization;
-        this.Mission.objectParameters.Ndata = this.nData;
-        this.Mission.objectParameters.RUN_TIME = this.runtime;
-        this.Mission.objectParameters.BSP = this.bsp;
-        this.Mission.objectParameters.Nbody = this.Mission.objectParameters.Periacon.length;
-        this.Mission.objectParameters.NIP = this.Mission.objectParameters.rIP.length;
-        await store.dispatch('Missions/PostSelectedMission');
+    if (this.validator.IsValid()) {
+      try {
+        if (this.Mission && this.Mission.objectParameters) {
+          this.Mission.description = this.description;
+          this.Mission.objectParameters.description = this.description;
+          this.Mission.objectParameters.t01 = moment(this.t01).format('YYYY MMM DD').toLowerCase();
+          this.Mission.objectParameters.tmin1 = moment(this.tmin1).format('YYYY MMM DD').toLowerCase();
+          this.Mission.objectParameters.tmax1 = moment(this.tmax1).format('YYYY MMM DD').toLowerCase();
+          this.Mission.objectParameters.Duration = this.duration;
+          this.Mission.objectParameters.PROGRADE_ONLY = this.progradeOnly;
+          this.Mission.objectParameters.RENDEZVOUS = this.rendezVous;
+          this.Mission.objectParameters.trajectory_optimization = this.trajectoryOptimization;
+          this.Mission.objectParameters.Ndata = this.nData;
+          this.Mission.objectParameters.RUN_TIME = this.runtime;
+          this.Mission.objectParameters.BSP = this.bsp;
+          this.Mission.objectParameters.Nbody = this.Mission.objectParameters.Periacon.length;
+          this.Mission.objectParameters.NIP = this.Mission.objectParameters.rIP.length;
+          await store.dispatch('Missions/PostSelectedMission');
 
-        this.$router.push('/');
+          this.$router.push('/');
+        }
+      } catch(ex) {
+        window.alert(ex);
       }
-    } catch(ex) {
-      window.alert(ex);
     }
   }
+
 
   private refreshData() {
     this.description = `${this.Mission?.description} - copy`;
@@ -268,5 +340,12 @@ hr {
 .full-width {
   width: 100%;
 }
+
+.validation-error {
+  color: red;
+  font-size: small;
+  margin-left: 0.5em;
+}
+
 </style>
 

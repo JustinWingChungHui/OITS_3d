@@ -97,14 +97,30 @@ export default class MissionStageDetails extends Vue {
     intermediatePointDetails.loadData(this.stageIndex);
   }
 
+  public isValid(): boolean {
+    let dataValid = true;
+    const bodyInterceptDetails = this.$refs.bodyInterceptDetails as BodyInterceptDetails;
+    dataValid = bodyInterceptDetails.isValid();
+
+    if (this.isIntermediatePoint) {
+        const intermediatePointDetails = this.$refs.intermediatePointDetails as IntermediatePointDetails;
+        dataValid = intermediatePointDetails.isValid() && dataValid;
+    }
+
+    return dataValid;
+  }
+
   protected mounted() {
     window.console.log(`MissionStageDetails.mounted()`);
   }
 
   protected apply() {
     window.console.log(`MissionStageDetails.apply()`);
-    const bodyInterceptDetails = this.$refs.bodyInterceptDetails as BodyInterceptDetails;
-    if (bodyInterceptDetails.isValid()) {
+
+    const dataValid = this.isValid();
+
+    if (dataValid) {
+      const bodyInterceptDetails = this.$refs.bodyInterceptDetails as BodyInterceptDetails;
       bodyInterceptDetails.apply();
 
       if (this.isIntermediatePoint) {
@@ -114,7 +130,6 @@ export default class MissionStageDetails extends Vue {
 
       this.$emit('stageUpdated', this.stageIndex);
       this.modal?.close();
-
     }
   }
 }

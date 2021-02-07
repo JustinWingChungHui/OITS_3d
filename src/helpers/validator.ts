@@ -1,5 +1,6 @@
 import { Vue } from 'vue-property-decorator';
 import { FieldValidation, ValidationType }  from './field_validation';
+import moment from 'moment';
 
 class Validator {
 
@@ -91,21 +92,28 @@ class Validator {
     // eslint-disable-next-line
     private Minimum(fieldValidation: FieldValidation, value: any, minValue: any): boolean {
 
-        if (typeof minValue !== 'number') {
-            throw `Invalid parameter ${minValue}`;
-        }
 
         let isValid = true;
-        if (typeof value !== 'number') {
-            isValid = true;
-        } else {
+        let formattedMinValue: string;
+
+        if (typeof value === 'number') {
             isValid = (value as number) >= (minValue as number);
+            formattedMinValue = minValue.toString();
+
+        // Date
+        } else if (Object.prototype.toString.call(value) === '[object Date]') {
+            isValid = value > minValue;
+            formattedMinValue = moment(minValue).format('YYYY MMM DD');
+
+        } else {
+            isValid = false;
+            formattedMinValue = minValue.toString();
         }
 
         if (isValid) {
             this.setValidationMessage(fieldValidation.ValidationMessageId, ``);
         } else {
-            this.setValidationMessage(fieldValidation.ValidationMessageId, `Must be at least ${minValue}`);
+            this.setValidationMessage(fieldValidation.ValidationMessageId, `Must be at least ${formattedMinValue}`);
         }
         
         return isValid;
