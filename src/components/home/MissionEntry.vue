@@ -46,7 +46,7 @@ export default class MissionEntry extends Vue {
   public StatusMap: { [id: string]: string } = {
     'C': 'Complete',
     'N': 'Queued',
-    'P': 'Processing'
+    'P': 'Processing',
   };
 
   public get StatusDescription(): string {

@@ -12,12 +12,18 @@
     <h3>Credits</h3>
     <p>
         OITS was created by Adam Hibberd 
-        <a href="https://github.com/AdamHibberd">https://github.com/AdamHibberd</a>
+        <ul>
+          <li><a href="https://adamhibberd.com/">https://adamhibberd.com/</a></li>
+          <li><a href="https://github.com/AdamHibberd">https://github.com/AdamHibberd</a></li>
+        </ul>
     </p>
     <p>
         Website was created by Justin Wing Chung Hui 
-        <a href="https://github.com/justinwingchunghui">https://github.com/justinwingchunghui</a>
+        <ul>
+          <li><a href="https://github.com/justinwingchunghui">https://github.com/justinwingchunghui</a></li>
+        </ul>
     </p>
+    <hr/>
     <p>
         Planetary Textures have been used from 
         <a href="https://www.solarsystemscope.com/textures/">https://www.solarsystemscope.com/textures/</a>
