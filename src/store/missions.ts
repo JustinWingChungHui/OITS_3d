@@ -13,6 +13,8 @@ import { AxiosResponse } from 'axios';
 @Module({ namespaced: true })
 class Missions extends VuexModule {
 
+    public static ChangeableStatuses = ['N', 'P', 'A'];
+
     public Loading = true;
 
     public Mission?: Mission;
@@ -105,9 +107,26 @@ class Missions extends VuexModule {
     }
 
     @Action({ rawError: true })
+    public async GetMissionStatusUpdate(pk: number) {
+        const uri = `${config.BaseUrl}${config.missionsUrl}${pk}/`;
+
+        const response = await axios.get(uri) as AxiosResponse<Mission>;
+
+        const missions = this.Missions.map(m => {
+            if (m.id === response.data?.id) {
+                return response.data
+            } else {
+                return m;
+            }
+        });
+        
+        this.context.commit('SetMissions', missions);
+    }
+
+    @Action({ rawError: true })
     public EnableMissionUpdates() {
         for (const mission of this.Missions) {
-            if (mission.status !== 'C') {
+            if (Missions.ChangeableStatuses.includes(mission.status)) {
                 this.context.dispatch('GetMissionUpdate', mission.id);
             }
         }
@@ -115,12 +134,17 @@ class Missions extends VuexModule {
 
     @Action({ rawError: true })
     public async GetMissionUpdate(pk: number) {
-        await this.context.dispatch('GetMission', pk);
-        window.setTimeout(async() => {
-            if (this.missionUpdatesEnabled) {
-                await this.context.dispatch('GetMissionUpdate', pk);
-            }
-        }, 5000);
+        await this.context.dispatch('GetMissionStatusUpdate', pk);
+
+        const mission = this.Missions.find(m => m.id === pk);
+
+        if (mission && Missions.ChangeableStatuses.includes(mission.status)) {
+            window.setTimeout(async() => {
+                if (this.missionUpdatesEnabled) {
+                    await this.context.dispatch('GetMissionUpdate', pk);
+                }
+            }, 5000);
+        }
     }
 
     @Action({ rawError: true })
@@ -180,6 +204,17 @@ class Missions extends VuexModule {
 
         await store.dispatch('Missions/GetMissions', false);
     }
+
+    @Action({ rawError: true })
+    public async CancelMission(pk: number) {
+        window.console.log('DeleteMission() action called');
+        const uri = `${config.BaseUrl}${config.missionsUrl}${pk}/cancel/`;
+        await axios.post(uri) as AxiosResponse<Mission>;
+
+        await store.dispatch('Missions/GetMissions', false);
+    }
+
+    
 }
 
 export default Missions

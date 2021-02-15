@@ -4,7 +4,7 @@
         <td>{{ Mission.description }}</td>
         <td>{{ FormattedDate }}</td>
         <td :class="StatusDescription">
-          <i v-if="Mission.status === 'P'" class="c-inline-spinner"></i>
+          <i v-if="Mission.status === 'P' || Mission.status === 'A'" class="c-inline-spinner"></i>
           {{ StatusDescription }}
         </td>
         <td>
@@ -15,8 +15,12 @@
             </router-link>
           </span>
 
-          <span v-if="Mission.readonly === false && Mission.status === 'C'" class="tool" data-tip="Delete Mission">
+          <span v-if="CanDelete" class="tool" data-tip="Delete Mission">
               <span class="oi mission-link delete" data-glyph="trash" @click="onDelete"></span>
+          </span>
+
+          <span v-if="Mission.status === 'N' || Mission.status === 'P'" class="tool" data-tip="Cancel Mission">
+              <span class="oi mission-link cancel" data-glyph="ban" @click="onCancel"></span>
           </span>
 
           <span class="tool" data-tip="Play Mission Animation">
@@ -32,6 +36,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import Mission from '@/models/missions/mission';
 import moment from 'moment/moment';
+import store from '@/store';
 import 'open-iconic/font/css/open-iconic.css';
 
 
@@ -47,7 +52,12 @@ export default class MissionEntry extends Vue {
     'C': 'Complete',
     'N': 'Queued',
     'P': 'Processing',
+    'A': 'Cancelling',
+    'X': 'Cancelled',
+    'E': 'Error'
   };
+
+  public DeleteableStatuses = ['C', 'X', 'E'];
 
   public get StatusDescription(): string {
     if (this.Mission?.status) {
@@ -57,12 +67,26 @@ export default class MissionEntry extends Vue {
     }
   }
 
+  public get CanDelete(): boolean {
+    if (this.Mission && !this.Mission.readonly) {
+      return this.DeleteableStatuses.includes(this.Mission.status)
+    } else {
+      return false;
+    }
+  }
+
   private get FormattedDate(): string {
     return moment(this.Mission?.created_at).format("DD-MM-YYYY HH:mm");
   }
 
   private onDelete() {
     this.$emit("onDelete", this.Mission?.id);
+  }
+
+  private async onCancel() {
+    store.dispatch('MissionAnimation/UpdateLoading', true);
+    await store.dispatch('Missions/CancelMission', this.Mission?.id);
+    store.dispatch('MissionAnimation/UpdateLoading', false);
   }
 }
 
@@ -93,6 +117,21 @@ export default class MissionEntry extends Vue {
     color: black;
   }
 
+  .Cancelling {
+    background-color: yellow !important;
+    color: black;
+  }
+
+  .Cancelled {
+    background-color: grey !important;
+    color: white;
+  }
+
+  .Error {
+    background-color: purple !important;
+    color: white;
+  }
+
   .mission-link{
     cursor: pointer;
     margin: 0.5em;
@@ -120,6 +159,11 @@ export default class MissionEntry extends Vue {
   }
 
   .delete {
+    color: #888;
+    font-size: 1.4em;
+  }
+
+  .cancel {
     color: #888;
     font-size: 1.4em;
   }
