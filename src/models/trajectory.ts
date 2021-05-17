@@ -113,9 +113,9 @@ export default class Trajectory {
             for (let i = this.index; i < this.nodes.length; i++) {
                 
                 if (this.nodes[i].t >= t) {
-                    this.index = i - frameskip;
-                    this.partialIndex = i - frameskip;
-                    this.currentNode = this.nodes[i - frameskip];
+                    this.index = Math.max(0, i - frameskip);
+                    this.partialIndex = this.index
+                    this.currentNode = this.nodes[this.index];
                     return this.currentNode;
                 }
             }

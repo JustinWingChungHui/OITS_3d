@@ -46,6 +46,7 @@ export default class Scene extends Vue {
       await this.buildScene(container);
       
       } catch(ex) {
+        console.log(ex);
         window.alert('Error occured loading data');
       }
     }
