@@ -130,7 +130,7 @@ export default class BodyInterceptDetails extends Vue {
             Type: ValidationType.Required,
           },{
             Type: ValidationType.Minimum,
-            Params: 0
+            Params: this.stageIndex === 0 ? 0 : 1
           }]
       }
     ]);
@@ -141,13 +141,16 @@ export default class BodyInterceptDetails extends Vue {
     window.console.log('BodyInterceptDetails.mounted()');
     this.stageIndex = stageIndex
 
-    if (this.Mission.objectParameters.Perihcon.length > stageIndex) {
+    console.log(`this.stageIndex: ${this.stageIndex}`);
+    console.log(this.Mission.objectParameters);
+    if (this.Mission.objectParameters.Periacon.length > stageIndex) {
       this.periacon = this.Mission.objectParameters.Periacon[this.stageIndex];
-      this.perihcon = this.Mission.objectParameters.Perihcon[this.stageIndex];
+      this.perihcon = this.Mission.objectParameters.Perihcon[this.stageIndex - 1];
       this.dVcon = this.Mission.objectParameters.dVcon[this.stageIndex];
       this.tmax = this.Mission.objectParameters.tmax[this.stageIndex];
       this.t0 = this.Mission.objectParameters.t0[this.stageIndex];
       this.tmin = this.Mission.objectParameters.tmin[this.stageIndex];
+      console.log(`this.tmin: ${this.tmin}`);
     }
 
     this.validator.clearValidationMessages();

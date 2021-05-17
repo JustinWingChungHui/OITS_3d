@@ -166,9 +166,9 @@ class Missions extends VuexModule {
             mission.Periacon.push(0);
             mission.Perihcon.push(0);
             mission.dVcon.push(0);
-            mission.tmax.push(0);
-            mission.t0.push(0);
-            mission.tmin.push(0);
+            mission.tmax.push(365);
+            mission.t0.push(180);
+            mission.tmin.push(1);
         }
     }
 
