@@ -15,7 +15,7 @@
     "@types/vue2-datepicker": "^3.3.0",
     "axios": "^0.21.1",
     "core-js": "^3.8.3",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "open-iconic": "^1.1.1",
     "three": "^0.115.0",
     "vanilla-modal": "^1.6.5",
