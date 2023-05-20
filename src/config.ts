@@ -5,6 +5,7 @@ import Asteroid from '@/models/asteroid';
 
 interface Config {
     BaseUrl: string;
+    resultsListUrl: string;
     pathsUrl: string;
     missionsUrl: string;
     ZeroDate: number;
@@ -21,6 +22,7 @@ interface Config {
 
 const config: Config = {
     BaseUrl: 'https://oits.justinhui.com',
+    resultsListUrl: 'https://oits.blob.core.windows.net/results?restype=container&comp=list',
 
     // csv results
     pathsUrl: '/results/{id}/values/',

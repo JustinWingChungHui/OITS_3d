@@ -12,8 +12,8 @@ const UserSettings = namespace('UserSettings');
 @Component
 export default class Scene extends Vue {
 
-  @Prop({default: 0})
-  public id?: number;
+  @Prop({default: null})
+  public urlBase64?: string;
 
   private scene: SceneBuilder | null = null;
 
@@ -34,15 +34,15 @@ export default class Scene extends Vue {
 
     store.dispatch('MissionAnimation/UpdateLoading', true);
 
-    console.log(`id: ${this.id}`);
+    console.log(`urlBase64: ${this.urlBase64}`);
     const container = document.getElementById('container');
 
-    if (this.id && container) {
+    if (this.urlBase64 && container) {
 
       try {
       const height = window.innerHeight - container.getBoundingClientRect().top - 200;
       container.style.height = `${height}px`;
-      await store.dispatch('MissionAnimation/UpdateId', this.id)
+      await store.dispatch('MissionAnimation/UpdateResultsUrl', atob(this.urlBase64))
       await this.buildScene(container);
       
       } catch(ex) {

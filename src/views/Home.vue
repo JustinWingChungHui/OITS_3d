@@ -1,18 +1,18 @@
 <template>
   <div>
-    <MissionsList/>
+    <ResultsList/>
     <Loading/>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import MissionsList from '@/components/home/MissionsList.vue';
 import Loading from '@/components/Loading.vue';
+import ResultsList from '@/components/home/ResultsList.vue';
 
 @Component({
   components: {
-    MissionsList,
+    ResultsList,
     Loading
   },
 })

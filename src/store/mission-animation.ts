@@ -10,7 +10,7 @@ import store from '@/store';
 @Module({ namespaced: true })
 class MissionAnimation extends VuexModule {
 
-    public id = 0;
+    public resultsUrl = '';
     public TrajectoryByBodyId: { [id: string]: Trajectory } = {};
     public t = 0;
     public deltaT = 1;
@@ -36,9 +36,9 @@ class MissionAnimation extends VuexModule {
 
 
     @Mutation
-    public SetId(id: number) {
-        window.console.log(`SetId(${id}) mutation called`);
-        this.id = id;
+    public SetResultsUrl(url: string) {
+        window.console.log(`SetResultsUrl(${url}) mutation called`);
+        this.resultsUrl = url;
     }
 
     @Mutation
@@ -74,12 +74,12 @@ class MissionAnimation extends VuexModule {
     }
 
     @Action({ rawError: true })
-    public async UpdateId(id: number) {
-        window.console.log(`UpdateId(uid: ${id}) action called`);
+    public async UpdateResultsUrl(url: string) {
+        window.console.log(`UpdateResultsUrl(url: ${url}) action called`);
 
-        this.context.commit('SetId', id);
+        this.context.commit('SetResultsUrl', url);
 
-        if (!id) {
+        if (!url) {
             this.context.commit('SetTrajectoryByBodyId', {});
         }
         else {
@@ -94,11 +94,8 @@ class MissionAnimation extends VuexModule {
     @Action({ rawError: true })
     public async GetCsvResults() {
         window.console.log('GetCsvResults() action called');
-        
-        const path = config.pathsUrl.replace(`{id}`, this.id.toString());
-        const url = `${config.BaseUrl}${path}`;
 
-        const response = await axios.get(url) as AxiosResponse<string>;
+        const response = await axios.get(this.resultsUrl) as AxiosResponse<string>;
 
         const data: { [id: string]: string[] } = {};
         const trajectoryByBodyId: { [id: string]: Trajectory } = {};
@@ -108,7 +105,7 @@ class MissionAnimation extends VuexModule {
         for (const row of response.data.split("\n")) {
             if (row && row.trim().length > 0) {
                 if (!row.includes(',')) {
-                    id = row;
+                    id = row.trim();
                     data[id] = new Array<string>();
                 } else {
                     data[id].push(row);

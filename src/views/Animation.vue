@@ -1,7 +1,7 @@
 <template>
   <div class="animation">
     <Loading />
-    <Scene :id="id"/>
+    <Scene :url-base64="urlBase64"/>
     <div class="animation-controls-container  float-controls-container">
       <TimeStats />
       <ControlPanel />
@@ -31,8 +31,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 })
 export default class Animation extends Vue { 
 
-  @Prop({default: 0})
-  public id?: number;
+  @Prop({default: null})
+  public urlBase64?: string;
 }
 
 </script>
