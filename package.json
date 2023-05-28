@@ -3,17 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "serve": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build",
+    "lint": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service lint"
   },
   "dependencies": {
-    "@types/axios": "^0.14.0",
-    "@types/moment": "^2.13.0",
-    "@types/three": "^0.103.2",
-    "@types/vanilla-modal": "^1.6.2",
-    "@types/vue2-datepicker": "^3.3.0",
-    "@types/xml2js": "^0.4.11",
     "axios": "^0.21.1",
     "core-js": "^3.8.3",
     "moment": "^2.29.1",
@@ -32,6 +26,12 @@
     "xml2js": "^0.5.0"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/moment": "^2.13.0",
+    "@types/three": "^0.103.2",
+    "@types/vanilla-modal": "^1.6.2",
+    "@types/vue2-datepicker": "^3.3.0",
+    "@types/xml2js": "^0.4.11",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "@vue/cli-plugin-babel": "~4.3.0",
