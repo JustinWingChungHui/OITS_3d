@@ -82,7 +82,7 @@ export default class Marker implements IBody{
 
         const size = this.size * Store.state.UserSettings.Data.markerSizeMultiple;
 
-        const coneGeometry = ResourceTracker.track(new Three.ConeBufferGeometry(size, size * this.narrowness * 2, 8)); 
+        const coneGeometry = ResourceTracker.track(new Three.ConeGeometry(size, size * this.narrowness * 2, 8)); 
 
         const coneMaterial = ResourceTracker.track(new Three.MeshBasicMaterial( {
             color: Store.state.UserSettings.Data.markerColor

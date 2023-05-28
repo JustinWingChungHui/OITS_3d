@@ -30,7 +30,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import store from '@/store';
 import config from '@/config';
 import axios from 'axios';
-import { AxiosResponse } from 'axios';
+import { AxiosResponse, RawAxiosRequestConfig, AxiosHeaders } from 'axios';
 import { parseString } from 'xml2js';
 import Result from '@/models/results/result';
 import 'open-iconic/font/css/open-iconic.css';
@@ -47,11 +47,13 @@ export default class ResultsList extends Vue {
     store.dispatch('MissionAnimation/UpdateLoading', true);
     this.results = [];
     const uri = `${config.resultsListUrl}`;
-    const response = await axios.get(uri, {
-      headers: {
-        Accept: 'application/xml'
-      }
-    }) as AxiosResponse<string>;
+
+    const headers = new AxiosHeaders();
+    headers.setAccept('application/xml');
+    const reqConfig: RawAxiosRequestConfig = {
+      headers
+    };
+    const response = await axios.get(uri, reqConfig) as AxiosResponse<string>;
     parseString(response.data, (error, result) => {
       console.log('error', error);
       console.log('result', result);
