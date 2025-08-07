@@ -9,7 +9,7 @@ export default class ResourceTracker {
         ResourceTracker.resources = new Set<Disposable>();
     }
 
-    static track<T>(resource: T): T {
+    static track<T extends object>(resource: T): T {
         // eslint-disable-next-line
         if ('dispose' in resource as any) {
             ResourceTracker.resources.add(resource as unknown  as Disposable);
@@ -17,7 +17,7 @@ export default class ResourceTracker {
         return resource;
     }
 
-    static untrack<T>(resource: T): T {
+    static untrack<T extends object>(resource: T): T {
         // eslint-disable-next-line
         if ('dispose' in resource as any) {
             ResourceTracker.resources.delete(resource as unknown as Disposable);

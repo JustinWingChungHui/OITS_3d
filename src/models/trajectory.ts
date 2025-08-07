@@ -44,7 +44,7 @@ export default class Trajectory {
 
     public showPastOnly() {
         this.showingPastOnly = true;
-        const geometry = this.line.geometry as THREE.BufferGeometry;
+        const geometry = this.line.geometry as Three.BufferGeometry;
         geometry.setDrawRange(0, 0)
     }
 
@@ -129,7 +129,7 @@ export default class Trajectory {
 
     public animate() {
         if (this.showingPastOnly) {
-            const geometry = this.line.geometry as THREE.BufferGeometry;
+            const geometry = this.line.geometry as Three.BufferGeometry;
             geometry.setDrawRange(0, this.index);
         }
     }

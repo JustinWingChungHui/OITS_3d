@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
+    "target": "es2022",
+    "module": "es2022",
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
@@ -12,16 +12,14 @@
     "sourceMap": true,
     "baseUrl": ".",
     "skipLibCheck": true,
-    "types": [
-      "webpack-env"
-    ],
+    "types": [],
     "paths": {
       "@/*": [
         "src/*"
       ]
     },
     "lib": [
-      "esnext",
+      "es2022",
       "dom",
       "dom.iterable",
       "scripthost"
@@ -36,6 +34,8 @@
   ],
   "exclude": [
     "node_modules",
-    "node_modules/**"
+    "./node_modules",
+    "./node_modules/*",
+    "./node_modules/@types/node/index.d.ts",
   ]
 }
