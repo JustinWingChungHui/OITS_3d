@@ -55,6 +55,7 @@ const config: Config = {
         '2099942': '2099942',
         '3830896': '3830896',
         '1003639': '1003639',
+        '54509621': '54509621',
     },
 
     // Textures https://www.solarsystemscope.com/textures/
@@ -86,6 +87,7 @@ const config: Config = {
         new Asteroid('3825054', 0, 0, 40, 0.0005),
         new Asteroid('2099942', 0, 0, 40, 0.0005),
         new Asteroid('3830896', 0, 0, 40, 0.0005),
+        new Asteroid('54509621', 0, 0, 40, 0.0005),
     ),
 
     backgrounds: {
