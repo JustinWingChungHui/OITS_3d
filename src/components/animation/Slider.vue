@@ -42,7 +42,7 @@ label {
     width: 100%; /* Width of the outside container */
     padding-top: 0px;
     padding-bottom: 0px;
-    padding-left: 10px;
+    padding-left: 8px;
     padding-right: 10px;
     max-width: 400px;
 }

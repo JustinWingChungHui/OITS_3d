@@ -96,6 +96,9 @@ export default class SceneBuilder {
         this.renderer.render(this.scene, this.camera);
 
         requestAnimationFrame(this.animate);
+
+        const probeDistance = this.CalcProbeDistanceFromEarth()
+        store.dispatch('MissionAnimation/UpdateDistanceFromEarth', probeDistance);
     }
 
     public dispose() {
@@ -117,5 +120,21 @@ export default class SceneBuilder {
         });
 
         return promise;
+    }
+
+    private CalcProbeDistanceFromEarth(): number {
+        const earthVector = this.earth?.trajectory?.currentNode?.vector;
+        const probeVector = this.probe?.trajectory?.currentNode?.vector;
+
+        if (!earthVector || !probeVector) {
+            return 0
+        }
+
+        const dx = earthVector.x - probeVector.x
+        const dy = earthVector.y - probeVector.y
+        const dz = earthVector.z - probeVector.z
+
+        const total = (dx ** 2) + (dy ** 2) + (dz ** 2);
+        return Math.sqrt(total)
     }
 }

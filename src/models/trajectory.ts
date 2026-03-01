@@ -25,7 +25,11 @@ export default class Trajectory {
             const x = Number(val[1]);
             const y = Number(val[2]);
             const z = Number(val[3]);
-            const node = new TrajectoryNode(t, x, y, z);
+            let v: number | null = null
+            if (val.length > 4) {
+                v = Number(val[4])
+            }
+            const node = new TrajectoryNode(t, x, y, z, v);
 
             points.push(node.vector);
             this.nodes.push(node);

@@ -40,7 +40,7 @@ export default class Scene extends Vue {
     if (this.urlBase64 && container) {
 
       try {
-      const height = window.innerHeight - container.getBoundingClientRect().top - 200;
+      const height = window.innerHeight - container.getBoundingClientRect().top - 100;
       container.style.height = `${height}px`;
       await store.dispatch('MissionAnimation/UpdateResultsUrl', atob(this.urlBase64))
       await this.buildScene(container);

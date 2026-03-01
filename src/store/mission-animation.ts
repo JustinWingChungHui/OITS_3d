@@ -17,6 +17,9 @@ class MissionAnimation extends VuexModule {
     public AnimationState = AnimationState.paused;
     public Loading = true;
     public PlaybackSpeed = 1;
+    public DistanceFromSun = 0;
+    public ProbeSpeed: number | null = 0
+    public DistanceFromEarth = 0;
 
     // Brightness
     public light = 3.2;
@@ -71,6 +74,21 @@ class MissionAnimation extends VuexModule {
     @Mutation
     public SetPlaybackSpeed(playbackSpeed: number) {
         this.PlaybackSpeed = playbackSpeed;
+    }
+
+    @Mutation
+    public SetDistanceFromSun(distanceFromSun: number) {
+        this.DistanceFromSun = distanceFromSun
+    }
+
+    @Mutation
+    public SetProbeSpeed(probeSpeed: number | null) {
+        this.ProbeSpeed = probeSpeed
+    }
+
+    @Mutation
+    public SetDistanceFromEarth(distanceFromEarth: number) {
+        this.DistanceFromEarth = distanceFromEarth
     }
 
     @Action({ rawError: true })
@@ -145,6 +163,21 @@ class MissionAnimation extends VuexModule {
     public async UpdatePlaybackSpeed(playbackSpeed: number) {
         window.console.log(`UpdatePlaybackSpeed(${playbackSpeed})`);
         this.context.commit('SetPlaybackSpeed', playbackSpeed);
+    }
+
+    @Action
+    public UpdateDistanceFromSun(distanceFromSun: number) {
+        this.context.commit('SetDistanceFromSun', distanceFromSun);
+    }
+
+    @Action
+    public UpdateProbeSpeed(probeSpeed: number | null) {
+        this.context.commit('SetProbeSpeed', probeSpeed);
+    }
+
+    @Action
+    public UpdateDistanceFromEarth(distanceFromEarth: number) {
+        this.context.commit('SetDistanceFromEarth', distanceFromEarth);
     }
 }
 

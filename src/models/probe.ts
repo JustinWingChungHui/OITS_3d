@@ -57,7 +57,11 @@ export default class Probe implements IBody{
             this.z = this.trajectory.currentNode.vector.z;
 
             const deltaT = this.trajectory.nodes[1].t - this.trajectory.nodes[0].t;
+    
+            const r = this.trajectory.currentNode.GetDistanceFromOrigin()
             store.dispatch('MissionAnimation/UpdateDeltaT', deltaT);
+            store.dispatch('MissionAnimation/UpdateDistanceFromSun', r);
+            store.dispatch('MissionAnimation/UpdateProbeSpeed', this.trajectory.currentNode.speed);
         }
 
         if (this.gltfScene) {
@@ -76,6 +80,13 @@ export default class Probe implements IBody{
                 this.gltfScene.position.x = node.vector.x;
                 this.gltfScene.position.y = node.vector.y;
                 this.gltfScene.position.z = node.vector.z;
+
+                const r = node.GetDistanceFromOrigin()
+                store.dispatch('MissionAnimation/UpdateDistanceFromSun', r);
+
+                if (node.speed) {
+                    store.dispatch('MissionAnimation/UpdateProbeSpeed', node.speed);
+                }
 
                 if (this.trajectory.isLastNode) {
                     store.dispatch('MissionAnimation/UpdateAnimationState', AnimationState.paused);

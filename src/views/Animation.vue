@@ -1,12 +1,10 @@
 <template>
-  <div class="animation">
+  <div>
     <Loading />
     <Scene :url-base64="urlBase64"/>
-    <div class="animation-controls-container  float-controls-container">
+    <div class="animation-controls-container">
       <TimeStats />
       <ControlPanel />
-    </div>
-    <div class="animation-controls-container ">
       <Slider/>
     </div>
   </div>
@@ -41,18 +39,14 @@ export default class Animation extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .animation-controls-container {
-  width: 90%;
-  margin: 0.5em 5% 0em 5%;
-}
-
-.float-controls-container:before,
-.float-controls-container:after {
-    content: "";
-    display: table;
-}
-
-.float-controls-container:after {
-  clear: both;
+  display: flex;
+  flex-wrap: wrap;
+  z-index: 10;
+  position: fixed;
+  width: 100%; 
+  bottom: 0;
+  padding-bottom: 0.5em;
+  background-color: white;
 }
 </style>
 
