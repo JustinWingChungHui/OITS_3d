@@ -165,6 +165,7 @@ export default class Settings extends Vue {
         if (this.modal) {
             this.modal.close();
         }
+        window.location.reload();
     }
 }
 

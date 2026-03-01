@@ -29,8 +29,8 @@ export default class SceneBuilder {
         this.camera.position.set(startPos.x,startPos.y, startPos.z);
 
         this.renderer = ResourceTracker.track(new Three.WebGLRenderer({antialias: true}));
-        this.renderer.setPixelRatio( window.devicePixelRatio );
-        this.renderer.setSize(container.clientWidth, container.clientHeight);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setSize(container.clientWidth - 1, container.clientHeight);
 
         container.appendChild(this.renderer.domElement);
 
