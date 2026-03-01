@@ -14,7 +14,7 @@ class UserSettings extends VuexModule {
         probeSizeMultiple: 10,
         bodySizeMultiple: 10,
         markerSizeMultiple: 10,
-        asteroidSizeMultiple: 10,
+        asteroidSizeMultiple: 1,
         planetTrajectoryColor: 'blue',
         probeTrajectoryColor: 'white',
         asteroidTrajectoryColor: 'red',
@@ -32,7 +32,7 @@ class UserSettings extends VuexModule {
         this.Data.probeSizeMultiple = settings.probeSizeMultiple ?? 10;
         this.Data.bodySizeMultiple = settings.bodySizeMultiple ?? 10;
         this.Data.markerSizeMultiple = settings.markerSizeMultiple ?? 10;
-        this.Data.asteroidSizeMultiple = settings.asteroidSizeMultiple ?? 10;
+        this.Data.asteroidSizeMultiple = settings.asteroidSizeMultiple ?? 1;
         this.Data.planetTrajectoryColor = settings.planetTrajectoryColor ?? 'blue';
         this.Data.asteroidTrajectoryColor = settings.asteroidTrajectoryColor ?? 'red';
         this.Data.probeColor = settings.probeColor ?? 'white';
