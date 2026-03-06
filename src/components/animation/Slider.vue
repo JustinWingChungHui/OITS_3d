@@ -8,25 +8,18 @@
 </template>
 
 
-<script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
-import store from '@/store';
+<script setup lang="ts">
+import { ref, watch } from 'vue';
+import { MissionState } from '@/models/missions/mission_state';
 
-@Component
-export default class Slider extends Vue {
+const value = ref(0);
 
-    public value = 0;
+watch(value, () => {
+    console.log(`watch value: ${value.value}`)
+    const playbackSpeed = Math.pow(1.2, value.value);
 
-    @Watch('value')
-    public onValueChanged() {
-        window.console.log(`onValueChanged() ${this.value}`)
-        const val = Number(this.value);
-        const playbackSpeed = Math.pow(1.2, val);
-
-        store.dispatch('MissionAnimation/UpdatePlaybackSpeed', playbackSpeed);
-    }
-
-}
+    MissionState.playbackSpeed = playbackSpeed;
+})
 </script>
 
 
@@ -40,6 +33,7 @@ label {
 
 .slider-container {
     width: 100%; /* Width of the outside container */
+    margin-top: 5px;
     padding-top: 0px;
     padding-bottom: 0px;
     padding-left: 8px;

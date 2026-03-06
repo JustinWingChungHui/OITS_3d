@@ -1,11 +1,10 @@
 import * as Three from 'three';
-import Body from '../models/body';
-import Store from '@/store';
+import type Body from '@/models/body';
 import Marker from '@/models/marker';
 import config from '@/config';
+import { MissionState } from '@/models/missions/mission_state';
 
 export default class BodyBuilder {
-
     private bodiesById: { [id: string]: Body } = {};
 
     constructor() {
@@ -16,16 +15,16 @@ export default class BodyBuilder {
 
     public async AddToScene(scene: Three.Scene): Promise<{ [id: string]: Body }> {
 
-        window.console.log(`BodyBuilder.AddToScene()`)
+        console.log(`BodyBuilder.AddToScene()`)
         const bodies: { [id: string]: Body } = {};
         const promises = [];
 
         // Add in the sun
-        const sun = this.bodiesById['SUN'];
+        const sun = this.bodiesById['SUN']!;
         promises.push(sun.load(scene));
         bodies[sun.id] = sun;
 
-        for (const id in Store.state.MissionAnimation.TrajectoryByBodyId) {
+        for (const id in MissionState.trajectoryByBodyId) {
 
             if (id.includes('INTERMEDIATE')) {
                 const marker = new Marker(id, 0, 0, 0, config.markerSize);
@@ -33,7 +32,7 @@ export default class BodyBuilder {
                 bodies[marker.id] = marker;
 
             } else if (!this.bodiesById[id]) {
-                window.console.error(`id ${id} not recognised!`)
+                console.error(`id ${id} not recognised!`)
 
             } else {
 

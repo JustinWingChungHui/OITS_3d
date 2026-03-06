@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <Header v-if="this.$route.name !== 'Animation'" />
-    <div id="nav" v-if="this.$route.name !== 'Animation'">
+    <Header v-if="route.name !== 'Animation'" />
+    <div id="nav" v-if="route.name !== 'Animation'">
       <router-link to="/">MISSIONS</router-link>
       <router-link to="/about">ABOUT</router-link>
     </div>
@@ -9,20 +9,14 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import Header from '@/components/Header.vue';
+<script setup lang="ts">
+import { useRoute } from 'vue-router';
+import Header from './components/Header.vue';
 
-@Component({
-  components: {
-    Header
-  },
-})
-export default class App extends Vue { }
-
+const route = useRoute();
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

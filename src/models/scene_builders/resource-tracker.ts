@@ -28,8 +28,8 @@ export default class ResourceTracker {
 
     static dispose() {
         for (const resource of ResourceTracker.resources) {
-            window.console.log(`Disposing:`);
-            window.console.log(resource);
+            console.log(`Disposing:`);
+            console.log(resource);
             resource.dispose();
         }
         ResourceTracker.resources.clear();

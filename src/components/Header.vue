@@ -4,19 +4,9 @@
     </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-
-@Component({
-  components: {
-  },
-})
-export default class Header extends Vue { }
-
-</script>
+<script setup lang="ts"></script>
 
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .header {
     font-family: Raleway,Helvetica Neue,Helvetica,Arial,sans-serif;

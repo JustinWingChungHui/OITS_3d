@@ -2,77 +2,74 @@
   <div id="container"></div>
 </template>
 
-<script lang="ts">
-import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
-import SceneBuilder from '@/scene_builders/scene-builder';
-import store from '@/store';
-import { namespace } from 'vuex-class';
-const UserSettings = namespace('UserSettings');
+<script setup lang="ts">
+import { onMounted, watch, onBeforeUnmount } from 'vue';
+import SceneBuilder from '@/models/scene_builders/scene-builder';
+import { MissionState } from '@/models/missions/mission_state';
+import { useUserSettingsStore } from '@/stores/user-settings';
+import { useLoadingStateStore } from '@/stores/loading-state';
 
-@Component
-export default class Scene extends Vue {
+const userSettingsStore = useUserSettingsStore();
+const loadingStateStore = useLoadingStateStore();
 
-  @Prop({default: null})
-  public urlBase64?: string;
+const { urlBase64 } =defineProps<{
+  urlBase64?: string;
+}>()
 
-  private scene: SceneBuilder | null = null;
+let scene: SceneBuilder | null = null;
+let initialising = false;
 
-  private initialising = false;
+onMounted(async () => {
+  initialising = true;
+  await init();
+  initialising = false;
+})
 
-  @UserSettings.State('LastUpdatedDate')
-  private settingsLastUpdatedDate!: Date
+onBeforeUnmount(() => {
+  console.log(`Scene.beforeUnmount()`);
+  scene?.dispose();
+})
 
-  protected async mounted() {
-    this.initialising = true;
-    await this.init();
-    this.initialising = false;
-  }
+const init = async () => {
+  console.log(`Scene.init()`);
 
+  loadingStateStore.loading = true;
 
-  private async init() {
-    console.log(`Scene.init()`);
+  const container = document.getElementById('container');
 
-    store.dispatch('MissionAnimation/UpdateLoading', true);
+  if (urlBase64 && container) {
 
-    console.log(`urlBase64: ${this.urlBase64}`);
-    const container = document.getElementById('container');
-
-    if (this.urlBase64 && container) {
-
-      try {
+    try {
+      await MissionState.UpdateResultsUrl(atob(urlBase64));
       const height = window.innerHeight - container.getBoundingClientRect().top - 100;
       container.style.height = `${height}px`;
-      await store.dispatch('MissionAnimation/UpdateResultsUrl', atob(this.urlBase64))
-      await this.buildScene(container);
-      
-      } catch(ex) {
-        console.log(ex);
-        window.alert('Error occured loading data');
-      }
-    }
-  }
-
-  private async buildScene(container: HTMLElement) {
-    console.log(`Scene.buildScene()`);
-
-    store.dispatch('MissionAnimation/UpdateLoading', true);
-    this.scene = new SceneBuilder(container);
-    await this.scene.load()
-    store.dispatch('MissionAnimation/UpdateLoading', false);
-    this.scene.animate(); 
-  }
-
-  @Watch('settingsLastUpdatedDate')
-  private async onsettingsLastUpdatedDateChanged(newValue: Date, oldValue: Date) {
-    window.console.log(`onsettingsLastUpdatedDateChanged(${oldValue}, ${newValue}`)
-    if (newValue > oldValue && !this.initialising) {
-
-      const container = document.getElementById('container') as HTMLElement;
-      container.innerHTML = '';
-      await this.buildScene(container);
+      await buildScene(container);
+    
+    } catch(ex) {
+      console.log(ex);
+      window.alert('Error occured loading data');
     }
   }
 }
+
+const buildScene = async (container: HTMLElement) => {
+  console.log(`Scene.buildScene()`);
+  loadingStateStore.loading = true;
+  scene = new SceneBuilder(container);
+  await scene.load()
+  loadingStateStore.loading = false;
+  scene.animate(); 
+}
+
+watch(() =>userSettingsStore.LastUpdatedDate, async (newValue, oldValue) => {
+  console.log(`watch settingsLastUpdatedDate: ${oldValue} -> ${newValue}`)
+  if (newValue > oldValue && !initialising) {
+    scene?.dispose();
+    const container = document.getElementById('container') as HTMLElement;
+    container.innerHTML = '';
+    await buildScene(container);
+  }
+})
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

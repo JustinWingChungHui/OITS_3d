@@ -8,7 +8,7 @@
                        <div class="pure-control-group">
                             <label>Background</label>
                             <select v-model="settingsData.background">
-                                <option v-for="(item, key) in backgrounds" :key="key">{{key}}</option>
+                                <option v-for="(item, key) in config.backgrounds" :key="key">{{key}}</option>
                             </select>
                         </div>
                         <div class="pure-control-group">
@@ -72,7 +72,7 @@
                             <input type="checkbox" v-model="settingsData.cameraTracksProbe" />
                         </div>
                         <div class="pure-controls">
-                             <button class="pure-button pure-button-primary" @click="save">Save</button>
+                             <button class="pure-button pure-button-primary" @click="emit('close')">Close</button>
                         </div>
                     </fieldset>
                 </div>
@@ -80,7 +80,6 @@
         </div>
         <div class="modal">
             <div class="modal-inner">
-                <span data-modal-close class="oi" data-glyph="x"></span>
                 <div class="modal-content"></div>
             </div>
         </div>
@@ -88,86 +87,87 @@
 </template>
 
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { namespace } from 'vuex-class';
+<script setup lang="ts">
+import { ref, onMounted, watch, onBeforeUnmount } from 'vue';
 import VanillaModal from 'vanilla-modal';
-import UserSettingValues from '@/store/user-setting-values';
+import { useUserSettingsStore, type UserSettingValues } from '@/stores/user-settings';
 import config from '@/config';
-const UserSettings = namespace('UserSettings');
 
+const userSettingsStore = useUserSettingsStore();
 
-@Component
-export default class Settings extends Vue {
+const { modalOpen} = defineProps<{
+    modalOpen: boolean
+}>();
 
-    public modal?: VanillaModal;
+const emit =defineEmits<{
+    (e: 'close'): void
+}>();
 
-    public colours: Array<string> = [
-        'blue',
-        'red',
-        'white',
-        'green',
-        'yellow',
-        'pink',
-        'orange',
-        'magenta',
-        'lime',
-        'aqua',
-        'black',
-        'grey',
-        'purple',
-    ];
+const modal = ref<VanillaModal>();
 
-    public get backgrounds(): { [id: string]: string } {
-        return config.backgrounds;
-    }
+const colours: Array<string> = [
+    'blue',
+    'red',
+    'white',
+    'green',
+    'yellow',
+    'pink',
+    'orange',
+    'magenta',
+    'lime',
+    'aqua',
+    'black',
+    'grey',
+    'purple',
+];
+    
 
-    public settingsData: UserSettingValues = {
-        background: 'white',
-        probeSizeMultiple: 10,
-        bodySizeMultiple: 10,
-        markerSizeMultiple: 10,
-        asteroidSizeMultiple: 10,
-        planetTrajectoryColor: 'blue',
-        probeTrajectoryColor: 'white',
-        asteroidTrajectoryColor: 'red',
-        probeColor: 'white',
-        markerColor: 'green',
-        cameraTracksProbe: true,
-    };
+const settingsData = ref<UserSettingValues>({
+    background: 'white',
+    probeSizeMultiple: 10,
+    bodySizeMultiple: 10,
+    markerSizeMultiple: 10,
+    asteroidSizeMultiple: 10,
+    planetTrajectoryColor: 'blue',
+    probeTrajectoryColor: 'white',
+    asteroidTrajectoryColor: 'red',
+    probeColor: 'white',
+    markerColor: 'green',
+    cameraTracksProbe: true,
+});
 
-    @UserSettings.State
-    public Data!: UserSettingValues;
+onMounted(() => {
+    console.log(`Settings mounted()`);
+    userSettingsStore.Load();
 
-    @UserSettings.Action
-    public Update!: (userSettings: UserSettingValues) => Promise<void>;
+    settingsData.value = {...userSettingsStore.data};
+    modal.value = new VanillaModal({
+        clickOutside: false
+    });
+})
 
-    @UserSettings.Action
-    public Load!: () => void;
+onBeforeUnmount(() => {
+    modal.value?.destroy();
+})
 
-    protected mounted() {
-        window.console.log(`Settings mounted()`);
-        this.Load();
-
-        window.console.log(this.Data);
-        this.settingsData = this.Data;
-    }
-
-    public show() {
-        window.console.log(`show()`);
-        this.modal = new VanillaModal();
-        window.console.log(`this.modal.open('#settingsModal');`);
-        this.modal.open('#settingsModal');
-    }
-
-    public async save() {
-        await this.Update(this.settingsData);
-        if (this.modal) {
-            this.modal.close();
-        }
-        window.location.reload();
-    }
+const show = () => {
+    console.log(`show()`);
+    console.log(`this.modal.open('#settingsModal');`);
+    modal.value!.open('#settingsModal');
 }
+
+watch(() => modalOpen, async (newValue) => {
+    console.log(`watch modalOpen: ${newValue}`);
+    if (newValue) {
+        show();
+    } else {
+        userSettingsStore.data = {...settingsData.value};
+        await userSettingsStore.Save();
+        if (modal.value) {
+            modal.value.close();
+        }
+    }
+})
 
 </script>
 

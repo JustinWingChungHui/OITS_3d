@@ -1,10 +1,9 @@
-import Vue from 'vue'
-import VueRouter, { RouteConfig } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
 
-Vue.use(VueRouter)
-
-  const routes: Array<RouteConfig> = [
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
   {
     path: '/',
     name: 'Home',
@@ -24,10 +23,7 @@ Vue.use(VueRouter)
     component: () => import('../views/Animation.vue'),
     props: true
   }
-]
-
-const router = new VueRouter({
-  routes
+],
 })
 
 export default router

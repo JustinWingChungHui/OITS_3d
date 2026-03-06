@@ -25,57 +25,52 @@
     </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import store from '@/store';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import config from '@/config';
 import axios from 'axios';
-import { AxiosResponse, RawAxiosRequestConfig, AxiosHeaders } from 'axios';
+import { type RawAxiosRequestConfig, AxiosHeaders } from 'axios';
 import { parseString } from 'xml2js';
-import Result from '@/models/results/result';
+import type Result from '@/models/results/result';
 import 'open-iconic/font/css/open-iconic.css';
+import { useLoadingStateStore } from '@/stores/loading-state';
 
-@Component({
-  components: {
-  },
-})
-export default class ResultsList extends Vue { 
+const loadingStateStore = useLoadingStateStore();
 
-  public results: Result[] = [];
+const results = ref<Result[]>([]);
 
-  protected async mounted() {
-    store.dispatch('MissionAnimation/UpdateLoading', true);
-    this.results = [];
-    const uri = `${config.resultsListUrl}`;
+onMounted(async() => {
+  loadingStateStore.loading = true;
+  results.value = [];
+  const uri = `${config.resultsListUrl}`;
 
-    const headers = new AxiosHeaders();
-    headers.setAccept('application/xml');
-    const reqConfig: RawAxiosRequestConfig = {
-      headers
-    };
-    const response = await axios.get(uri, reqConfig) as AxiosResponse<string>;
-    parseString(response.data, (error, result) => {
-      console.log('error', error);
-      console.log('result', result);
-      for (const blob of result.EnumerationResults.Blobs[0].Blob) {
-        console.log('blob', blob);
-        const result: Result = {
-          name: blob.Name[0],
-          createdAt: blob.Properties[0]['Last-Modified'][0],
-          url: blob.Url[0],
-          urlBase64: btoa(blob.Url[0])
-        };
+  const headers = new AxiosHeaders();
+  headers.setAccept('application/xml');
+  const reqConfig: RawAxiosRequestConfig = {
+    headers
+  };
+  const response = await axios.get<string>(uri, reqConfig);
+  parseString(response.data, (error, result) => {
+    console.log('error', error);
+    console.log('result', result);
+    for (const blob of result.EnumerationResults.Blobs[0].Blob) {
+      console.log('blob', blob);
+      const result: Result = {
+        name: blob.Name[0],
+        createdAt: blob.Properties[0]['Last-Modified'][0],
+        url: blob.Url[0],
+        urlBase64: btoa(blob.Url[0])
+      };
 
-        this.results.push(result);
-      }
-      store.dispatch('MissionAnimation/UpdateLoading', false);
-    });
-    
-  }
-}
+      results.value.push(result);
+    }
+    console.log('results loaded');
+    loadingStateStore.loading = false;
+  });
+  
+});
 
 </script>
-
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>

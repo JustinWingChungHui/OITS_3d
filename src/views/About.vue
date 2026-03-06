@@ -10,19 +10,19 @@
     </p>
 
     <h3>Credits</h3>
-    <p>
+    <div>
         OITS was created by Adam Hibberd 
         <ul>
           <li><a href="https://adamhibberd.com/">https://adamhibberd.com/</a></li>
           <li><a href="https://github.com/AdamHibberd">https://github.com/AdamHibberd</a></li>
         </ul>
-    </p>
-    <p>
+    </div>
+    <div>
         Website was created by Justin Wing Chung Hui 
         <ul>
           <li><a href="https://github.com/justinwingchunghui">https://github.com/justinwingchunghui</a></li>
         </ul>
-    </p>
+    </div>
     <hr/>
     <p>
         Planetary Textures have been used from 
@@ -43,19 +43,6 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-
-@Component({
-  components: {
-  },
-})
-export default class About extends Vue { }
-
-</script>
-
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .about-content {
     margin-left: auto;

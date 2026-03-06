@@ -8,47 +8,38 @@
       <span class="play-pause-slash">/</span>
       <span class="oi" data-glyph="media-pause" title="Pause" aria-hidden="true"></span>
     </button>
-    <button class="pure-button settings-btn" @click="settingsClick()">
-      <span class="oi" data-glyph="cog" title="Play" aria-hidden="true"></span>
+    <button class="pure-button settings-btn" @click="showSettings = true">
+      <span class="oi" data-glyph="cog" title="Settings" aria-hidden="true"></span>
     </button>
     
-    <Settings ref="settings"/>
+    <Settings v-show="showSettings" :modal-open="showSettings" @close="showSettings = false"/>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import store from '@/store';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { MissionState } from '@/models/missions/mission_state';
 import 'open-iconic/font/css/open-iconic.css';
 import AnimationState from '@/models/animation_state';
 import Settings from './Settings.vue';
 
-@Component@Component({
-  components: {
-    Settings
-  },
+const showSettings = ref(false);
+
+onMounted(() => {
+  showSettings.value = false;
 })
-export default class ControlPanel extends Vue {
 
-  public rewind() {
-    store.dispatch('MissionAnimation/UpdateAnimationState', AnimationState.rewind);
-  }
+const rewind = () => {
+  MissionState.animationState = AnimationState.rewind;
+};
 
-  public playPause() {
-    window.console.log(`playPause()`);
+const playPause = () => {
+  console.log(`playPause()`);
 
-    const isAnimating = store.getters['MissionAnimation/IsAnimating'];
-    window.console.log(`isAnimating: ${isAnimating}`);
-    if (isAnimating) {
-      store.dispatch('MissionAnimation/UpdateAnimationState', AnimationState.paused);
-    } else {
-      store.dispatch('MissionAnimation/UpdateAnimationState', AnimationState.playing);
-    }
-  }
-
-  public settingsClick() {
-    window.console.log(`settingsClick()`);
-    (this.$refs.settings as Settings).show();
+  if (MissionState.IsAnimating()) {
+    MissionState.animationState = AnimationState.paused;
+  } else {
+    MissionState.animationState = AnimationState.playing;
   }
 }
 </script>

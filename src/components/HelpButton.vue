@@ -4,14 +4,10 @@
   </span>
 </template>
 
-<script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
-
-@Component
-export default class HelpButton extends Vue { 
-  @Prop({default: ''})
-  public message?: string;
-}
+<script setup lang="ts">
+defineProps({
+  message: String
+});
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

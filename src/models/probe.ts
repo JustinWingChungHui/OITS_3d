@@ -1,15 +1,16 @@
 import * as Three from 'three'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import IBody from './body';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import type Body from './body';
 import Trajectory from './trajectory';
 import SphericalBody from './spherical_body';
-import store from '@/store';
 import AnimationState from './animation_state';
-import ResourceTracker from '../scene_builders/resource-tracker';
-import MissionAnimation from '@/store/mission-animation';
+import ResourceTracker from './scene_builders/resource-tracker';
+import { MissionState } from '@/models/missions/mission_state';
+import { useUserSettingsStore } from '@/stores/user-settings';
+import { toRaw } from 'vue';
 
+export default class Probe implements Body{
 
-export default class Probe implements IBody{
     public id: string;
     public x: number;
     public y: number;
@@ -20,6 +21,9 @@ export default class Probe implements IBody{
 
     public texture: Three.Texture | null = null;
     private gltfScene: Three.Group | null = null;
+
+    private userSettingsStore: ReturnType<typeof useUserSettingsStore> | null = null;
+
 
     constructor(id: string,
                 x: number,
@@ -38,15 +42,17 @@ export default class Probe implements IBody{
 
 
     public async load(scene: Three.Scene): Promise<void> {
-        window.console.log(`Probe.load()`)
+        console.log(`Probe.load()`)
+        this.userSettingsStore = useUserSettingsStore();
+
         await this.LoadGLTF();
 
-        const trajectoryByBodyId = (store.state.MissionAnimation as MissionAnimation).TrajectoryByBodyId
+        const trajectoryByBodyId = MissionState.trajectoryByBodyId;
 
         if (this.id in trajectoryByBodyId) {
-            this.trajectory = trajectoryByBodyId[this.id];
+            this.trajectory = trajectoryByBodyId[this.id]!;
             this.trajectory.line.material = ResourceTracker.track(new Three.LineBasicMaterial({
-                color: store.state.UserSettings.Data.probeTrajectoryColor
+                color: toRaw(this.userSettingsStore.data.probeTrajectoryColor)
             }));
 
             this.trajectory.showPastOnly();
@@ -56,17 +62,19 @@ export default class Probe implements IBody{
             this.y = this.trajectory.currentNode.vector.y;
             this.z = this.trajectory.currentNode.vector.z;
 
-            const deltaT = this.trajectory.nodes[1].t - this.trajectory.nodes[0].t;
+            const deltaT = this.trajectory.nodes[1]!.t - this.trajectory.nodes[0]!.t;
     
             const r = this.trajectory.currentNode.GetDistanceFromOrigin()
-            store.dispatch('MissionAnimation/UpdateDeltaT', deltaT);
-            store.dispatch('MissionAnimation/UpdateDistanceFromSun', r);
-            store.dispatch('MissionAnimation/UpdateProbeSpeed', this.trajectory.currentNode.speed);
+            MissionState.deltaT = deltaT;
+            MissionState.distanceFromSun = r;
+            MissionState.probeSpeed = this.trajectory.currentNode.speed;
         }
 
         if (this.gltfScene) {
             scene.add(this.gltfScene);
         }
+
+        console.log(`Probe.loaded`)
     }
 
     public animate() {
@@ -74,7 +82,7 @@ export default class Probe implements IBody{
     }
 
     public animateAndGetTime(): number {
-        if (this.gltfScene) {
+        if (this.gltfScene && this.userSettingsStore) {
             if (this.trajectory) {
                 const node = this.trajectory.getNextNode();
                 this.gltfScene.position.x = node.vector.x;
@@ -82,14 +90,14 @@ export default class Probe implements IBody{
                 this.gltfScene.position.z = node.vector.z;
 
                 const r = node.GetDistanceFromOrigin()
-                store.dispatch('MissionAnimation/UpdateDistanceFromSun', r);
+                MissionState.distanceFromSun = r;
 
                 if (node.speed) {
-                    store.dispatch('MissionAnimation/UpdateProbeSpeed', node.speed);
+                    MissionState.probeSpeed = node.speed;
                 }
 
                 if (this.trajectory.isLastNode) {
-                    store.dispatch('MissionAnimation/UpdateAnimationState', AnimationState.paused);
+                    MissionState.animationState = AnimationState.paused;
                 }
 
                 this.trajectory.animate();
@@ -103,7 +111,7 @@ export default class Probe implements IBody{
 
     public pointTowardsBody(body: SphericalBody) {
 
-        if (this.gltfScene && body.sphere && store.getters['MissionAnimation/IsAnimating']) {
+        if (this.gltfScene && body.sphere && MissionState.IsAnimating()) {
             this.gltfScene.lookAt(body.sphere.position);
         }
     }
@@ -111,10 +119,10 @@ export default class Probe implements IBody{
     private async LoadGLTF(): Promise<void> {
         const promise = await new Promise<void>((resolve) => {
 
-            new GLTFLoader().load('/assets/probe/scene.gltf', (gltf) => {
+            new GLTFLoader().load('/probe/scene.gltf', (gltf) => {
 
                 ResourceTracker.track(gltf)
-                const size = this.scale * store.state.UserSettings.Data.probeSizeMultiple;
+                const size = this.scale * toRaw(this.userSettingsStore!.data.probeSizeMultiple);
 
                 gltf.scene.scale.set(size, size, size);
                 gltf.scene.position.x = this.x;
@@ -128,8 +136,7 @@ export default class Probe implements IBody{
                         
                         // Texture is not showing up , so use basic colour
                         mesh.material = ResourceTracker.track(new Three.MeshLambertMaterial({
-                            color: store.state.UserSettings.Data.probeColor,
-
+                            color: toRaw(this.userSettingsStore!.data.probeColor)
                         }));
                     }
                 });

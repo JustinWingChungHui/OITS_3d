@@ -1,4 +1,4 @@
-import MissionParams from '@/models/missions/mission_params';
+import type MissionParams from '@/models/missions/mission_params';
 
 export default interface Mission {
     id: number;

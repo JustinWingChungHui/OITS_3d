@@ -1,40 +1,29 @@
 <template>
   <div class="stats-container">
       <div><strong> Date: </strong>{{ formattedDate }}</div>
-      <div><strong> Sun Distance (AU): </strong>{{ DistanceFromSun }}</div>
-      <div><strong> Earth Distance (AU): </strong>{{ DistanceFromEarth }}</div>
-      <div v-if="ProbeSpeed"><strong> Speed (Km/s): </strong>{{ ProbeSpeed }}</div>
+      <div><strong> Sun Distance (AU): </strong>{{ distanceFromSun.toFixed(5) }}</div>
+      <div><strong> Earth Distance (AU): </strong>{{ distanceFromEarth.toFixed(5) }}</div>
+      <div v-if="probeSpeed"><strong> Speed (Km/s): </strong>{{ probeSpeed }}</div>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import store from '@/store';
-import moment from 'moment/moment';
+<script setup lang="ts">
+import { ref } from 'vue';
+import { DateTime } from 'luxon';
+import { MissionState } from '@/models/missions/mission_state';
 
-@Component
-export default class TimeStats extends Vue {
+const formattedDate = ref<string>('');
+const distanceFromSun = ref<number>(0);
+const distanceFromEarth = ref<number>(0);
+const probeSpeed = ref<number | null>(null);
 
-  private get t(): number {
-    return store.state.MissionAnimation.t;
-  }
+setInterval(() => {
+  formattedDate.value = DateTime.fromJSDate(MissionState.tDate()).toLocaleString(DateTime.DATETIME_MED);
+  distanceFromSun.value = MissionState.distanceFromSun;
+  distanceFromEarth.value = MissionState.distanceFromEarth;
+  probeSpeed.value = MissionState.probeSpeed;
+}, 20);
 
-  private get formattedDate(): string {
-    return moment(store.getters['MissionAnimation/tDate']).format("YYYY-MM-DD hh:mm");
-  }
-
-  private get DistanceFromSun(): number {
-    return store.state.MissionAnimation.DistanceFromSun.toFixed(5);
-  }
-
-  private get DistanceFromEarth(): number {
-    return store.state.MissionAnimation.DistanceFromEarth.toFixed(5);
-  }
-
-  private get ProbeSpeed(): number | null {
-    return store.state.MissionAnimation.ProbeSpeed;
-  }
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

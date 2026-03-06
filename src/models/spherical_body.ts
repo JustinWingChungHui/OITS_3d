@@ -1,12 +1,14 @@
 import * as Three from 'three'
-import IBody from './body';
+import type Body from './body';
 import Trajectory from './trajectory';
-import store from '@/store';
-import ResourceTracker from '../scene_builders/resource-tracker';
-import MissionAnimation from '@/store/mission-animation';
+import ResourceTracker from './scene_builders/resource-tracker';
+import { MissionState } from '@/models/missions/mission_state';
+import { useUserSettingsStore } from '@/stores/user-settings';
+import { toRaw } from 'vue';
 
 
-export default class SphericalBody implements IBody{
+export default class SphericalBody implements Body{
+
     // Decentish smoothness and performance
     public static WIDTH_SEGMENTS = 24;
     public static HEIGHT_SEGMENTS = 16;
@@ -22,6 +24,9 @@ export default class SphericalBody implements IBody{
 
     private textureFile: string;
     private rotationSpeed: number;
+
+    private userSettingsStore: ReturnType<typeof useUserSettingsStore> | null = null;
+
 
     constructor(id: string,
                 x: number,
@@ -42,7 +47,7 @@ export default class SphericalBody implements IBody{
     public animate() {
         if (this.sphere) {
 
-            if (store.getters.isAnimating) {
+            if (MissionState.IsAnimating()) {
                 this.sphere.rotation.y += this.rotationSpeed;
             }
 
@@ -58,15 +63,18 @@ export default class SphericalBody implements IBody{
 
 
     public async load(scene: Three.Scene): Promise<void> {
-        window.console.log(`SphericalBody.load()`)
+        console.log(`SphericalBody.load()`)
+    
+        this.userSettingsStore = useUserSettingsStore();
+
         await this.loadTexture();
 
-        const trajectoryByBodyId = (store.state.MissionAnimation as MissionAnimation).TrajectoryByBodyId
+        const trajectoryByBodyId = toRaw(MissionState.trajectoryByBodyId);
 
         if (this.id in trajectoryByBodyId) {
-            this.trajectory = trajectoryByBodyId[this.id];
+            this.trajectory = trajectoryByBodyId[this.id]!;
             this.trajectory.line.material = ResourceTracker.track(new Three.LineBasicMaterial({ 
-                color: store.state.UserSettings.Data.planetTrajectoryColor
+                color: toRaw(this.userSettingsStore.data.planetTrajectoryColor)
             }));
 
             this.trajectory.load(scene);
@@ -76,7 +84,7 @@ export default class SphericalBody implements IBody{
             this.z = this.trajectory.currentNode.vector.z;
         }
 
-        const size = this.radius * store.state.UserSettings.Data.bodySizeMultiple;
+        const size = this.radius * toRaw(this.userSettingsStore.data.bodySizeMultiple);
 
         const sphereGeometry = ResourceTracker.track(new Three.SphereGeometry(
                         size, SphericalBody.WIDTH_SEGMENTS, SphericalBody.HEIGHT_SEGMENTS)); 

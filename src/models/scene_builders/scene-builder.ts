@@ -1,12 +1,14 @@
 import * as Three from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import BodyBuilder from './body-builder';
-import Body from '@/models/body';
+import type Body from '@/models/body';
 import Probe from '@/models/probe';
-import store from '@/store';
 import config from '@/config';
 import SphericalBody from '@/models/spherical_body';
 import ResourceTracker from './resource-tracker';
+import { MissionState } from '@/models/missions/mission_state';
+import { useUserSettingsStore } from '@/stores/user-settings';
+import { toRaw } from 'vue';
 
 // https://stemkoski.github.io/Three.js/
 
@@ -19,14 +21,15 @@ export default class SceneBuilder {
 
     private earth?: SphericalBody;
     private probe?: Probe;
+    private userSettingsStore: ReturnType<typeof useUserSettingsStore> | null = null;
 
     constructor(container: HTMLElement) {
         ResourceTracker.init();
         Three.Cache.enabled = true;
         this.scene = ResourceTracker.track(new Three.Scene());
         this.camera = ResourceTracker.track(new Three.PerspectiveCamera(70, container.clientWidth/container.clientHeight, 0.001, 400));
-        const startPos = config.cameraStartPosition;
-        this.camera.position.set(startPos.x,startPos.y, startPos.z);
+        const startPos = config.cameraStartPosition!;
+        this.camera.position.set(startPos.x! ,startPos.y!, startPos.z!);
 
         this.renderer = ResourceTracker.track(new Three.WebGLRenderer({antialias: true}));
         this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -50,7 +53,8 @@ export default class SceneBuilder {
     }
 
     public async load(): Promise<void> {
-        window.console.log(`SceneBuilder.load()`)
+        console.log(`SceneBuilder.load()`)
+        this.userSettingsStore = useUserSettingsStore();
         await this.loadBackground();
         const bodyBuilder = new BodyBuilder()
         this.bodiesById = await bodyBuilder.AddToScene(this.scene);
@@ -70,11 +74,15 @@ export default class SceneBuilder {
         const t = probe.animateAndGetTime();
 
 
+        if(!this.userSettingsStore) {
+            return
+        }
+
         // set t directly on state to not kill Vuex
-        store.state.MissionAnimation.t = t;
+        MissionState.t = t;
         
         // Point the camera at the probe
-        if (store.state.UserSettings.Data.cameraTracksProbe) {
+        if (this.userSettingsStore.data.cameraTracksProbe) {
             const pVector = probe.trajectory?.currentNode?.vector;
             if (pVector) {
                 this.controls.target.set(pVector.x, pVector.y, pVector.z);
@@ -85,7 +93,7 @@ export default class SceneBuilder {
         // Move the other bodies
         for (const id in this.bodiesById) {
             if (id !== 'PROBE') {
-                this.bodiesById[id].animate(); 
+                this.bodiesById[id]!.animate(); 
             }
         }
 
@@ -98,28 +106,23 @@ export default class SceneBuilder {
         requestAnimationFrame(this.animate);
 
         const probeDistance = this.CalcProbeDistanceFromEarth()
-        store.dispatch('MissionAnimation/UpdateDistanceFromEarth', probeDistance);
+        MissionState.distanceFromEarth = probeDistance;
     }
 
     public dispose() {
         ResourceTracker.dispose();
     }
 
-    private async loadBackground(): Promise<void> {
-        window.console.log(`SceneBuilder.loadBackground()`)
+    private async loadBackground(){
+        console.log(`SceneBuilder.loadBackground()`)
 
-        const backgroundPath = store.getters['MissionAnimation/BackgroundPath'];
-        window.console.log(`backgroundPath: ${backgroundPath}`);
-
-        const promise = await new Promise<void>((resolve) => {
-            new Three.TextureLoader().load(backgroundPath, (texture) => {
-                window.console.log(`background loaded`);
-                this.scene.background = texture;
-                resolve();
-            });
-        });
-
-        return promise;
+        const backgroundPath = toRaw(this.userSettingsStore!.BackgroundPath);
+        console.log(`backgroundPath: ${backgroundPath}`);
+        const loader = new Three.TextureLoader();
+        console.log(`loading background...`)
+        const texture = await loader.loadAsync(backgroundPath);
+        console.log(`background loaded`);
+        this.scene.background = texture;
     }
 
     private CalcProbeDistanceFromEarth(): number {

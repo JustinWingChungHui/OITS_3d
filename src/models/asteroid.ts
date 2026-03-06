@@ -1,13 +1,13 @@
 import * as Three from 'three'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import IBody from './body';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import type Body from './body';
 import Trajectory from './trajectory';
-import store from '@/store';
-import ResourceTracker from '../scene_builders/resource-tracker';
-import MissionAnimation from '@/store/mission-animation';
+import ResourceTracker from './scene_builders/resource-tracker';
+import { MissionState } from '@/models/missions/mission_state';
+import { useUserSettingsStore } from '@/stores/user-settings';
+import { toRaw } from 'vue';
 
-
-export default class Asteroid implements IBody{
+export default class Asteroid implements Body{
     public id: string;
     public x: number;
     public y: number;
@@ -16,6 +16,7 @@ export default class Asteroid implements IBody{
     public trajectory: Trajectory | null = null;
 
     private gltfScene: Three.Group | null = null;
+    private userSettingsStore: ReturnType<typeof useUserSettingsStore> | null = null;
 
     constructor(id: string,
                 x: number,
@@ -30,25 +31,26 @@ export default class Asteroid implements IBody{
     }
 
     public async load(scene: Three.Scene): Promise<void> {
-        window.console.log(`Asteroid.load()`)
+        console.log(`Asteroid.load()`)
 
+        this.userSettingsStore = useUserSettingsStore();
         await this.LoadGLTF();
-
-
-        const trajectoryByBodyId = (store.state.MissionAnimation as MissionAnimation).TrajectoryByBodyId
+        const trajectoryByBodyId = MissionState.trajectoryByBodyId;
 
         if (this.id in trajectoryByBodyId) {
-            this.trajectory = trajectoryByBodyId[this.id];
+            this.trajectory = trajectoryByBodyId[this.id]!;
             
-            this.trajectory.line.material = ResourceTracker.track(new Three.LineBasicMaterial({ 
-                color: store.state.UserSettings.Data.asteroidTrajectoryColor 
-            }));
+            if (this.trajectory) {
+                this.trajectory.line.material = ResourceTracker.track(new Three.LineBasicMaterial({ 
+                    color: toRaw(this.userSettingsStore.data.asteroidTrajectoryColor) 
+                }));
 
-            this.trajectory.load(scene);
+                this.trajectory.load(scene);
 
-            this.x = this.trajectory.currentNode.vector.x;
-            this.y = this.trajectory.currentNode.vector.y;
-            this.z = this.trajectory.currentNode.vector.z;
+                this.x = this.trajectory.currentNode.vector.x;
+                this.y = this.trajectory.currentNode.vector.y;
+                this.z = this.trajectory.currentNode.vector.z;
+            }
         }
 
         if (this.gltfScene) {
@@ -57,10 +59,10 @@ export default class Asteroid implements IBody{
     }
 
     public animate() {
-        if (this.gltfScene) {
+        if (this.gltfScene && this.userSettingsStore) {
 
 
-            if (store.getters['MissionAnimation/IsAnimating']) {
+            if (MissionState.IsAnimating()) {
                 this.gltfScene.rotation.y += 0.02;
             }
 
@@ -75,11 +77,13 @@ export default class Asteroid implements IBody{
     }
 
     private async LoadGLTF(): Promise<void> {
+        const userSettingsStore = useUserSettingsStore();
+
         const promise = await new Promise<void>((resolve) => {
 
-            new GLTFLoader().load('/assets/asteroid/scene.gltf', (gltf) => {
+            new GLTFLoader().load('/asteroid/scene.gltf', (gltf) => {
                 ResourceTracker.track(gltf)
-                const size = this.scale * store.state.UserSettings.Data.asteroidSizeMultiple;
+                const size = this.scale * toRaw(userSettingsStore.data.asteroidSizeMultiple);
                 gltf.scene.scale.set(size, size, size);
                 gltf.scene.position.x = this.x;
                 gltf.scene.position.y = this.y;

@@ -2,16 +2,12 @@
   <div v-if="loading" class="loading"></div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-@Component
-export default class Loading extends Vue {
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useLoadingStateStore } from '@/stores/loading-state';
 
-  public get loading(): boolean {
-    return this.$store.state.MissionAnimation.Loading;
-  }
-}
-
+const loadingStateStore = useLoadingStateStore();
+const loading = computed(() => loadingStateStore.loading);
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

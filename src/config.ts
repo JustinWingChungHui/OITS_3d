@@ -1,4 +1,4 @@
-import Body from '@/models/body';
+import type Body from '@/models/body';
 import Probe from '@/models/probe';
 import SphericalBody from '@/models/spherical_body';
 import Asteroid from '@/models/asteroid';
@@ -63,20 +63,20 @@ const config: Config = {
     // Used for results
     bodies: new Array<Body>(
         new Probe('PROBE', 0, 0, 10, 'white', 0.0005),
-        new SphericalBody('SUN', 0, 0, 0, 0.02, '/assets/backgrounds/sun.jpg', 0.002),
-        new SphericalBody('MERCURY BARYCENTER', 40, 0, 0, 0.004, '/assets/backgrounds/mercury.jpg', 0.02),
-        new SphericalBody('VENUS BARYCENTER', 80, 0, 0, 0.004, '/assets/backgrounds/venus.jpg', 0.02),
-        new SphericalBody('EARTH BARYCENTER', 0, 0, 0, 0.006, '/assets/backgrounds/earth.jpg', 0.02),
-        new SphericalBody('MARS BARYCENTER', 160, 0, 0, 0.006, '/assets/backgrounds/mars.jpg', 0.02),
-        new SphericalBody('JUPITER BARYCENTER', 200, 0, 0, 0.022, '/assets/backgrounds/jupiter.jpg', 0.02),
-        new SphericalBody('SATURN BARYCENTER', 240, 0, 0, 0.02, '/assets/backgrounds/saturn.jpg', 0.02),
-        new SphericalBody('URANUS BARYCENTER', 280, 0, 0, 0.016, '/assets/backgrounds/uranus.jpg', 0.02),
-        new SphericalBody('NEPTUNE BARYCENTER', 320, 0, 0, 0.016, '/assets/backgrounds/neptune.jpg', 0.02),
-        new SphericalBody('PLUTO BARYCENTER', 400, 0, 0, 0.008, '/assets/backgrounds/moon.jpg', 0.02),
-        new SphericalBody('MERCURY', 0, 0, 0, 0.004, '/assets/backgrounds/mercury.jpg', 0.02),
-        new SphericalBody('VENUS', 0, 0, 0, 0.004, '/assets/backgrounds/venus.jpg', 0.02),
-        new SphericalBody('MOON', 0, 0, 0, 0.001, '/assets/backgrounds/moon.jpg', 0.02),
-        new SphericalBody('EARTH', 0, 0, 0, 0.006, '/assets/backgrounds/earth.jpg', 0.02),
+        new SphericalBody('SUN', 0, 0, 0, 0.02, '/backgrounds/sun.jpg', 0.002),
+        new SphericalBody('MERCURY BARYCENTER', 40, 0, 0, 0.004, '/backgrounds/mercury.jpg', 0.02),
+        new SphericalBody('VENUS BARYCENTER', 80, 0, 0, 0.004, '/backgrounds/venus.jpg', 0.02),
+        new SphericalBody('EARTH BARYCENTER', 0, 0, 0, 0.006, '/backgrounds/earth.jpg', 0.02),
+        new SphericalBody('MARS BARYCENTER', 160, 0, 0, 0.006, '/backgrounds/mars.jpg', 0.02),
+        new SphericalBody('JUPITER BARYCENTER', 200, 0, 0, 0.022, '/backgrounds/jupiter.jpg', 0.02),
+        new SphericalBody('SATURN BARYCENTER', 240, 0, 0, 0.02, '/backgrounds/saturn.jpg', 0.02),
+        new SphericalBody('URANUS BARYCENTER', 280, 0, 0, 0.016, '/backgrounds/uranus.jpg', 0.02),
+        new SphericalBody('NEPTUNE BARYCENTER', 320, 0, 0, 0.016, '/backgrounds/neptune.jpg', 0.02),
+        new SphericalBody('PLUTO BARYCENTER', 400, 0, 0, 0.008, '/backgrounds/moon.jpg', 0.02),
+        new SphericalBody('MERCURY', 0, 0, 0, 0.004, '/backgrounds/mercury.jpg', 0.02),
+        new SphericalBody('VENUS', 0, 0, 0, 0.004, '/backgrounds/venus.jpg', 0.02),
+        new SphericalBody('MOON', 0, 0, 0, 0.001, '/backgrounds/moon.jpg', 0.02),
+        new SphericalBody('EARTH', 0, 0, 0, 0.006, '/backgrounds/earth.jpg', 0.02),
         new Asteroid('CHURYUMOV-GERASIMENKO', 0, 0, 40, 0.0005),
         new Asteroid('LUTETIA', 0, 0, 40, 0.0005),
         new Asteroid('STEINS', 0, 0, 40, 0.0005),
@@ -91,13 +91,13 @@ const config: Config = {
     ),
 
     backgrounds: {
-        'Milky Way' : '/assets/backgrounds/stars_milky_way.jpg',
-        'Universe': '/assets/backgrounds/universe.jpg',
-        'Psychedelic': '/assets/backgrounds/psychedelic.jpg',
-        'Space': '/assets/backgrounds/space.jpg',
-        'White': '/assets/backgrounds/white.jpg',
-        'Grey': '/assets/backgrounds/grey.jpg',
-        'Black': '/assets/backgrounds/black.jpg',
+        'Milky Way' : '/backgrounds/stars_milky_way.jpg',
+        'Universe': '/backgrounds/universe.jpg',
+        'Psychedelic': '/backgrounds/psychedelic.jpg',
+        'Space': '/backgrounds/space.jpg',
+        'White': '/backgrounds/white.jpg',
+        'Grey': '/backgrounds/grey.jpg',
+        'Black': '/backgrounds/black.jpg',
     },
 
     // Used to mark intermediate points

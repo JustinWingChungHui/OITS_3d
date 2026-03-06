@@ -1,12 +1,12 @@
 import * as Three from 'three'
-import IBody from './body';
+import type Body from './body';
 import Trajectory from './trajectory';
-import Store from '@/store';
-import ResourceTracker from '../scene_builders/resource-tracker';
-import MissionAnimation from '@/store/mission-animation';
+import ResourceTracker from './scene_builders/resource-tracker';
+import { MissionState } from '@/models/missions/mission_state';
+import { useUserSettingsStore } from '@/stores/user-settings';
+import { toRaw } from 'vue';
 
-
-export default class Marker implements IBody{
+export default class Marker implements Body{
     public id: string;
     public x: number;
     public y: number;
@@ -22,6 +22,9 @@ export default class Marker implements IBody{
     private cone6: Three.Mesh | null = null;
 
     private narrowness = 3;
+
+    private userSettingsStore: ReturnType<typeof useUserSettingsStore> | null = null;
+
 
     constructor(id: string,
                 x: number,
@@ -39,8 +42,9 @@ export default class Marker implements IBody{
         // Resize
         if (this.trajectory && this.cone1 && this.cone2 
                 && this.cone3 && this.cone4
-                && this.cone5 && this.cone6) {
-            const size = this.size * Store.state.UserSettings.Data.markerSizeMultiple;
+                && this.cone5 && this.cone6 
+                && this.userSettingsStore) {
+            const size = this.size * this.userSettingsStore.data.markerSizeMultiple;
             const node = this.trajectory.getNextNode();
             this.cone1.position.x = node.vector.x;
             this.cone1.position.y = node.vector.y - this.narrowness * size;
@@ -65,12 +69,14 @@ export default class Marker implements IBody{
 
 
     public async load(scene: Three.Scene): Promise<void> {
-        window.console.log(`Marker.load()`)
+        console.log(`Marker.load()`)
 
-        const trajectoryByBodyId = (Store.state.MissionAnimation as MissionAnimation).TrajectoryByBodyId
+        this.userSettingsStore = useUserSettingsStore();
+
+        const trajectoryByBodyId = MissionState.trajectoryByBodyId;
 
         if (this.id in trajectoryByBodyId) {
-            this.trajectory = trajectoryByBodyId[this.id];
+            this.trajectory = trajectoryByBodyId[this.id]!;
             this.trajectory.line.material = ResourceTracker.track(new Three.LineBasicMaterial( { color: 'gray' } ));
 
             this.trajectory.load(scene);
@@ -80,12 +86,12 @@ export default class Marker implements IBody{
             this.z = this.trajectory.currentNode.vector.z;
         }
 
-        const size = this.size * Store.state.UserSettings.Data.markerSizeMultiple;
+        const size = this.size * toRaw(this.userSettingsStore.data.markerSizeMultiple);
 
         const coneGeometry = ResourceTracker.track(new Three.ConeGeometry(size, size * this.narrowness * 2, 8)); 
 
         const coneMaterial = ResourceTracker.track(new Three.MeshBasicMaterial( {
-            color: Store.state.UserSettings.Data.markerColor
+            color: toRaw(this.userSettingsStore.data.markerColor)
         } ));
 
         this.cone1 = ResourceTracker.track(new Three.Mesh(coneGeometry, coneMaterial));

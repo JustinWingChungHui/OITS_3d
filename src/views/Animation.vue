@@ -10,29 +10,14 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Scene from '@/components/animation/Scene.vue';
 import TimeStats from '@/components/animation/TimeStats.vue';
 import ControlPanel from '@/components/animation/ControlPanel.vue';
 import Loading from '@/components/Loading.vue';
 import Slider from '@/components/animation/Slider.vue';
-import { Component, Prop, Vue } from 'vue-property-decorator';
 
-@Component({
-  components: {
-    Scene,
-    TimeStats,
-    ControlPanel,
-    Loading,
-    Slider
-  },
-})
-export default class Animation extends Vue { 
-
-  @Prop({default: null})
-  public urlBase64?: string;
-}
-
+  defineProps<{ urlBase64?: string }>()
 </script>
 
 

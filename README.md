@@ -1,28 +1,54 @@
-# OITS_3d
-===================
+# OITS3D
 
-This is created 3d visual representations of OITS https://github.com/AdamHibberd/OITS1_BB
+This template should help get you started developing with Vue 3 in Vite.
 
-And consumes data from OITS_UI https://github.com/JustinWingChungHui/OITS_UI
+## Recommended IDE Setup
 
-It uses ThreeJs and is written using VuJs and Typescript.  
+[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
+## Recommended Browser Setup
 
-# Deployment
-- Make sure you have nodejs and npm installed
- - Install the vue cli (https://cli.vuejs.org/)
- - Clone this repository
- - Edit the `BaseApiUrl` property in `src/config.ts` so that it points to the OITS_UI site
- - From the command line run: `npm run-script build`
- - It should have created a 'dist' folder.
- - Copy the contents of the dist folder to somewhere to host the static website. 
+- Chromium-based browsers (Chrome, Edge, Brave, etc.):
+  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
+  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
+- Firefox:
+  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
+  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
 
+## Type Support for `.vue` Imports in TS
 
-# Credits
-OITS was created by Adam Hibberd https://github.com/AdamHibberd
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
 
-Planetary Textures have been used from https://www.solarsystemscope.com/textures/ under the 'Attribution 4.0 International Licence'
+## Customize configuration
 
-Asteroid glTF model has been used from https://sketchfab.com/Oziry under the 'Attribution 4.0 International Licence'
+See [Vite Configuration Reference](https://vite.dev/config/).
 
-Pioneer glTF model has been used from https://sketchfab.com/NASA under the 'Attribution 4.0 International Licence'
+## Project Setup
+
+```sh
+npm install
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Type-Check, Compile and Minify for Production
+
+```sh
+npm run build
+```
+
+### Run Unit Tests with [Vitest](https://vitest.dev/)
+
+```sh
+npm run test:unit
+```
+
+### Lint with [ESLint](https://eslint.org/)
+
+```sh
+npm run lint
+```
